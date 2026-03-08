@@ -2,646 +2,969 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>DriveEasy – Admin Dashboard</title>
-    <meta name="description" content="DriveEasy admin panel to manage vehicles and customer bookings." />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DriveEasy Admin Panel</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet" />
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        primary: '#2563eb',     /* Modern Blue */
+                        primaryHover: '#1d4ed8',
+                        bgDark: '          Light gray background matching screenshot */
+                        sidebarBg        ffffff',
+                        cardBg:         ffff',
+                        textMain: '#1e293b'                              textMuted: '#64748b',
+                             ccentRed: '#ef4444',
+                              accentGreen:        2c5        
+                                  erLight: '#e2e8f0',
+                    }
+                                    }
+        }
+    </script>
     <style>
         body {
             font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+            color: #0f172a;
         }
 
-        .sidebar-link {
-            transition: all 0.15s ease;
+        /* Sidebar Styles */
+        .sidebar {
+            width: 260px;
+            background-color: white;
+            border-right: 1px solid #e2e8f0;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            display: flex;
+            flex-direction: column;
+            z-index: 40;
         }
 
-        .sidebar-link.active,
-        .sidebar-link:hover {
-            background: rgba(59, 130, 246, 0.15);
-            color: #3b82f6;
+        .sidebar-brand {
+            padding: 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            color: #0f172a;
+            border-bottom: 1px solid #f1f5f9;
         }
 
-        .sidebar-link.active {
-            border-right: 3px solid #3b82f6;
+        .sidebar-brand i {
+            color: #f43f5e;
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        .sidebar-subtitle {
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #94a3b8;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            padding: 1.5rem 1.5rem 0.5rem;
         }
 
-        .animate-fade-in {
-            animation: fadeIn 0.3s ease forwards;
+        .nav-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 1.5rem;
+            color: #475569;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin: 0.25rem 1rem;
+            border-radius: 0.5rem;
         }
 
-        .status-badge {
+        .nav-item:hover {
+            background-color: #f1f5f9;
+            color: #1e293b;
+        }
+
+        .nav-item.active {
+            background-color: #ebf5ff;
+            color: #2563eb;
+            font-weight: 600;
+            border: 1px solid #bfdbfe;
+        }
+
+        .sidebar-bottom {
+            margin-top: auto;
+            padding: 1.5rem 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        /* Main Layout */
+        .main-content {
+            margin-left: 260px;
+            padding: 2.5rem 3rem;
+            min-height: 100vh;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 0.25rem;
+        }
+
+        .page-subtitle {
+            color: #64748b;
+            font-size: 0.95rem;
+        }
+
+        /* Modern Table Styles */
+        .table-card {
+            background: white;
+            border-radius: 0.75rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px -1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid #e2e8f0;
+        }
+
+        .custom-table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+        }
+
+        .custom-table th {
+            text-align: left;
+            padding: 1rem 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            color: #64748b;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid #e2e8f0;
+            background-color: #f8fafc;
+        }
+
+        .custom-table td {
+            padding: 1.25rem 1.5rem;
+            vertical-align: middle;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .custom-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Buttons */
+        .btn-primary {
+            background-color: #2563eb;
+            color: white;
+            padding: 0.6rem 1.25rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            font-size: 0.875rem;
             display: inline-flex;
             align-items: center;
-            padding: 2px 10px;
+            gap: 0.5rem;
+            transition: background-color 0.2s;
+            box-shadow: 0 1px 2px rgba(37, 99, 235, 0.1);
+        }
+
+        .btn-primary:hover {
+            background-color: #1d4ed8;
+        }
+
+        .btn-outline {
+            border: 1px solid #cbd5e1;
+            color: #475569;
+            padding: 0.4rem 0.875rem;
+            border-radius: 0.375rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .btn-outline:hover {
+            background-color: #f8fafc;
+            border-color: #94a3b8;
+            color: #0f172a;
+        }
+
+        .btn-outline-danger {
+            border: 1px solid #fca5a5;
+            color: #ef4444;
+            padding: 0.4rem 0.875rem;
+            border-radius: 0.375rem;
+            font-size: 0.8rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            background: white;
+        }
+
+        .btn-outline-danger:hover {
+            background-color: #fef2f2;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.35rem;
+            padding: 0.35rem 0.75rem;
             border-radius: 9999px;
             font-size: 0.75rem;
             font-weight: 600;
         }
 
-        .status-confirmed {
-            background: #dcfce7;
-            color: #16a34a;
+        .badge-green {
+            background-color: #dcfce7;
+            color: #166534;
         }
 
-        .status-cancelled {
-            background: #fee2e2;
-            color: #dc2626;
+        .badge-green::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #22c55e;
         }
 
-        .status-completed {
-            background: #dbeafe;
-            color: #2563eb;
+        .badge-red {
+            background-color: #fee2e2;
+            color: #991b1b;
         }
 
-        ::-webkit-scrollbar {
-            width: 5px;
+        .badge-red::before {
+            content: '';
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            background-color: #ef4444;
         }
 
-        ::-webkit-scrollbar-track {
-            background: #f1f5f9;
+        .badge-yellow {
+            background-color: #fef3c7;
+            color: #92400e;
         }
 
-        ::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 99px;
+        /* Vehicle Cell */
+        .vehicle-thumb {
+            width: 64px;
+            height: 42px;
+            object-fit: cover;
+            border-radius: 6px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .vehicle-cell {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .vehicle-name {
+            font-weight: 600;
+            color: #0f172a;
+            font-size: 0.95rem;
+        }
+
+        /* Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            display: none;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 1rem;
+            width: 100%;
+            max-width: 650px;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 2.5rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1px solid #cbd5e1;
+            border-radius: 0.5rem;
+            outline: none;
+            transition: border-color 0.2s;
+            font-size: 0.95rem;
+        }
+
+        .form-control:focus {
+            border-color: #2563eb;
+            ring: 3px solid rgba(37, 99, 235, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+        }
+
+        /* Toast */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem;
+            color: white;
+            font-weight: 500;
+            z-index: 200;
+            transform: translateY(100px);
+            opacity: 0;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+
+        .toast.show {
+            transform: translateY(0);
+            opacity: 1;
+        }
+
+        .toast-success {
+            background-color: #10b981;
+        }
+
+        .toast-error {
+            background-color: #ef4444;
+        }
+
+        /* Login Screen */
+        #login-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #f8fafc;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #login-screen.hidden {
+            display: none;
+        }
+
+        .login-card {
+            background: white;
+            padding: 3rem;
+            border-radius: 1.5rem;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            border: 1px solid #e2e8f0;
         }
     </style>
 </head>
 
-<body class="bg-slate-100 min-h-screen text-slate-800">
+<body>
 
-    <!-- ===== LOGIN SCREEN ===== -->
-    <div id="loginScreen"
-        class="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-900 via-slate-800 to-blue-950">
-        <div class="bg-white rounded-3xl shadow-2xl p-10 w-full max-w-sm animate-fade-in">
-            <div class="text-center mb-8">
-                <div class="text-5xl mb-4">🔐</div>
-                <h1 class="text-2xl font-extrabold text-slate-800">Admin Login</h1>
-                <p class="text-slate-500 text-sm mt-1">Enter your password to access the dashboard</p>
+    <!-- Login Screen -->
+    <div id="login-screen">
+        <div class="login-card">
+            <div class="inline-flex items-center justify-center w-16 h-16 bg-blue-50 text-blue-600 rounded-2xl mb-6">
+                <i class="fa-solid fa-car-side text-3xl"></i>
             </div>
-            <form id="loginForm" class="space-y-5">
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 mb-1.5">Password</label>
-                    <div class="relative">
-                        <input type="password" id="loginPassword" placeholder="••••••••" required autofocus
-                            class="w-full border border-slate-200 rounded-xl px-4 py-3.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent pr-12" />
-                        <button type="button" onclick="togglePwd()"
-                            class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
-                            <svg id="eyeIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                            </svg>
-                        </button>
-                    </div>
-                </div>
-                <p id="loginError" class="text-red-500 text-sm hidden"></p>
-                <button type="submit" id="loginBtn"
-                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3.5 rounded-xl transition-all shadow-lg shadow-blue-500/30">
-                    Sign In
+            <h2 class="text-3xl font-bold text-slate-800 mb-2">DriveEasy Admin</h2>
+            <p class="text-slate-500 mb-8">Enter your secure password to continue</p>
+            <form id="login-form">
+                <input type="password" id="admin-password" placeholder="Password" required
+                    class="w-full px-5 py-3.5 bg-slate-50 border border-slate-200 rounded-xl mb-5 focus:outline-none focus:border-blue-500 focus:bg-white focus:ring-4 focus:ring-blue-500/10 transition-all text-center text-lg tracking-widest">
+                <button type="submit"
+                    class="w-full bg-blue-600 hover:bg-blue-700 text-white font-medium py-3.5 rounded-xl transition-colors shadow-lg shadow-blue-600/20">
+                    Access Dashboard
                 </button>
             </form>
-            <p class="text-center text-xs text-slate-400 mt-6">
-                <a href="index.html" class="hover:text-blue-500 transition-colors">← Back to customer site</a>
-            </p>
+            <p id="login-error" class="text-red-500 text-sm mt-4 hidden"></p>
         </div>
     </div>
 
-    <!-- ===== DASHBOARD ===== -->
-    <div id="dashboard" class="hidden min-h-screen flex">
-
+    <!-- Main Dashboard -->
+    <div id="dashboard" class="hidden">
         <!-- Sidebar -->
-        <aside class="w-64 bg-white border-r border-slate-200 shadow-sm flex flex-col fixed h-full z-40">
-            <div class="p-6 border-b border-slate-100">
-                <div class="flex items-center gap-2">
-                    <span class="text-2xl">🚗</span>
-                    <span class="text-lg font-bold text-blue-600">Drive<span class="text-slate-800">Easy</span></span>
-                </div>
-                <p class="text-xs text-slate-400 mt-1 font-medium uppercase tracking-wider">Admin Panel</p>
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                <i class="fa-solid fa-car-side"></i> DriveEasy
             </div>
 
-            <nav class="p-4 flex-1 space-y-1">
-                <button onclick="switchTab('inventory')"
-                    class="sidebar-link active w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 text-sm font-medium text-slate-600"
-                    id="navInventory">
-                    <span class="text-lg">🚘</span> Inventory
-                </button>
-                <button onclick="switchTab('bookings')"
-                    class="sidebar-link w-full text-left px-4 py-3 rounded-xl flex items-center gap-3 text-sm font-medium text-slate-600"
-                    id="navBookings">
-                    <span class="text-lg">📋</span> Bookings
-                </button>
+            <div class="sidebar-subtitle">Admin Panel</div>
+            <nav class="mt-2">
+                <div class="nav-item active" onclick="switchTab('inventory')" id="nav-inventory">
+                    <i class="fa-solid fa-warehouse w-5"></i> Inventory
+                </div>
+                <div class="nav-item" onclick="switchTab('bookings')" id="nav-bookings">
+                    <i class="fa-solid fa-clipboard-list w-5"></i> Bookings
+                </div>
             </nav>
 
-            <div class="p-4 border-t border-slate-100">
-                <button onclick="logout()"
-                    class="w-full text-left px-4 py-3 rounded-xl text-sm font-medium text-rose-500 hover:bg-rose-50 transition-colors flex items-center gap-2">
-                    <span>🚪</span> Logout
-                </button>
-                <a href="index.html"
-                    class="mt-1 w-full text-left px-4 py-2 rounded-xl text-sm text-slate-400 hover:text-blue-600 transition-colors flex items-center gap-2">
-                    <span>↗</span> Customer Site
-                </a>
+            <div class="sidebar-bottom text-sm">
+                <div class="nav-item text-red-500 hover:bg-red-50 hover:text-red-600 !mx-0 !mb-2" onclick="logout()">
+                    <i class="fa-solid fa-arrow-right-from-bracket w-5"></i> Logout
+                </div>
+                <div class="nav-item text-slate-500 hover:text-slate-700 !mx-0" onclick="window.location.href='/'">
+                    <i class="fa-solid fa-external-link-alt w-5"></i> Customer Site
+                </div>
             </div>
         </aside>
 
         <!-- Main Content -->
-        <main class="ml-64 flex-1 p-8">
+        <main class="main-content">
 
-            <!-- ── Inventory Tab ── -->
-            <section id="tabInventory" class="animate-fade-in">
-                <div class="flex items-center justify-between mb-8">
+            <!-- INVENTORY TAB -->
+            <div id="tab-inventory" class="tab-content">
+                <div class="page-header">
                     <div>
-                        <h1 class="text-2xl font-bold text-slate-800">Vehicle Inventory</h1>
-                        <p class="text-slate-500 text-sm mt-1">Manage your fleet availability and pricing</p>
+                        <h1 class="page-title">Vehicle Inventory</h1>
+                        <p class="page-subtitle">Manage your fleet availability, features, and pricing</p>
                     </div>
-                    <button onclick="toggleAddForm()"
-                        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2.5 rounded-xl flex items-center gap-2 text-sm transition-all shadow-md shadow-blue-500/20">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                        Add Vehicle
+                    <button class="btn-primary" onclick="openVehicleModal()">
+                        <i class="fa-solid fa-plus mr-1"></i> Add Vehicle
                     </button>
                 </div>
 
-                <!-- Add Vehicle Form -->
-                <div id="addVehicleForm"
-                    class="hidden bg-white rounded-2xl border border-slate-200 shadow-sm p-6 mb-6 animate-fade-in">
-                    <h2 class="text-lg font-semibold text-slate-800 mb-5">Add New Vehicle</h2>
-                    <form id="vehicleForm" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                        <div>
-                            <label
-                                class="block text-xs font-medium text-slate-500 mb-1.5 uppercase tracking-wide">Name</label>
-                            <input type="text" id="vName" placeholder="e.g. Toyota Camry" required
-                                class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                        </div>
-                        <div>
-                            <label
-                                class="block text-xs font-medium text-slate-500 mb-1.5 uppercase tracking-wide">Type</label>
-                            <select id="vType" required
-                                class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                <option value="">Select type</option>
-                                <option>Sedan</option>
-                                <option>SUV</option>
-                                <option>Sports</option>
-                                <option>Electric</option>
-                                <option>Truck</option>
-                                <option>Van</option>
-                            </select>
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-slate-500 mb-1.5 uppercase tracking-wide">Daily
-                                Rate ($)</label>
-                            <input type="number" id="vRate" placeholder="e.g. 65" min="1" required
-                                class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                        </div>
-                        <div>
-                            <label class="block text-xs font-medium text-slate-500 mb-1.5 uppercase tracking-wide">Image
-                                URL</label>
-                            <input type="url" id="vImg" placeholder="https://..."
-                                class="w-full border border-slate-200 rounded-xl px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500" />
-                        </div>
-                        <div class="sm:col-span-2 lg:col-span-4 flex justify-end gap-3">
-                            <button type="button" onclick="toggleAddForm()"
-                                class="px-5 py-2 text-sm font-medium text-slate-600 rounded-xl border border-slate-200 hover:bg-slate-50 transition-colors">Cancel</button>
-                            <button type="submit" id="saveVehicleBtn"
-                                class="bg-blue-600 hover:bg-blue-700 text-white font-semibold px-5 py-2 rounded-xl text-sm transition-all">Save
-                                Vehicle</button>
-                        </div>
-                    </form>
-                    <p id="vehicleError" class="text-red-500 text-sm mt-3 hidden"></p>
+                <div class="table-card overflow-x-auto">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Vehicle</th>
+                                <th>Type</th>
+                                <th>Daily Rate</th>
+                                <th>Status</th>
+                                <th class="text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="inventory-tbody">
+                            <tr>
+                                <td colspan="5" class="text-center py-12 text-slate-500">Loading vehicles...</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
+            </div>
 
-                <!-- Vehicles Table -->
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead class="bg-slate-50 border-b border-slate-200">
-                                <tr>
-                                    <th
-                                        class="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                                        Vehicle</th>
-                                    <th
-                                        class="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                                        Type</th>
-                                    <th
-                                        class="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                                        Daily Rate</th>
-                                    <th
-                                        class="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                                        Status</th>
-                                    <th
-                                        class="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                                        Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="vehiclesTableBody" class="divide-y divide-slate-100">
-                                <tr>
-                                    <td colspan="5" class="px-5 py-10 text-center text-slate-400">Loading vehicles…</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </section>
-
-            <!-- ── Bookings Tab ── -->
-            <section id="tabBookings" class="hidden animate-fade-in">
-                <div class="flex items-center justify-between mb-8">
+            <!-- BOOKINGS TAB -->
+            <div id="tab-bookings" class="tab-content hidden">
+                <div class="page-header">
                     <div>
-                        <h1 class="text-2xl font-bold text-slate-800">Customer Bookings</h1>
-                        <p class="text-slate-500 text-sm mt-1">View and manage all rental reservations</p>
-                    </div>
-                    <button onclick="loadBookings()"
-                        class="flex items-center gap-2 text-sm text-blue-600 hover:text-blue-700 font-medium border border-blue-200 px-4 py-2 rounded-xl hover:bg-blue-50 transition-all">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                d="M4 4v5h.582M20 20v-5h-.581M5.454 9A8.001 8.001 0 0119.938 15M4.062 9a8.001 8.001 0 0014.484-6" />
-                        </svg>
-                        Refresh
-                    </button>
-                </div>
-
-                <!-- Stats row -->
-                <div id="bookingStats" class="grid grid-cols-3 gap-4 mb-6">
-                    <div class="bg-white rounded-2xl border border-slate-200 p-5">
-                        <p class="text-xs text-slate-500 font-medium uppercase tracking-wide mb-1">Total Bookings</p>
-                        <p id="statTotal" class="text-3xl font-extrabold text-slate-800">–</p>
-                    </div>
-                    <div class="bg-white rounded-2xl border border-slate-200 p-5">
-                        <p class="text-xs text-slate-500 font-medium uppercase tracking-wide mb-1">Confirmed</p>
-                        <p id="statConfirmed" class="text-3xl font-extrabold text-emerald-600">–</p>
-                    </div>
-                    <div class="bg-white rounded-2xl border border-slate-200 p-5">
-                        <p class="text-xs text-slate-500 font-medium uppercase tracking-wide mb-1">Total Revenue</p>
-                        <p id="statRevenue" class="text-3xl font-extrabold text-blue-600">–</p>
+                        <h1 class="page-title">Recent Bookings</h1>
+                        <p class="page-subtitle">View and manage customer reservations</p>
                     </div>
                 </div>
 
-                <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
-                    <div class="overflow-x-auto">
-                        <table class="w-full text-sm">
-                            <thead class="bg-slate-50 border-b border-slate-200">
-                                <tr>
-                                    <th
-                                        class="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                                        #</th>
-                                    <th
-                                        class="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                                        Customer</th>
-                                    <th
-                                        class="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                                        Vehicle</th>
-                                    <th
-                                        class="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                                        Dates</th>
-                                    <th
-                                        class="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                                        Total</th>
-                                    <th
-                                        class="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                                        Status</th>
-                                    <th
-                                        class="text-left px-5 py-3.5 text-xs font-semibold text-slate-500 uppercase tracking-wide">
-                                        Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody id="bookingsTableBody" class="divide-y divide-slate-100">
-                                <tr>
-                                    <td colspan="7" class="px-5 py-10 text-center text-slate-400">Select Bookings tab to
-                                        load data.</td>
-                                </tr>
-                            </tbody>
-                        </table>
+                <!-- Stats widgets -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                        <div
+                            class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-receipt"></i></div>
+                        <div>
+                            <div class="text-slate-500 text-sm font-medium">Total Bookings</div>
+                            <div class="text-2xl font-bold text-slate-800" id="stat-total-bookings">0</div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                        <div
+                            class="w-12 h-12 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-clock"></i></div>
+                        <div>
+                            <div class="text-slate-500 text-sm font-medium">Pending/Active</div>
+                            <div class="text-2xl font-bold text-slate-800" id="stat-active-bookings">0</div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-xl border border-slate-200 shadow-sm flex items-center gap-4">
+                        <div
+                            class="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-sack-dollar"></i></div>
+                        <div>
+                            <div class="text-slate-500 text-sm font-medium">Total Revenue</div>
+                            <div class="text-2xl font-bold text-slate-800" id="stat-total-revenue">$0</div>
+                        </div>
                     </div>
                 </div>
-            </section>
+
+                <div class="table-card overflow-x-auto">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Customer Info</th>
+                                <th>Vehicle Details</th>
+                                <th>Dates</th>
+                                <th>Price</th>
+                                <th>Status</th>
+                                <th class="text-right">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookings-tbody"></tbody>
+                    </table>
+                </div>
+            </div>
+
         </main>
     </div>
 
-    <!-- ===== TOAST ===== -->
-    <div id="adminToast" class="fixed bottom-6 right-6 z-50 hidden animate-fade-in">
-        <div id="adminToastInner"
-            class="text-white rounded-xl px-5 py-3.5 shadow-2xl flex items-center gap-3 text-sm font-medium max-w-xs">
-            <span id="toastIcon"></span>
-            <span id="adminToastMsg"></span>
+    <!-- Add/Edit Vehicle Modal -->
+    <div class="modal-overlay" id="vehicle-modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-2xl font-bold text-slate-800" id="modal-title">Add New Vehicle</h2>
+                <button onclick="closeVehicleModal()" class="text-slate-400 hover:text-slate-600 text-xl"><i
+                        class="fa-solid fa-xmark"></i></button>
+            </div>
+
+            <form id="vehicle-form">
+                <input type="hidden" id="vehicle-id">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Vehicle Name</label>
+                        <input type="text" id="v-name" class="form-control" placeholder="e.g. BMW X5" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Vehicle Category</label>
+                        <select id="v-type" class="form-control" required>
+                            <option value="Sedan">Sedan</option>
+                            <option value="SUV">SUV</option>
+                            <option value="Sports">Sports</option>
+                            <option value="Truck">Truck</option>
+                            <option value="Electric">Electric</option>
+                            <option value="Luxury">Luxury</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Daily Rate ($)</label>
+                        <input type="number" id="v-rate" class="form-control" min="10" placeholder="e.g. 120" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Plate Number</label>
+                        <input type="text" id="v-plate" class="form-control" placeholder="e.g. XYZ-1234">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Image URL (High Quality)</label>
+                    <input type="url" id="v-image" class="form-control" placeholder="https://..." required>
+                </div>
+
+                <div class="form-group">
+                    <label>Description (Shown to customers)</label>
+                    <textarea id="v-desc" class="form-control" rows="3"
+                        placeholder="Luxury SUV combining dynamic driving..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label>Tags / Features (Comma separated)</label>
+                    <input type="text" id="v-features" class="form-control"
+                        placeholder="e.g. 5 Seats, Auto, Leather, Sunroof">
+                    <p class="text-xs text-slate-500 mt-1.5">Displayed as tags on the vehicle description.</p>
+                </div>
+
+                <div class="flex justify-end gap-3 mt-8 pt-6 border-t border-slate-100">
+                    <button type="button" class="btn-outline border-none" onclick="closeVehicleModal()">Cancel</button>
+                    <button type="submit" class="btn-primary px-8" id="modal-submit-btn">Save Vehicle Details</button>
+                </div>
+            </form>
         </div>
     </div>
 
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        <i id="toast-icon" class="fa-solid fa-circle-check"></i>
+        <span id="toast-msg">Success</span>
+    </div>
+
     <script>
-        // ─── Auth ──────────────────────────────────────────────────────────────────
-        const TOKEN_KEY = 'driveEasyAdminToken';
-        const ADMIN_TOKEN = 'admin-token-998999-secure';
+                tate
+        let adminToken = l            age.getItem('adminTo                     let vehicles = [];
 
-        function getToken() { return localStorage.getItem(TOKEN_KEY); }
+        // DOM Loade                document.addEvent            ('DOMCont                , () => {
+            if (adminToken) {
+                s                rd();
+            } else {
+                    d        t.getEleme            login-screen').classList.remove('hidden');
+                          });
 
-        if (getToken() === ADMIN_TOKEN) {
-            showDashboard();
-        }
-
-        function togglePwd() {
-            const inp = document.getElementById('loginPassword');
-            inp.type = inp.type === 'password' ? 'text' : 'password';
-        }
-
-        document.getElementById('loginForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('loginBtn');
-            const errEl = document.getElementById('loginError');
-            errEl.classList.add('hidden');
-            btn.disabled = true;
-            btn.textContent = 'Signing in…';
-
+        // ----------         AUTH ------            --
+        document.ge            ById('login-form').addEventLi        ('submit',         c (e) => {
+            e.pr            efault();
+            const password = document.getElementById('            password').value;
+            const errorEl = document.getElement            login-error');
+                    
             try {
-                const res = await fetch('/api/login', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ password: document.getElementById('loginPassword').value }),
-                });
+                      const res = await fetch('/a            in', {
+                               hod: 'POST',
+                    headers: { 'Content-Type': 'application/json'                            body: J            ringify({ password })
+                });                         
                 const data = await res.json();
-                if (data.success) {
-                    localStorage.setItem(TOKEN_KEY, data.token);
-                    showDashboard();
+                
+                               .ok && data.token) {
+                    adminToken = data.token;
+                                   orage.setItem('ad                     adminToken);
+                    er                    sList.add('hidden');
+                            showD                    ;
                 } else {
-                    errEl.textContent = data.message || 'Invalid password.';
-                    errEl.classList.remove('hidden');
+                              errorEl.textContent = data.e                'I             cre            ls';
+                    errorEl.classLi        emo        hidden');
                 }
-            } catch {
-                errEl.textContent = 'Network error. Try again.';
-                errEl.classList.remove('hidden');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Sign In';
-            }
-        });
-
-        function showDashboard() {
-            document.getElementById('loginScreen').classList.add('hidden');
-            document.getElementById('dashboard').classList.remove('hidden');
-            loadVehicles();
-        }
+            } catch (err) {
+                errorEl        tContent = 'Server error. Try again.';
+                      errorEl.classList.remove('hidden');
+                            });
 
         function logout() {
-            localStorage.removeItem(TOKEN_KEY);
-            location.reload();
+            localStor            moveItem('adminToken');
+            adminToken = nu                      document.getElementById('dashboard').classList.add            en');
+            document.getElementById('login-screen').classList.remove('hidden');
+            document.getElementById('admin-password').value = '';
         }
 
-        // ─── Tab Switching ─────────────────────────────────────────────────────────
-        function switchTab(tab) {
-            ['inventory', 'bookings'].forEach(t => {
-                const section = document.getElementById('tab' + t.charAt(0).toUpperCase() + t.slice(1));
-                const nav = document.getElementById('nav' + t.charAt(0).toUpperCase() + t.slice(1));
-                if (t === tab) {
-                    section.classList.remove('hidden');
-                    nav.classList.add('active');
-                } else {
-                    section.classList.add('hidden');
-                    nav.classList.remove('active');
-                }
-            });
+        func            howDashboard() {
+            document.getElementByI            in-screen').classList.add('hidden'                     document.getElementById('dashboard').classList        ove        dden');
+            loadInventory();
+        }
+
+        // ---------------- UI         GATION ----------------
+                    on switchTab(tab) {
+            document.querySelectorAll('.            ntent').forEach(t => t.classList.add('hidden'));
+            document.getElementById('tab-' + tab).classLi            ove('h                
+            
+            document.querySe                l('.nav-item').forEach(n => n.c                .remove('active'));
+            do                etElementById('nav-' + t                    ist.add('active');
+
+            if (tab === 'inventory') loadInventory();
             if (tab === 'bookings') loadBookings();
         }
-
-        // ─── Toast ─────────────────────────────────────────────────────────────────
-        function showToast(msg, type = 'success') {
-            const toast = document.getElementById('adminToast');
-            const inner = document.getElementById('adminToastInner');
-            const icon = document.getElementById('toastIcon');
-            document.getElementById('adminToastMsg').textContent = msg;
-            inner.className = `text-white rounded-xl px-5 py-3.5 shadow-2xl flex items-center gap-3 text-sm font-medium max-w-xs ${type === 'success' ? 'bg-emerald-600' : 'bg-red-500'}`;
-            icon.textContent = type === 'success' ? '✓' : '✕';
-            toast.classList.remove('hidden');
-            setTimeout(() => toast.classList.add('hidden'), 4000);
+                    unction                 t(                rror = false) {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').textContent = msg;
+            
+            toast.className = 'toast ' + (isError ? 'toast-error' : 'toast-success');
+            document.getElementById('toast-icon').className = isError ? 'fa-solid fa-circle-exclamation' : 'fa-solid fa-circle-check';
+            
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3000);
         }
 
-        // ─── Vehicles ──────────────────────────────────────────────────────────────
-        async function loadVehicles() {
-            const tbody = document.getElementById('vehiclesTableBody');
-            tbody.innerHTML = '<tr><td colspan="5" class="px-5 py-10 text-center text-slate-400">Loading…</td></tr>';
+        // ---------------- INVENTORY API ----------------
+        async function loadInventory() {
             try {
                 const res = await fetch('/api/vehicles');
                 const data = await res.json();
-                const vehicles = data.data || [];
-                if (!vehicles.length) {
-                    tbody.innerHTML = '<tr><td colspan="5" class="px-5 py-10 text-center text-slate-400">No vehicles found. Add your first one!</td></tr>';
-                    return;
+                if (data.success) {
+                    vehicles = data.data;
+                    renderInventory(vehicles);
                 }
-                tbody.innerHTML = vehicles.map(v => `
-          <tr class="hover:bg-slate-50 transition-colors">
-            <td class="px-5 py-4">
-              <div class="flex items-center gap-3">
-                <img src="${v.image_url || ''}" alt="${v.name}" class="w-12 h-9 object-cover rounded-lg bg-slate-100" onerror="this.style.display='none'" />
-                <span class="font-medium text-slate-800">${v.name}</span>
-              </div>
-            </td>
-            <td class="px-5 py-4 text-slate-500">${v.type}</td>
-            <td class="px-5 py-4 font-semibold text-blue-600">$${v.daily_rate}<span class="text-slate-400 font-normal">/day</span></td>
-            <td class="px-5 py-4">
-              <span class="status-badge ${v.is_available ? 'status-confirmed' : 'status-cancelled'}">
-                ${v.is_available ? '● Available' : '● Unavailable'}
-              </span>
-            </td>
-            <td class="px-5 py-4">
-              <div class="flex items-center gap-2">
-                <button onclick="toggleAvailability(${v.id}, ${v.is_available})"
-                  class="text-xs font-medium px-3 py-1.5 rounded-lg border transition-colors ${v.is_available ? 'border-amber-200 text-amber-600 hover:bg-amber-50' : 'border-emerald-200 text-emerald-600 hover:bg-emerald-50'}">
-                  ${v.is_available ? 'Mark Unavailable' : 'Mark Available'}
-                </button>
-                <button onclick="deleteVehicle(${v.id})"
-                  class="text-xs font-medium px-3 py-1.5 rounded-lg border border-red-200 text-red-500 hover:bg-red-50 transition-colors">
-                  Delete
-                </button>
-              </div>
-            </td>
-          </tr>
-        `).join('');
-            } catch {
-                tbody.innerHTML = '<tr><td colspan="5" class="px-5 py-10 text-center text-red-400">Failed to load vehicles.</td></tr>';
+            } catch (err) {
+                showToast("Failed to load inventory", true);
             }
         }
 
-        function toggleAddForm() {
-            const form = document.getElementById('addVehicleForm');
-            form.classList.toggle('hidden');
+        function renderInventory(vehicles) {
+            const tbody = document.getElementById('inventory-tbody');
+            tbody.innerHTML = '';
+            
+            if(vehicles.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="text-center py-12 text-slate-500">No vehicles found.</td></tr>';
+                return;
+            }
+
+            vehicles.forEach(v => {
+                const badge = v.is_available 
+                    ? `<span class="badge badge-green">Available</span>`
+                    : `<span class="badge badge-red">Rented</span>`;
+                
+                const typeText = v.plate_number ? `<span class="text-slate-400 text-xs ml-2">${v.plate_number}</span>`             
+                         onst tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>
+                                   c        ="v        le-cell">
+                                  <img src="${v.image_url}" class="vehicle-thumb" alt            name}" onerror="this.src='https:/        .pl        older.com/64x42?text=CAR'">
+                            <div>
+                                      <div class="v            -name">${v.name}</div>
+                                            lass="text-xs text-slate-500 mt-1 truncate max-w-[200px            le="${v.description || ''}">${v            iption || 'No descrip            </div>
+                                   /div>
+                                </div>
+                                                                                                                class="text-sm font-medium text-sla                        type}</div>
+                        ${typ                                               </td>
+                                     lass="font-semibold text-blue-600">$${v.daily_                        lass="text-xs text-slate-400 font-normal">/day                        
+                    <td>${badge}</td>
+                    <td                        -right">
+                        <div class="flex                     d ga                s-ce                                           <but                ick='editVehicle(${J                    ify(v).replace(/'/g, "&#39;")})' class="btn-outl                    ass="fa-solid fa-pen-to-square"></i> Edit</button>
+                                      <button onclic                    vailability(${v.id}, ${!v.is_available})"                 tn-outlin                    available ? 'Mark Unavailable' : 'Mark Available'}</button>
+                                      <button onclick=                eh            {v.id})" c                n-outline-danger"><i class="fa-solid f                ></i></button>
+                               /div>
+                            </td>
+                          
+                tbody.appendChild                                   
         }
 
-        document.getElementById('vehicleForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById('saveVehicleBtn');
-            const errEl = document.getElementById('vehicleError');
-            errEl.classList.add('hidden');
-            btn.disabled = true;
-            btn.textContent = 'Saving…';
+        function openVehicleModal(vehicle =             {
+                    document.getElementById('vehicle-modal').c                    dd('active');
+                      const form                        getElementById('vehicle-form');
+                            .reset();
+
+            if (vehicle) {
+                                              etElementById('modal-title').textContent = "Edit Vehicle";
+                                     ent.getElementById('vehicle-id'                = vehicle.id;
+                          document.getElem                    -name').value = vehicle.name;
+                        document.                    ById('v-type').value = vehicle.type;
+                               t.            mentById('                .value = vehicle.daily_rate;
+                      d        ent        ElementById('v-image').value = vehi            age_url;
+                document.getElementById('v-plate').value = vehicle.plate_number || ''                                  cument.getElementById('v-desc').value = vehicle.desc                     '';
+                                           let feats = "";
+                try {
+                                          fArr = JSON.parse(vehicle.featu                []');
+                                  rray.isArray(fAr                    = fArr.join(', ');
+                            tch(e) {}                           document.getElementById('v-features').value =                                  } else                           document.getElementById('mo            tl        tex        tent = "Add New Vehicle";
+                document.getElementById('vehicle-id')        ue = "";
+            }
+        }                function closeVehicleModal() {
+            document.getE            ById('vehicle-modal').classList.remove('active');
+        }
+
+        function editVehicle(vehicle) {
+            ope            leModa                e);
+        }
+
+        document.getElementB                    le-form').addEventListener('submit', async (e) => {
+                    e.                efault();
+            const id                 nt.getElementById('vehicle-id').val                        
+                       st featuresStr = document.getElementById('v-features').value;
+                           eaturesArr = featuresStr.split(',').map(s => s.trim()).filter(s => s.len                ;
+
+            const payload = {
+                name: document.getE                Id('v-name').value,
+                type: document.getElementById(                ).value,
+                daily_rate: document.getElementById('v-rate').value,
+                        image_url: document.getE                    ('v-image').value,
+                plate_number: document.getElementById('v-plate').value,
+                descrip                    ment.get                yId                ').value,
+                features: JSON.stringify(featuresArr)
+            };
+
+            const method = id ? 'PUT' : 'POST';
+            if (id) {
+                payload.id = id;
+            }
 
             try {
                 const res = await fetch('/api/vehicles', {
-                    method: 'POST',
-                    headers: {
+                    method: method,
+                    headers: { 
                         'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${getToken()}`,
+                        'Authorization': `Bearer ${adminToken}`
                     },
-                    body: JSON.stringify({
-                        name: document.getElementById('vName').value,
-                        type: document.getElementById('vType').value,
-                        daily_rate: parseInt(document.getElementById('vRate').value),
-                        image_url: document.getElementById('vImg').value,
-                    }),
+                    body: JSON.stringify(payload)
                 });
-                const data = await res.json();
-                if (data.success) {
-                    document.getElementById('vehicleForm').reset();
-                    document.getElementById('addVehicleForm').classList.add('hidden');
-                    loadVehicles();
-                    showToast('Vehicle added successfully!');
+
+                if (res.ok) {
+                    showToast(id ? "Vehicle updated successfully!" : "Vehicle added successfully!");
+                    closeVehicleModal();
+                    loadInventory();
                 } else {
-                    errEl.textContent = data.error || 'Failed to add vehicle.';
-                    errEl.classList.remove('hidden');
+                    if(res.status === 401) logout();
+                    const err = await res.json();
+                    showToast(err.error || "Failed to save data", true);
                 }
-            } catch {
-                errEl.textContent = 'Network error.';
-                errEl.classList.remove('hidden');
-            } finally {
-                btn.disabled = false;
-                btn.textContent = 'Save Vehicle';
+            } catch (err) {
+                showToast("Network error", true);
             }
         });
 
-        async function toggleAvailability(id, currentStatus) {
+        async function toggleAvailability(id, is_available) {
             try {
+                // Determine existing vehicle details to preserve them in PUT
+                const existing = vehicles.find(v => v.id == id);
+                if(!existing) return;
+
+                const payload = {
+                    id: existing.id,
+                    name: existing.name,
+                    type: existing.type,
+                    daily_rate: existing.daily_rate,
+                    image_url: existing.image_url,
+                    plate_number: existing.plate_number,
+                    description: existing.description,
+                    features: existing.features,
+                    is_avai             is_availa                            };
+
                 const res = await fetch('/api/vehicles', {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${getToken()}`,
-                    },
-                    body: JSON.stringify({ id, is_available: !currentStatus }),
+                    headers: { 'Co            Ty         'a        cation/json', 'Authorization': `Bearer ${adminTok            ,
+                                JSON.                y(payload)
                 });
-                const data = await res.json();
-                if (data.success) {
-                    loadVehicles();
-                    showToast('Vehicle status updated.');
-                } else {
-                    showToast(data.error || 'Update failed.', 'error');
-                }
-            } catch {
-                showToast('Network error.', 'error');
-            }
-        }
 
-        async function deleteVehicle(id) {
-            if (!confirm('Are you sure you want to delete this vehicle? This cannot be undone.')) return;
-            try {
-                const res = await fetch(`/api/vehicles?id=${id}`, {
+                               es.ok) {
+                              showToa                        pdated");
+                    loadIn                                       } else {
+                                     sta                    1) logout();
+                    showT                date                , true);
+                }
+                    } catch (err) {
+                          showToast("Network error", true);
+            }
+                    
+        async f                deleteVeh                    
+            if(!confirm("Are you sure? This action                 e             .")) retur                        try {
+                const re            ai        tc`/acles?id=${id}`, {
                     method: 'DELETE',
-                    headers: { 'Authorization': `Bearer ${getToken()}` },
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
                 });
-                const data = await res.json();
-                if (data.success) {
-                    loadVehicles();
-                    showToast('Vehicle deleted.');
+
+                if (res.ok) {
+                    showToast("Vehicle deleted");
+                    loadInventory();
                 } else {
-                    showToast(data.error || 'Delete failed.', 'error');
+                    if(res.status === 401) logout();
+                    const err = await res.json();
+                    showToast(err.error || "Failed to delete", true);
                 }
-            } catch {
-                showToast('Network error.', 'error');
+            } catch (err) {
+                showToast("Network error", true);
             }
         }
 
-        // ─── Bookings ──────────────────────────────────────────────────────────────
+        // ---------------- BOOKINGS API ----------------
         async function loadBookings() {
-            const tbody = document.getElementById('bookingsTableBody');
-            tbody.innerHTML = '<tr><td colspan="7" class="px-5 py-10 text-center text-slate-400">Loading bookings…</td></tr>';
-
             try {
                 const res = await fetch('/api/bookings', {
-                    headers: { 'Authorization': `Bearer ${getToken()}` },
+                    headers: { 'Authorization': `Bearer ${adminToken}` }
                 });
+                
+                if (res.status === 401) { logout(); return; }
+                
                 const data = await res.json();
-                const bookings = data.data || [];
-
-                // Update stats
-                const confirmed = bookings.filter(b => b.status === 'confirmed').length;
-                const revenue = bookings.reduce((s, b) => s + (b.total_price || 0), 0);
-                document.getElementById('statTotal').textContent = bookings.length;
-                document.getElementById('statConfirmed').textContent = confirmed;
-                document.getElementById('statRevenue').textContent = '$' + revenue.toLocaleString();
-
-                if (!bookings.length) {
-                    tbody.innerHTML = '<tr><td colspan="7" class="px-5 py-10 text-center text-slate-400">No bookings yet.</td></tr>';
-                    return;
+                if (data.success) {
+                    renderBookings(data.data);
                 }
-
-                tbody.innerHTML = bookings.map(b => `
-          <tr class="hover:bg-slate-50 transition-colors">
-            <td class="px-5 py-4 text-slate-400 font-mono text-xs">#${b.id}</td>
-            <td class="px-5 py-4">
-              <p class="font-medium text-slate-800">${b.customer_name}</p>
-              <p class="text-xs text-slate-400 mt-0.5">${b.customer_phone}</p>
-            </td>
-            <td class="px-5 py-4">
-              <p class="font-medium text-slate-700">${b.vehicle_name || 'N/A'}</p>
-              <p class="text-xs text-slate-400">${b.vehicle_type || ''}</p>
-            </td>
-            <td class="px-5 py-4 text-slate-500 text-xs">
-              <span class="bg-slate-100 px-2 py-0.5 rounded-md">${b.start_date}</span>
-              <span class="mx-1">→</span>
-              <span class="bg-slate-100 px-2 py-0.5 rounded-md">${b.end_date}</span>
-            </td>
-            <td class="px-5 py-4 font-bold text-slate-800">$${b.total_price?.toLocaleString()}</td>
-            <td class="px-5 py-4">
-              <span class="status-badge status-${b.status}">${b.status}</span>
-            </td>
-            <td class="px-5 py-4">
-              <select onchange="updateBookingStatus(${b.id}, this.value)" class="text-xs border border-slate-200 rounded-lg px-2 py-1.5 focus:outline-none focus:ring-2 focus:ring-blue-500">
-                <option value="">Change status…</option>
-                <option value="confirmed" ${b.status === 'confirmed' ? 'selected' : ''}>Confirmed</option>
-                <option value="completed" ${b.status === 'completed' ? 'selected' : ''}>Completed</option>
-                <option value="cancelled" ${b.status === 'cancelled' ? 'selected' : ''}>Cancelled</option>
-              </select>
-            </td>
-          </tr>
-        `).join('');
-            } catch {
-                tbody.innerHTML = '<tr><td colspan="7" class="px-5 py-10 text-center text-red-400">Failed to load bookings. Check your admin token.</td></tr>';
+            } catch (err) {
+                showToast("Failed to load bookings", true);
             }
+        }
+
+        function renderBookings(bookings) {
+            const tbody = document.getElementById('bookings-tbody');
+            tbody.innerHTML = '';
+            
+            // Calculate stats
+            document.getElementById('stat-total-bookings').textContent = bookings.length;
+            const active = bookings.filter(b => b.status === 'confirmed').length;
+            document.getElementById('stat-active-bookings').textContent = active;
+            const revenue = bookings.reduce((sum, b) => sum + b.total_price, 0);
+            document.getElementById('stat-total-revenue').textContent = '$' + revenue.toLocaleString();
+
+            if(bookings.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center py-12 text-slate-500">No bookings yet.</td></tr>';
+                return;
+            }
+
+            bookings.forEach(b => {
+                const badgeClass = b.status === 'confirmed' ? 'badge-yellow' : 'badge-green';
+                const vehicle = vehicles.find(v => v.id === b.vehicle_id);
+                const vehicleName = vehicle?.name || `Vehicle #${b.vehicle_id}`;
+                const vehicleThumb = vehicle?.image_url || 'https://via.placeholder.com/32x32?text=CAR';
+                
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td class="text-slate-500 text-xs font-medium">#CMD-${b.id}</td>
+                    <td>
+                        <div class="font-medium text-slate-800">${b.customer_name}</div>
+                        <div class="text-xs text-slate-500 mt-1"><i class="fa-solid fa-phone text-[10px] mr-1"></i>${b.customer_phone}</div>
+                    </td>
+                    <td>
+                        <div class="flex items-center gap-2">
+                            <img src="${vehicleThumb}" class="w-8 h-8 rounded object-cover" onerror="this.src='https://via.placeholder.com/32'">
+                            <span class="font-medium text-sm text-slate-700">${vehicleName}</span>
+                        </div>
+                    </td>
+                    <td class="text-sm">
+                        <div class="text-slate-800 font-medium">${b.start_date}</div>
+                        <div class="text-slate-500 text-xs mt-0.5">to ${b.end_date}</div>
+                    </td>
+                    <td class="font-bold text-emerald-600">$${b.total_price}</td>
+                    <td><span class="badge ${badgeClass} capitalize">${b.status}</span></td>
+                    <td class="text-right">
+                        ${b.status === 'confirmed' 
+                            ? `<button onclick="updateBookingStatus(${b.id}, 'completed')" class="text-xs text-blue-600 hover:text-blue-800 font-semibold px-3 py-1.5 bg-blue-50 rounded bg-blue-100 transition-colors uppercase tracking-wide">Mark Done</button>`
+                            : `<span class="text-xs font-semibold text-slate-400"><i class="fa-solid fa-check"></i> COMPLETED</span>`
+                        }
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            });
         }
 
         async function updateBookingStatus(id, status) {
-            if (!status) return;
             try {
                 const res = await fetch('/api/bookings', {
                     method: 'PUT',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${getToken()}`,
-                    },
-                    body: JSON.stringify({ id, status }),
+                    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${adminToken}` },
+                    body: JSON.stringify({ id, status })
                 });
-                const data = await res.json();
-                if (data.success) {
-                    showToast(`Booking #${id} marked as ${status}.`);
+
+                if (res.ok) {
+                    showToast("Booking marked completed");
                     loadBookings();
                 } else {
-                    showToast(data.error || 'Update failed.', 'error');
+                    if(res.status === 401) logout();
+                    showToast("Status update failed", true);
                 }
-            } catch {
-                showToast('Network error.', 'error');
+            } catch (err) {
+                showToast("Network error", true);
             }
         }
     </script>

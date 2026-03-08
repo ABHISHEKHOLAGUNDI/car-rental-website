@@ -1,424 +1,704 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
+
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>DriveEasy – Premium Car Rentals</title>
-  <meta name="description" content="Rent premium vehicles at unbeatable daily rates. Search, book, and drive in minutes with DriveEasy Car Rentals." />
-  <script src="https://cdn.tailwindcss.com"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <style>
-    body { font-family: 'Inter', sans-serif; }
-    .hero-gradient { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f3460 100%); }
-    .card-hover { transition: transform 0.3s ease, box-shadow 0.3s ease; }
-    .card-hover:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
-    .badge-available { background: linear-gradient(90deg, #10b981, #059669); }
-    .btn-primary { background: linear-gradient(135deg, #3b82f6, #2563eb); transition: all 0.2s ease; }
-    .btn-primary:hover { background: linear-gradient(135deg, #2563eb, #1d4ed8); transform: translateY(-1px); }
-    .modal-overlay { backdrop-filter: blur(4px); }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    .animate-fade-in { animation: fadeIn 0.4s ease forwards; }
-    .skeleton { background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
-    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DriveEasy - Premium Car Rentals</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Outfit', 'sans-serif'] },
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#22c55e',
+                            600: '#16a34a',
+                            700: '#15803d',
+                            900: '#14532d',
+                        },
+                        dark: {
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1)',
+                        'float': 'float 6s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Outfit', sans-serif;
+            -webkit-font-smoothing: antialiased;
+            background-color: #fafafa;
+        }
+
+        /* Glassmorphism */
+        .glass-nav {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 20px 25px -5px rgba(0, 0, 0, 0.05);
+        }
+
+        /* Hero Gradients */
+        .hero-gradient {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-blob-1 {
+            position: absolute;
+            top: -10%;
+            right: -5%;
+            width: 500px;
+            height: 500px;
+            background: radial-gradient(circle, rgba(34, 197, 94, 0.15) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        .hero-blob-2 {
+            position: absolute;
+            bottom: -20%;
+            left: -10%;
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
+            border-radius: 50%;
+            z-index: 0;
+        }
+
+        /* Standardized Card Aesthetics */
+        .vehicle-card {
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+            position: relative;
+            top: 0;
+        }
+
+        .vehicle-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+        }
+
+        .vehicle-img-wrapper {
+            overflow: hidden;
+            position: relative;
+        }
+
+        .vehicle-img-wrapper img {
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .vehicle-card:hover .vehicle-img-wrapper img {
+            transform: scale(1.05);
+        }
+
+        .tag-pill {
+            background: #f1f5f9;
+            color: #475569;
+            font-size: 0.75rem;
+            font-weight: 600;
+            padding: 0.25rem 0.6rem;
+            border-radius: 99px;
+            letter-spacing: 0.02em;
+        }
+
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        #whatsapp-btn {
+            transition: all 0.3s ease;
+        }
+
+        #whatsapp-btn:hover {
+            transform: scale(1.02);
+        }
+    </style>
 </head>
-<body class="bg-slate-50 text-slate-800">
 
-  <!-- ===== NAVBAR ===== -->
-  <nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
-      <a href="/" class="flex items-center gap-2">
-        <span class="text-2xl">🚗</span>
-        <span class="text-xl font-800 font-bold text-blue-600">Drive<span class="text-slate-800">Easy</span></span>
-      </a>
-      <div class="flex items-center gap-4">
-        <a href="#fleet" class="text-slate-600 hover:text-blue-600 font-medium transition-colors hidden sm:block">Our Fleet</a>
-        <a href="#how-it-works" class="text-slate-600 hover:text-blue-600 font-medium transition-colors hidden sm:block">How It Works</a>
-        <a href="admin.html" class="text-sm text-slate-500 hover:text-blue-600 transition-colors">Admin</a>
-      </div>
-    </div>
-  </nav>
+<body class="text-slate-800">
 
-  <!-- ===== HERO ===== -->
-  <section class="hero-gradient pt-16 min-h-[82vh] flex items-center relative overflow-hidden">
-    <!-- Decorative blobs -->
-    <div class="absolute top-20 right-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
-    <div class="absolute bottom-10 left-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
-
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-      <div class="max-w-3xl">
-        <div class="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-400/30 text-blue-300 text-sm px-4 py-1.5 rounded-full mb-6">
-          <span class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></span>
-          Trusted by 10,000+ happy drivers
-        </div>
-        <h1 class="text-4xl sm:text-6xl font-extrabold text-white leading-tight mb-6">
-          Drive Your Dream <br/><span class="text-blue-400">Without the Price Tag</span>
-        </h1>
-        <p class="text-slate-300 text-lg sm:text-xl mb-10 max-w-xl">
-          Premium cars, flexible rental periods, and instant booking confirmation. No hidden fees, ever.
-        </p>
-        <a href="#fleet" class="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-400 text-white font-semibold px-8 py-4 rounded-xl transition-all duration-200 hover:-translate-y-0.5 shadow-lg shadow-blue-500/30 text-lg">
-          Browse Fleet
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
-        </a>
-      </div>
-
-      <!-- Stats row -->
-      <div class="mt-16 grid grid-cols-3 gap-6 max-w-lg">
-        <div class="text-center">
-          <div class="text-3xl font-extrabold text-white">200+</div>
-          <div class="text-slate-400 text-sm mt-1">Vehicles</div>
-        </div>
-        <div class="text-center border-x border-slate-600">
-          <div class="text-3xl font-extrabold text-white">50+</div>
-          <div class="text-slate-400 text-sm mt-1">Locations</div>
-        </div>
-        <div class="text-center">
-          <div class="text-3xl font-extrabold text-white">4.9★</div>
-          <div class="text-slate-400 text-sm mt-1">Rating</div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== HOW IT WORKS ===== -->
-  <section id="how-it-works" class="py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-14">
-        <h2 class="text-3xl sm:text-4xl font-bold text-slate-800 mb-4">How It Works</h2>
-        <p class="text-slate-500 max-w-xl mx-auto">Three simple steps to get behind the wheel of your dream car.</p>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <div class="text-center p-6">
-          <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">🔍</div>
-          <h3 class="text-xl font-semibold mb-2">Browse & Choose</h3>
-          <p class="text-slate-500">Explore our diverse fleet of well-maintained vehicles filtered by type and budget.</p>
-        </div>
-        <div class="text-center p-6">
-          <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">📅</div>
-          <h3 class="text-xl font-semibold mb-2">Book Instantly</h3>
-          <p class="text-slate-500">Pick your dates, enter your details, and get instant booking confirmation.</p>
-        </div>
-        <div class="text-center p-6">
-          <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">🚀</div>
-          <h3 class="text-xl font-semibold mb-2">Hit the Road</h3>
-          <p class="text-slate-500">Show your confirmation, pick up the keys, and enjoy your journey any time.</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ===== VEHICLE CATALOG ===== -->
-  <section id="fleet" class="py-20 bg-slate-50">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-14">
-        <h2 class="text-3xl sm:text-4xl font-bold text-slate-800 mb-4">Our Fleet</h2>
-        <p class="text-slate-500 max-w-xl mx-auto">Every vehicle is thoroughly inspected, cleaned, and ready for your adventure.</p>
-      </div>
-
-      <!-- Filter Tabs -->
-      <div id="filterTabs" class="flex flex-wrap justify-center gap-3 mb-10">
-        <button onclick="filterVehicles('all')" data-filter="all" class="filter-btn active-filter px-5 py-2.5 rounded-full font-medium text-sm transition-all">All</button>
-        <button onclick="filterVehicles('Sedan')" data-filter="Sedan" class="filter-btn px-5 py-2.5 rounded-full font-medium text-sm transition-all">Sedan</button>
-        <button onclick="filterVehicles('SUV')" data-filter="SUV" class="filter-btn px-5 py-2.5 rounded-full font-medium text-sm transition-all">SUV</button>
-        <button onclick="filterVehicles('Sports')" data-filter="Sports" class="filter-btn px-5 py-2.5 rounded-full font-medium text-sm transition-all">Sports</button>
-        <button onclick="filterVehicles('Electric')" data-filter="Electric" class="filter-btn px-5 py-2.5 rounded-full font-medium text-sm transition-all">Electric</button>
-        <button onclick="filterVehicles('Truck')" data-filter="Truck" class="filter-btn px-5 py-2.5 rounded-full font-medium text-sm transition-all">Truck</button>
-      </div>
-
-      <!-- Loading skeleton -->
-      <div id="loadingSkeleton" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-        <div class="bg-white rounded-2xl overflow-hidden"><div class="skeleton h-48 w-full"></div><div class="p-5 space-y-3"><div class="skeleton h-4 rounded w-3/4"></div><div class="skeleton h-4 rounded w-1/2"></div><div class="skeleton h-10 rounded-xl"></div></div></div>
-        <div class="bg-white rounded-2xl overflow-hidden"><div class="skeleton h-48 w-full"></div><div class="p-5 space-y-3"><div class="skeleton h-4 rounded w-3/4"></div><div class="skeleton h-4 rounded w-1/2"></div><div class="skeleton h-10 rounded-xl"></div></div></div>
-        <div class="bg-white rounded-2xl overflow-hidden"><div class="skeleton h-48 w-full"></div><div class="p-5 space-y-3"><div class="skeleton h-4 rounded w-3/4"></div><div class="skeleton h-4 rounded w-1/2"></div><div class="skeleton h-10 rounded-xl"></div></div></div>
-      </div>
-
-      <!-- Vehicles Grid -->
-      <div id="vehiclesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 hidden"></div>
-      <p id="noVehicles" class="text-center text-slate-500 py-16 hidden">No vehicles found in this category.</p>
-    </div>
-  </section>
-
-  <!-- ===== BOOKING MODAL ===== -->
-  <div id="bookingModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay bg-black/60">
-    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md animate-fade-in">
-      <!-- Modal Header -->
-      <div class="p-6 border-b border-slate-100">
-        <div class="flex items-center justify-between">
-          <div>
-            <h3 class="text-xl font-bold text-slate-800">Reserve Your Vehicle</h3>
-            <p id="modalVehicleName" class="text-blue-600 font-medium mt-0.5 text-sm"></p>
-          </div>
-          <button onclick="closeModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-colors text-slate-500">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-          </button>
-        </div>
-      </div>
-
-      <!-- Modal Body -->
-      <form id="bookingForm" class="p-6 space-y-4">
-        <input type="hidden" id="selectedVehicleId" />
-        <input type="hidden" id="selectedDailyRate" />
-
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1.5">Full Name</label>
-            <input type="text" id="customerName" placeholder="John Doe" required
-              class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1.5">Phone Number</label>
-            <input type="tel" id="customerPhone" placeholder="+1 555 0000" required
-              class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
-          </div>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1.5">Start Date</label>
-            <input type="date" id="startDate" required
-              class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-slate-700 mb-1.5">End Date</label>
-            <input type="date" id="endDate" required
-              class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
-          </div>
-        </div>
-
-        <!-- Price Calculation -->
-        <div id="pricePreview" class="hidden bg-blue-50 border border-blue-100 rounded-xl p-4">
-          <div class="flex justify-between items-center text-sm text-slate-600 mb-2">
-            <span id="daysLabel">0 days</span>
-            <span id="rateLabel">$0/day</span>
-          </div>
-          <div class="flex justify-between items-center font-bold text-blue-700 text-lg">
-            <span>Total Estimate</span>
-            <span id="totalPrice">$0</span>
-          </div>
-        </div>
-
-        <button type="submit" id="submitBtn"
-          class="btn-primary w-full text-white font-semibold py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-blue-500/25">
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-          Confirm Booking
-        </button>
-
-        <p id="formError" class="text-red-500 text-sm text-center hidden"></p>
-      </form>
-    </div>
-  </div>
-
-  <!-- ===== SUCCESS TOAST ===== -->
-  <div id="successToast" class="fixed bottom-6 right-6 z-50 hidden animate-fade-in">
-    <div class="bg-emerald-600 text-white rounded-2xl px-6 py-4 shadow-2xl max-w-sm flex items-start gap-3">
-      <div class="mt-0.5 shrink-0">
-        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      </div>
-      <div>
-        <p class="font-semibold">Booking Confirmed!</p>
-        <p id="toastMsg" class="text-sm text-emerald-100 mt-0.5"></p>
-      </div>
-    </div>
-  </div>
-
-  <!-- ===== FOOTER ===== -->
-  <footer class="bg-slate-900 text-slate-400 py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <div class="flex items-center justify-center gap-2 mb-4">
-        <span class="text-2xl">🚗</span>
-        <span class="text-xl font-bold text-white">Drive<span class="text-blue-400">Easy</span></span>
-      </div>
-      <p class="text-sm">© 2026 DriveEasy. All rights reserved.</p>
-      <p class="text-xs mt-2">Built on Cloudflare Pages + D1</p>
-    </div>
-  </footer>
-
-  <style>
-    .filter-btn { background: white; color: #64748b; border: 2px solid #e2e8f0; }
-    .filter-btn:hover { border-color: #3b82f6; color: #3b82f6; }
-    .active-filter { background: #3b82f6 !important; color: white !important; border-color: #3b82f6 !important; }
-  </style>
-
-  <script>
-    let allVehicles = [];
-    let activeFilter = 'all';
-
-    // ─── Fetch & render vehicles ───────────────────────────────────────────────
-    async function loadVehicles() {
-      try {
-        const res = await fetch('/api/vehicles');
-        const data = await res.json();
-        allVehicles = data.data || [];
-        document.getElementById('loadingSkeleton').classList.add('hidden');
-        renderVehicles(allVehicles);
-      } catch (err) {
-        document.getElementById('loadingSkeleton').classList.add('hidden');
-        document.getElementById('noVehicles').textContent = 'Failed to load vehicles. Please refresh.';
-        document.getElementById('noVehicles').classList.remove('hidden');
-      }
-    }
-
-    function renderVehicles(vehicles) {
-      const grid = document.getElementById('vehiclesGrid');
-      const noVehicles = document.getElementById('noVehicles');
-      const available = vehicles.filter(v => v.is_available);
-
-      if (available.length === 0) {
-        grid.classList.add('hidden');
-        noVehicles.classList.remove('hidden');
-        return;
-      }
-
-      noVehicles.classList.add('hidden');
-      grid.innerHTML = available.map(v => `
-        <article class="bg-white rounded-2xl overflow-hidden card-hover border border-slate-100 shadow-sm animate-fade-in">
-          <div class="relative overflow-hidden h-48 bg-slate-100">
-            <img src="${v.image_url || 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&q=80'}"
-              alt="${v.name}"
-              class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
-              onerror="this.src='https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&q=80'" />
-            <span class="absolute top-3 left-3 badge-available text-white text-xs font-semibold px-3 py-1 rounded-full">
-              Available
-            </span>
-            <span class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-slate-600 text-xs font-medium px-3 py-1 rounded-full">
-              ${v.type}
-            </span>
-          </div>
-          <div class="p-5">
-            <h3 class="text-lg font-bold text-slate-800 mb-1">${v.name}</h3>
-            <div class="flex items-center justify-between mb-4">
-              <div class="flex items-baseline gap-1">
-                <span class="text-2xl font-extrabold text-blue-600">$${v.daily_rate}</span>
-                <span class="text-slate-400 text-sm">/day</span>
-              </div>
-              <div class="flex items-center gap-1 text-amber-500 text-sm">
-                ★★★★★ <span class="text-slate-400 ml-1">(4.9)</span>
-              </div>
+    <!-- Navigation -->
+    <nav class="glass-nav fixed w-full z-50 top-0 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center gap-2 group cursor-pointer">
+                    <div
+                        class="w-10 h-10 rounded-xl bg-brand-500 text-white flex items-center justify-center text-xl shadow-lg shadow-brand-500/30 group-hover:bg-brand-600 transition-colors">
+                        <i class="fa-solid fa-car-side"></i>
+                    </div>
+                    <span
+                        class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-dark-900 to-dark-800 tracking-tight">DriveEasy</span>
+                </div>
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="#fleet" class="text-slate-600 hover:text-brand-600 font-medium transition-colors">Our
+                        Fleet</a>
+                    <a href="#how-it-works"
+                        class="text-slate-600 hover:text-brand-600 font-medium transition-colors">How it Works</a>
+                    <a href="admin.html"
+                        class="text-slate-400 hover:text-slate-600 text-sm font-medium transition-colors"><i
+                            class="fa-solid fa-lock text-xs mr-1"></i> Admin</a>
+                </div>
+                <div class="md:hidden flex items-center">
+                    <button class="text-slate-600 hover:text-brand-600"><i
+                            class="fa-solid fa-bars text-2xl"></i></button>
+                </div>
             </div>
-            <button
-              onclick="openModal(${v.id}, '${v.name}', ${v.daily_rate})"
-              class="btn-primary w-full text-white font-semibold py-3 rounded-xl shadow-md shadow-blue-500/20">
-              Book Now
-            </button>
-          </div>
-        </article>
-      `).join('');
-      grid.classList.remove('hidden');
-    }
+        </div>
+    </nav>
 
-    function filterVehicles(type) {
-      activeFilter = type;
-      document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.classList.toggle('active-filter', btn.dataset.filter === type);
-      });
-      const filtered = type === 'all' ? allVehicles : allVehicles.filter(v => v.type === type);
-      renderVehicles(filtered);
-    }
+    <!-- Hero Section -->
+    <div class="hero-gradient relative pt-32 pb-20 sm:pt-40 sm:pb-24 lg:pb-32 min-h-[90vh] flex items-center">
+        <div class="hero-blob-1"></div>
+        <div class="hero-blob-2"></div>
 
-    // ─── Modal ─────────────────────────────────────────────────────────────────
-    function openModal(vehicleId, vehicleName, dailyRate) {
-      document.getElementById('selectedVehicleId').value = vehicleId;
-      document.getElementById('selectedDailyRate').value = dailyRate;
-      document.getElementById('modalVehicleName').textContent = vehicleName + ' · $' + dailyRate + '/day';
-      document.getElementById('pricePreview').classList.add('hidden');
-      document.getElementById('formError').classList.add('hidden');
-      document.getElementById('bookingForm').reset();
-      document.getElementById('selectedVehicleId').value = vehicleId;
-      document.getElementById('selectedDailyRate').value = dailyRate;
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 relative z-10 w-full">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
+                <div class="max-w-2xl animate-fade-in-up">
+                    <div
+                        class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white shadow-sm border border-slate-200 text-brand-600 text-sm font-semibold mb-6">
+                        <span class="w-2 h-2 rounded-full bg-brand-500 animate-pulse"></span>
+                        Premium Fleet Available Now
+                    </div>
+                    <h1 class="text-5xl sm:text-6xl font-extrabold text-dark-900 tracking-tight leading-[1.1] mb-6">
+                        Experience The Road <span
+                            class="text-transparent bg-clip-text bg-gradient-to-r from-brand-600 to-emerald-400">Like
+                            Never Before</span>
+                    </h1>
+                    <p class="text-lg sm:text-xl text-slate-600 mb-8 leading-relaxed max-w-lg">
+                        Choose from our exclusive collection of premium vehicles. Instant booking via WhatsApp with
+                        white-glove delivery to your doorstep.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-4">
+                        <a href="#fleet"
+                            class="inline-flex justify-center items-center px-8 py-4 text-base font-semibold rounded-xl text-white bg-dark-900 hover:bg-dark-800 shadow-xl shadow-dark-900/20 transition-all">
+                            Explore Vehicles <i class="fa-solid fa-arrow-right ml-2"></i>
+                        </a>
+                        <a href="#how-it-works"
+                            class="inline-flex justify-center items-center px-8 py-4 text-base font-semibold rounded-xl text-dark-900 bg-white border border-slate-200 hover:border-slate-300 hover:bg-slate-50 transition-all">
+                            How it works
+                        </a>
+                    </div>
+                </div>
+                <div class="relative lg:h-[600px] flex items-center justify-center animate-fade-in-up"
+                    style="animation-delay: 0.2s;">
+                    <!-- Placeholder for a high quality hero image -->
+                    <img src="https://images.unsplash.com/photo-1503376712341-a1e48f7d9830?q=80&w=1400&auto=format&fit=crop"
+                        alt="Premium Car Image"
+                        class="rounded-2xl shadow-2xl object-cover h-[400px] lg:h-full w-full animate-float">
 
-      // Set min dates
-      const today = new Date().toISOString().split('T')[0];
-      document.getElementById('startDate').min = today;
-      document.getElementById('endDate').min = today;
+                    <!-- Floating stats card -->
+                    <div class="absolute -bottom-6 -left-6 glass-card p-5 rounded-xl flex items-center gap-4">
+                        <div
+                            class="w-12 h-12 rounded-full bg-brand-100 text-brand-600 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
+                        <div>
+                            <div class="text-2xl font-bold text-dark-900">100%</div>
+                            <div class="text-sm text-slate-500 font-medium">Fully Insured Fleet</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
-      document.getElementById('bookingModal').classList.remove('hidden');
-      document.body.style.overflow = 'hidden';
-    }
+    <!-- Filters Section -->
+    <div id="fleet" class="pt-24 pb-8 bg-white">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
+                <div>
+                    <h2 class="text-3xl sm:text-4xl font-bold text-dark-900 mb-4 tracking-tight">Our Premium Fleet</h2>
+                    <p class="text-slate-600 max-w-2xl text-lg">Select a vehicle category to find your perfect match.
+                    </p>
+                </div>
 
-    function closeModal() {
-      document.getElementById('bookingModal').classList.add('hidden');
-      document.body.style.overflow = '';
-    }
+                <div class="flex overflow-x-auto pb-2 -mx-6 px-6 md:mx-0 md:px-0 md:pb-0 gap-2 no-scrollbar"
+                    id="filter-container">
+                    <button
+                        class="filter-btn active px-6 py-2.5 rounded-full border border-slate-200 text-sm font-semibold transition-all whitespace-nowrap bg-dark-900 text-white shadow-md"
+                        data-filter="all">All Vehicles</button>
+                    <button
+                        class="filter-btn px-6 py-2.5 rounded-full border border-slate-200 text-slate-600 text-sm font-semibold hover:border-slate-300 hover:bg-slate-50 transition-all whitespace-nowrap"
+                        data-filter="Sedan">Sedan</button>
+                    <button
+                        class="filter-btn px-6 py-2.5 rounded-full border border-slate-200 text-slate-600 text-sm font-semibold hover:border-slate-300 hover:bg-slate-50 transition-all whitespace-nowrap"
+                        data-filter="SUV">SUV</button>
+                    <button
+                        class="filter-btn px-6 py-2.5 rounded-full border border-slate-200 text-slate-600 text-sm font-semibold hover:border-slate-300 hover:bg-slate-50 transition-all whitespace-nowrap"
+                        data-filter="Sports">Sports</button>
+                    <button
+                        class="filter-btn px-6 py-2.5 rounded-full border border-slate-200 text-slate-600 text-sm font-semibold hover:border-slate-300 hover:bg-slate-50 transition-all whitespace-nowrap"
+                        data-filter="Electric">Electric</button>
+                </div>
+            </div>
 
-    // Close modal clicking outside
-    document.getElementById('bookingModal').addEventListener('click', (e) => {
-      if (e.target === document.getElementById('bookingModal')) closeModal();
-    });
+            <!-- Vehicles Grid -->
+            <div id="loading" class="flex flex-col items-center justify-center py-20 text-slate-400">
+                <i class="fa-solid fa-circle-notch fa-spin text-4xl mb-4 text-brand-500"></i>
+                <p class="text-lg font-medium">Curating our fleet...</p>
+            </div>
 
-    // ─── Price Calculation ─────────────────────────────────────────────────────
-    function calcPrice() {
-      const start = document.getElementById('startDate').value;
-      const end = document.getElementById('endDate').value;
-      const rate = parseInt(document.getElementById('selectedDailyRate').value);
+            <div id="vehicles-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 hidden">
+                <!-- Populated by JS -->
+            </div>
 
-      if (start && end && rate) {
-        const days = Math.ceil((new Date(end) - new Date(start)) / 86400000);
-        if (days > 0) {
-          document.getElementById('daysLabel').textContent = days + ' day' + (days !== 1 ? 's' : '');
-          document.getElementById('rateLabel').textContent = '$' + rate + '/day';
-          document.getElementById('totalPrice').textContent = '$' + (days * rate).toLocaleString();
-          document.getElementById('pricePreview').classList.remove('hidden');
-        } else {
-          document.getElementById('pricePreview').classList.add('hidden');
-        }
-      }
-    }
+            <div id="no-results" class="hidden text-center py-20">
+                <div
+                    class="inline-flex w-16 h-16 rounded-full bg-slate-100 text-slate-400 items-center justify-center text-2xl mb-4">
+                    <i class="fa-solid fa-car-on"></i></div>
+                <h3 class="text-xl font-semibold text-slate-800 mb-2">No vehicles found</h3>
+                <p class="text-slate-500">Try selecting a different category.</p>
+            </div>
+        </div>
+    </div>
 
-    document.getElementById('startDate').addEventListener('change', () => {
-      const start = document.getElementById('startDate').value;
-      document.getElementById('endDate').min = start;
-      calcPrice();
-    });
-    document.getElementById('endDate').addEventListener('change', calcPrice);
+    <!-- Booking Modal (WhatsApp Integration) -->
+    <div id="booking-modal"
+        class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-[100] hidden items-center justify-center opacity-0 transition-opacity duration-300 p-4">
+        <div class="glass-card w-full max-w-4xl rounded-2xl overflow-hidden flex flex-col md:flex-row transform scale-95 transition-transform duration-300"
+            id="modal-content">
 
-    // ─── Form Submission ───────────────────────────────────────────────────────
-    document.getElementById('bookingForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const btn = document.getElementById('submitBtn');
-      const errEl = document.getElementById('formError');
-      errEl.classList.add('hidden');
-      btn.disabled = true;
-      btn.innerHTML = '<svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg> Processing…';
+            <!-- Left: Car Details & Summary -->
+            <div class="w-full md:w-5/12 bg-slate-50 p-8 border-r border-slate-200">
+                <div class="flex justify-between items-start md:hidden mb-6">
+                    <h3 class="text-xl font-bold">Booking Details</h3>
+                    <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600 text-xl"><i
+                            class="fa-solid fa-xmark"></i></button>
+                </div>
 
-      const payload = {
-        vehicle_id: parseInt(document.getElementById('selectedVehicleId').value),
-        customer_name: document.getElementById('customerName').value,
-        customer_phone: document.getElementById('customerPhone').value,
-        start_date: document.getElementById('startDate').value,
-        end_date: document.getElementById('endDate').value,
-      };
+                <div class="rounded-xl overflow-hidden mb-6 shadow-sm border border-slate-200">
+                    <img id="modal-car-img" src="" alt="Car" class="w-full h-48 object-cover">
+                </div>
 
-      try {
-        const res = await fetch('/api/bookings', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
+                <h3 id="modal-car-name" class="text-2xl font-bold text-dark-900 mb-1">Vehicle Name</h3>
+                <div class="flex items-center gap-2 mb-4">
+                    <span id="modal-car-type"
+                        class="text-sm font-medium text-brand-600 bg-brand-50 px-2 py-0.5 rounded">Category</span>
+                    <span id="modal-car-plate"
+                        class="text-sm text-slate-500 font-mono bg-slate-100 px-2 py-0.5 rounded">PLATE</span>
+                </div>
+
+                <p id="modal-car-desc" class="text-slate-600 text-sm mb-6 leading-relaxed">Description goes here</p>
+
+                <div class="bg-white p-4 rounded-xl border border-slate-200 shadow-sm mb-6">
+                    <div class="flex justify-between items-center mb-2">
+                        <span class="text-slate-500 text-sm">Daily Rate</span>
+                        <span class="font-bold text-dark-900 text-lg">$<span id="modal-daily-rate">0</span></span>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap gap-2" id="modal-car-features">
+                    <!-- Badges go here -->
+                </div>
+            </div>
+
+            <!-- Right: Booking Form targeting WhatsApp -->
+            <div class="w-full md:w-7/12 p-8 bg-white relative">
+                <button onclick="closeModal()"
+                    class="hidden md:block absolute top-6 right-6 text-slate-400 hover:text-slate-600 text-xl transition-colors"><i
+                        class="fa-solid fa-xmark"></i></button>
+
+                <div class="mb-8">
+                    <h2 class="text-2xl font-bold text-dark-900 mb-2">Complete Your Booking</h2>
+                    <p class="text-slate-500 text-sm">Enter your details to generate a direct WhatsApp booking request.
+                    </p>
+                </div>
+
+                <form id="booking-form" class="space-y-5">
+                    <input type="hidden" id="vehicle-id">
+
+                    <div>
+                        <label class="block text-sm font-semibold text-slate-700 mb-1.5">Full Name</label>
+                        <input type="text" id="customer-name" required
+                            class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all placeholder:text-slate-400"
+                            placeholder="John Doe">
+                    </div>
+
+                    <div class="grid grid-cols-2 gap-5">
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Pick-up Date</label>
+                            <input type="date" id="start-date" required
+                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all text-slate-700">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-semibold text-slate-700 mb-1.5">Drop-off Date</label>
+                            <input type="date" id="end-date" required
+                                class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 outline-none transition-all text-slate-700">
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Price Calculation -->
+                    <div class="mt-8 p-5 bg-slate-50 rounded-xl border border-slate-200">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-slate-600 font-medium">Rental Duration</span>
+                            <span class="text-dark-900 font-semibold"><span id="calc-days">0</span> Days</span>
+                        </div>
+                        <div class="w-full h-px bg-slate-200 my-3"></div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-slate-800 font-bold text-lg">Estimated Total</span>
+                            <span class="text-brand-600 font-bold text-2xl">$<span id="calc-total">0</span></span>
+                        </div>
+                    </div>
+
+                    <p id="date-error" class="hidden text-red-500 text-sm text-center font-medium mt-2"><i
+                            class="fa-solid fa-circle-exclamation mr-1"></i> Ensure drop-off is after pick-up date.</p>
+
+                    <button type="submit" id="whatsapp-btn" disabled
+                        class="w-full flex items-center justify-center gap-3 bg-[#25D366] text-white font-bold py-4 rounded-xl shadow-lg shadow-[#25D366]/30 disabled:opacity-50 disabled:cursor-not-allowed mt-6">
+                        <i class="fa-brands fa-whatsapp text-2xl"></i>
+                        <span>Book via WhatsApp</span>
+                    </button>
+                    <p class="text-center text-xs text-slate-400 mt-4">You will be redirected to WhatsApp to confirm
+                        your booking.</p>
+                </form>
+            </div>
+
+        </div>
+    </div>
+
+    <script>
+        let allVehicles = [];
+        let currentVehicleRate = 0;
+
+        // WhatsApp Business Number (Replace with actual number, including country code, e.g., 1234567890)
+        // Note: Can be altered by Admin later or hardcoded
+        const WHATSAPP_NUMBER = "1234567890";
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchVehicles();
+
+            // Set min date bounds to today
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('start-date').min = today;
+            document.getElementById('end-date').min = today;
+
+            // Trigger price calculation on date change
+            document.getElementById('start-date').addEventListener('change', calculatePrice);
+            document.getElementById('end-date').addEventListener('change', calculatePrice);
         });
-        const data = await res.json();
 
-        if (data.success) {
-          closeModal();
-          const toast = document.getElementById('successToast');
-          document.getElementById('toastMsg').textContent =
-            `${data.days} day(s) · Total: $${data.total_price}. Booking ID: #${data.booking_id}`;
-          toast.classList.remove('hidden');
-          setTimeout(() => toast.classList.add('hidden'), 6000);
-        } else {
-          errEl.textContent = data.error || 'Booking failed. Please try again.';
-          errEl.classList.remove('hidden');
+        // ---------------- API & Rendering ----------------
+        async function fetchVehicles() {
+            try {
+                const res = await fetch('/api/vehicles');
+                const data = await res.json();
+
+                document.getElementById('loading').classList.add('hidden');
+
+                if (data.success) {
+                    allVehicles = data.data;
+                    renderVehicles(allVehicles);
+                }
+            } catch (err) {
+                console.error("Error fetching vehicles:", err);
+            }
         }
-      } catch {
-        errEl.textContent = 'Network error. Please try again.';
-        errEl.classList.remove('hidden');
-      } finally {
-        btn.disabled = false;
-        btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Confirm Booking';
-      }
-    });
 
-    // ─── Init ──────────────────────────────────────────────────────────────────
-    loadVehicles();
-  </script>
+        function renderVehicles(vehicles) {
+            const grid = document.getElementById('vehicles-grid');
+            const noResults = document.getElementById('no-results');
+
+            grid.innerHTML = '';
+
+            if (vehicles.length === 0) {
+                grid.classList.add('hidden');
+                noResults.classList.remove('hidden');
+                return;
+            }
+
+            grid.classList.remove('hidden');
+            noResults.classList.add('hidden');
+
+            vehicles.forEach((v, index) => {
+                // Determine availability UI
+                const isAvail = v.is_available === 1 || v.is_available === true;
+                const overlay = isAvail ? '' : `<div class="absolute inset-0 bg-slate-900/60 backdrop-blur-[2px] z-10 flex items-center justify-center"><span class="bg-white text-dark-900 font-bold px-4 py-2 rounded-lg text-sm shadow-xl tracking-wide uppercase">Currently Rented</span></div>`;
+
+                // Parse Features
+                let featuresHtml = '';
+                try {
+                    const feats = JSON.parse(v.features || '[]');
+                    if (Array.isArray(feats)) {
+                        featuresHtml = feats.slice(0, 3).map(f => `<span class="tag-pill"><i class="fa-solid fa-check text-brand-500 mr-1 opacity-70"></i>${f}</span>`).join('');
+                        if (feats.length > 3) featuresHtml += `<span class="tag-pill opacity-70">+${feats.length - 3} more</span>`;
+                    }
+                } catch (e) { }
+
+                // Build Card
+                const card = document.createElement('div');
+                card.className = 'vehicle-card bg-white rounded-2xl overflow-hidden border border-slate-200 flex flex-col h-full opacity-0 animate-[fadeInUp_0.6s_forwards]';
+                card.style.animationDelay = `${index * 0.1}s`;
+
+                card.innerHTML = `
+                    <div class="h-56 vehicle-img-wrapper">
+                        ${overlay}
+                        <img src="${v.image_url}" alt="${v.name}" class="w-full h-full object-cover">
+                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-lg text-sm font-bold shadow-sm border border-white/50 z-0">
+                            <span class="text-brand-600">$${v.daily_rate}</span><span class="text-slate-500 font-medium text-xs">/day</span>
+                        </div>
+                    </div>
+                    <div class="p-6 flex-1 flex flex-col">
+                        <div class="flex justify-between items-start mb-2">
+                            <h3 class="text-xl font-bold text-dark-900 tracking-tight">${v.name}</h3>
+                            <span class="text-xs font-semibold text-brand-600 bg-brand-50 px-2 py-1 rounded bg-opacity-80">${v.type}</span>
+                        </div>
+                        <p class="text-slate-500 text-sm mb-4 line-clamp-2">${v.description || 'Premium vehicle perfect for your next journey.'}</p>
+                        
+                        <div class="flex flex-wrap gap-2 mb-6 mt-auto">
+                            ${featuresHtml}
+                        </div>
+                        
+                        <button onclick='openBookingModal(${JSON.stringify(v).replace(/'/g, "&#39;")})' 
+                                class="w-full py-3.5 rounded-xl font-semibold transition-all shadow-sm flex items-center justify-center gap-2
+                                ${isAvail ? 'bg-dark-900 text-white hover:bg-dark-800 hover:shadow-lg hover:-translate-y-0.5' : 'bg-slate-100 text-slate-400 cursor-not-allowed'}" 
+                                ${!isAvail ? 'disabled' : ''}>
+                            ${isAvail ? 'Book Now <i class="fa-brands fa-whatsapp ml-1"></i>' : 'Unavailable'}
+                        </button>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+        }
+
+        // ---------------- Filtering ----------------
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                // UI update
+                document.querySelectorAll('.filter-btn').forEach(b => {
+                    b.classList.remove('bg-dark-900', 'text-white', 'shadow-md');
+                    b.classList.add('text-slate-600', 'bg-transparent');
+                });
+                e.target.classList.remove('text-slate-600', 'bg-transparent');
+                e.target.classList.add('bg-dark-900', 'text-white', 'shadow-md');
+
+                // Filter logic
+                const filterType = e.target.getAttribute('data-filter');
+                if (filterType === 'all') {
+                    renderVehicles(allVehicles);
+                } else {
+                    const filtered = allVehicles.filter(v => v.type === filterType);
+                    renderVehicles(filtered);
+                }
+            });
+        });
+
+        // ---------------- Modal & WhatsApp Logic ----------------
+        let currentVehicle = null;
+
+        function openBookingModal(vehicle) {
+            currentVehicle = vehicle;
+            currentVehicleRate = vehicle.daily_rate;
+
+            // Populate Left Side Details
+            document.getElementById('modal-car-name').textContent = vehicle.name;
+            document.getElementById('modal-car-type').textContent = vehicle.type;
+            document.getElementById('modal-car-plate').textContent = vehicle.plate_number || 'N/A';
+            document.getElementById('modal-car-desc').textContent = vehicle.description || 'A premium vehicle ready for your journey.';
+            document.getElementById('modal-daily-rate').textContent = vehicle.daily_rate;
+            document.getElementById('modal-car-img').src = vehicle.image_url;
+
+            // Parse and render features as cute badges
+            const featuresContainer = document.getElementById('modal-car-features');
+            featuresContainer.innerHTML = '';
+            try {
+                const feats = JSON.parse(vehicle.features || '[]');
+                if (Array.isArray(feats)) {
+                    feats.forEach(f => {
+                        featuresContainer.innerHTML += `<span class="bg-slate-100 text-slate-600 text-xs font-semibold px-2.5 py-1 rounded-md border border-slate-200">${f}</span>`;
+                    });
+                }
+            } catch (e) { }
+
+            // Reset Right Side Form
+            document.getElementById('booking-form').reset();
+            document.getElementById('calc-days').textContent = '0';
+            document.getElementById('calc-total').textContent = '0';
+            document.getElementById('date-error').classList.add('hidden');
+            document.getElementById('whatsapp-btn').disabled = true;
+
+            // Show Modal
+            const modal = document.getElementById('booking-modal');
+            const content = document.getElementById('modal-content');
+            modal.classList.remove('hidden');
+            // Slight delay to allow display:flex to apply before transition
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeModal() {
+            const modal = document.getElementById('booking-modal');
+            const content = document.getElementById('modal-content');
+
+            modal.classList.add('opacity-0');
+            content.classList.add('scale-95');
+
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function calculatePrice() {
+            const startStr = document.getElementById('start-date').value;
+            const endStr = document.getElementById('end-date').value;
+            const btn = document.getElementById('whatsapp-btn');
+            const err = document.getElementById('date-error');
+
+            if (!startStr || !endStr) {
+                btn.disabled = true;
+                return;
+            }
+
+            const start = new Date(startStr);
+            const end = new Date(endStr);
+
+            // Calculate difference in days + 1 (inclusive billing)
+            const diffTime = end - start;
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
+
+            if (diffDays <= 0) {
+                err.classList.remove('hidden');
+                document.getElementById('calc-days').textContent = '0';
+                document.getElementById('calc-total').textContent = '0';
+                btn.disabled = true;
+            } else {
+                err.classList.add('hidden');
+                document.getElementById('calc-days').textContent = diffDays;
+
+                const total = diffDays * currentVehicleRate;
+                document.getElementById('calc-total').textContent = total.toLocaleString();
+
+                // Enable WhatsApp button if Name is also filled (handled by HTML required attr + form submission)
+                btn.disabled = false;
+            }
+        }
+
+        // Handle WhatsApp API Redirect & Database Save
+        document.getElementById('booking-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const btn = document.getElementById('whatsapp-btn');
+            btn.innerHTML = '<i class="fa-solid fa-circle-notch fa-spin"></i> Processing...';
+            btn.disabled = true;
+
+            const name = document.getElementById('customer-name').value;
+            const startDate = document.getElementById('start-date').value;
+            const endDate = document.getElementById('end-date').value;
+            const days = document.getElementById('calc-days').textContent;
+            const total = document.getElementById('calc-total').textContent;
+
+            const payload = {
+                vehicle_id: currentVehicle.id,
+                customer_name: name,
+                customer_phone: "WhatsApp Intent", // Phone will be handled natively by WA
+                start_date: startDate,
+                end_date: endDate,
+                total_price: parseInt(total.replace(/,/g, ''))
+            };
+
+            try {
+                // 1. Save to Database (Create Pending Booking)
+                const res = await fetch('/api/bookings', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                if (!res.ok) {
+                    const errStr = await res.json();
+                    alert(errStr.error || "Failed to process booking internally.");
+                    btn.innerHTML = '<i class="fa-brands fa-whatsapp text-2xl"></i><span>Book via WhatsApp</span>';
+                    btn.disabled = false;
+                    return;
+                }
+
+                // 2. Generate WhatsApp Pre-filled Message
+                const message =
+                    `Hello DriveEasy! 🚗💨
+
+I would like to request a booking:
+*Vehicle:* ${currentVehicle.name} (${currentVehicle.plate_number})
+*Name:* ${name}
+*Dates:* ${startDate} to ${endDate} (${days} days)
+*Estimated Total:* $${total}
+
+Please confirm availability and the next steps!`;
+
+                // URL Encode the message
+                const encodedMessage = encodeURIComponent(message);
+
+                // Construct WA URL
+                const waUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+
+                // 3. Close Modal & Redirect to WhatsApp
+                closeModal();
+
+                // Reset styling for next open
+                setTimeout(() => {
+                    btn.innerHTML = '<i class="fa-brands fa-whatsapp text-2xl"></i><span>Book via WhatsApp</span>';
+                    btn.disabled = false;
+                }, 1000);
+
+                // Open WhatsApp in new tab
+                window.open(waUrl, '_blank');
+
+            } catch (error) {
+                console.error("Booking error:", error);
+                alert("An error occurred. Please try again.");
+                btn.innerHTML = '<i class="fa-brands fa-whatsapp text-2xl"></i><span>Book via WhatsApp</span>';
+                btn.disabled = false;
+            }
+        });
+    </script>
 </body>
+
 </html>

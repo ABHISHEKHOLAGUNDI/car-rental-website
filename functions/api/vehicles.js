@@ -45,7 +45,7 @@ export async function onRequestPost(context) {
     }
 
     try {
-        const { name, type, daily_rate, image_url } = await context.request.json();
+        const { name, type, daily_rate, image_url, plate_number, description, features } = await context.request.json();
 
         if (!name || !type || !daily_rate) {
             return new Response(
@@ -55,9 +55,9 @@ export async function onRequestPost(context) {
         }
 
         const result = await context.env.DB.prepare(
-            "INSERT INTO vehicles (name, type, daily_rate, image_url, is_available) VALUES (?, ?, ?, ?, 1)"
+            "INSERT INTO vehicles (name, type, daily_rate, image_url, plate_number, description, features, is_available) VALUES (?, ?, ?, ?, ?, ?, ?, 1)"
         )
-            .bind(name, type, parseInt(daily_rate), image_url || "")
+            .bind(name, type, parseInt(daily_rate), image_url || "", plate_number || "", description || "", features || "[]")
             .run();
 
         return new Response(
@@ -86,13 +86,23 @@ export async function onRequestPut(context) {
     }
 
     try {
-        const { id, is_available } = await context.request.json();
+        const { id, name, type, daily_rate, image_url, plate_number, description, features, is_available } = await context.request.json();
 
-        await context.env.DB.prepare(
-            "UPDATE vehicles SET is_available = ? WHERE id = ?"
-        )
-            .bind(is_available ? 1 : 0, id)
-            .run();
+        if (name !== undefined) {
+            // Full update
+            await context.env.DB.prepare(
+                `UPDATE vehicles SET name = ?, type = ?, daily_rate = ?, image_url = ?, plate_number = ?, description = ?, features = ?, is_available = ? WHERE id = ?`
+            )
+                .bind(name, type, parseInt(daily_rate), image_url || "", plate_number || "", description || "", features || "[]", is_available ? 1 : 0, id)
+                .run();
+        } else {
+            // Partial update just for availability
+            await context.env.DB.prepare(
+                "UPDATE vehicles SET is_available = ? WHERE id = ?"
+            )
+                .bind(is_available ? 1 : 0, id)
+                .run();
+        }
 
         return new Response(
             JSON.stringify({ success: true, message: "Vehicle updated" }),
