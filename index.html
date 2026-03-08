@@ -624,10 +624,18 @@
                 const total = diffDays * currentVehicleRate;
                 document.getElementById('calc-total').textContent = total.toLocaleString();
 
-                // Enable WhatsApp button if Name is also filled (handled by HTML required attr + form submission)
-                btn.disabled = false;
+                // Enable WhatsApp button only if Name is also filled
+                const nameStr = document.getElementById('customer-name').value.trim();
+                if (nameStr.length > 0) {
+                    btn.disabled = false;
+                } else {
+                    btn.disabled = true;
+                }
             }
         }
+
+        // Add event listener to the name field to trigger validation as user types
+        document.getElementById('customer-name').addEventListener('input', calculatePrice);
 
         // Handle WhatsApp API Redirect & Database Save
         document.getElementById('booking-form').addEventListener('submit', async (e) => {
