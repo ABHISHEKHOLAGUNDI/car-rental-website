@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>DriveEasy – Premium Car Rentals</title>
+  <meta name="description" content="Rent premium vehicles at unbeatable daily rates. Search, book, and drive in minutes with DriveEasy Car Rentals." />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    .hero-gradient { background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #0f3460 100%); }
+    .card-hover { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+    .card-hover:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(0,0,0,0.15); }
+    .badge-available { background: linear-gradient(90deg, #10b981, #059669); }
+    .btn-primary { background: linear-gradient(135deg, #3b82f6, #2563eb); transition: all 0.2s ease; }
+    .btn-primary:hover { background: linear-gradient(135deg, #2563eb, #1d4ed8); transform: translateY(-1px); }
+    .modal-overlay { backdrop-filter: blur(4px); }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    .animate-fade-in { animation: fadeIn 0.4s ease forwards; }
+    .skeleton { background: linear-gradient(90deg, #e2e8f0 25%, #f1f5f9 50%, #e2e8f0 75%); background-size: 200% 100%; animation: shimmer 1.5s infinite; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800">
+
+  <!-- ===== NAVBAR ===== -->
+  <nav class="fixed top-0 w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-200 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between h-16">
+      <a href="/" class="flex items-center gap-2">
+        <span class="text-2xl">🚗</span>
+        <span class="text-xl font-800 font-bold text-blue-600">Drive<span class="text-slate-800">Easy</span></span>
+      </a>
+      <div class="flex items-center gap-4">
+        <a href="#fleet" class="text-slate-600 hover:text-blue-600 font-medium transition-colors hidden sm:block">Our Fleet</a>
+        <a href="#how-it-works" class="text-slate-600 hover:text-blue-600 font-medium transition-colors hidden sm:block">How It Works</a>
+        <a href="admin.html" class="text-sm text-slate-500 hover:text-blue-600 transition-colors">Admin</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero-gradient pt-16 min-h-[82vh] flex items-center relative overflow-hidden">
+    <!-- Decorative blobs -->
+    <div class="absolute top-20 right-10 w-72 h-72 bg-blue-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute bottom-10 left-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+      <div class="max-w-3xl">
+        <div class="inline-flex items-center gap-2 bg-blue-500/20 border border-blue-400/30 text-blue-300 text-sm px-4 py-1.5 rounded-full mb-6">
+          <span class="w-2 h-2 bg-blue-400 rounded-full animate-pulse"></span>
+          Trusted by 10,000+ happy drivers
+        </div>
+        <h1 class="text-4xl sm:text-6xl font-extrabold text-white leading-tight mb-6">
+          Drive Your Dream <br/><span class="text-blue-400">Without the Price Tag</span>
+        </h1>
+        <p class="text-slate-300 text-lg sm:text-xl mb-10 max-w-xl">
+          Premium cars, flexible rental periods, and instant booking confirmation. No hidden fees, ever.
+        </p>
+        <a href="#fleet" class="inline-flex items-center gap-2 bg-blue-500 hover:bg-blue-400 text-white font-semibold px-8 py-4 rounded-xl transition-all duration-200 hover:-translate-y-0.5 shadow-lg shadow-blue-500/30 text-lg">
+          Browse Fleet
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </a>
+      </div>
+
+      <!-- Stats row -->
+      <div class="mt-16 grid grid-cols-3 gap-6 max-w-lg">
+        <div class="text-center">
+          <div class="text-3xl font-extrabold text-white">200+</div>
+          <div class="text-slate-400 text-sm mt-1">Vehicles</div>
+        </div>
+        <div class="text-center border-x border-slate-600">
+          <div class="text-3xl font-extrabold text-white">50+</div>
+          <div class="text-slate-400 text-sm mt-1">Locations</div>
+        </div>
+        <div class="text-center">
+          <div class="text-3xl font-extrabold text-white">4.9★</div>
+          <div class="text-slate-400 text-sm mt-1">Rating</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== HOW IT WORKS ===== -->
+  <section id="how-it-works" class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <h2 class="text-3xl sm:text-4xl font-bold text-slate-800 mb-4">How It Works</h2>
+        <p class="text-slate-500 max-w-xl mx-auto">Three simple steps to get behind the wheel of your dream car.</p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="text-center p-6">
+          <div class="w-16 h-16 bg-blue-100 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">🔍</div>
+          <h3 class="text-xl font-semibold mb-2">Browse & Choose</h3>
+          <p class="text-slate-500">Explore our diverse fleet of well-maintained vehicles filtered by type and budget.</p>
+        </div>
+        <div class="text-center p-6">
+          <div class="w-16 h-16 bg-green-100 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">📅</div>
+          <h3 class="text-xl font-semibold mb-2">Book Instantly</h3>
+          <p class="text-slate-500">Pick your dates, enter your details, and get instant booking confirmation.</p>
+        </div>
+        <div class="text-center p-6">
+          <div class="w-16 h-16 bg-purple-100 rounded-2xl flex items-center justify-center mx-auto mb-4 text-3xl">🚀</div>
+          <h3 class="text-xl font-semibold mb-2">Hit the Road</h3>
+          <p class="text-slate-500">Show your confirmation, pick up the keys, and enjoy your journey any time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== VEHICLE CATALOG ===== -->
+  <section id="fleet" class="py-20 bg-slate-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-14">
+        <h2 class="text-3xl sm:text-4xl font-bold text-slate-800 mb-4">Our Fleet</h2>
+        <p class="text-slate-500 max-w-xl mx-auto">Every vehicle is thoroughly inspected, cleaned, and ready for your adventure.</p>
+      </div>
+
+      <!-- Filter Tabs -->
+      <div id="filterTabs" class="flex flex-wrap justify-center gap-3 mb-10">
+        <button onclick="filterVehicles('all')" data-filter="all" class="filter-btn active-filter px-5 py-2.5 rounded-full font-medium text-sm transition-all">All</button>
+        <button onclick="filterVehicles('Sedan')" data-filter="Sedan" class="filter-btn px-5 py-2.5 rounded-full font-medium text-sm transition-all">Sedan</button>
+        <button onclick="filterVehicles('SUV')" data-filter="SUV" class="filter-btn px-5 py-2.5 rounded-full font-medium text-sm transition-all">SUV</button>
+        <button onclick="filterVehicles('Sports')" data-filter="Sports" class="filter-btn px-5 py-2.5 rounded-full font-medium text-sm transition-all">Sports</button>
+        <button onclick="filterVehicles('Electric')" data-filter="Electric" class="filter-btn px-5 py-2.5 rounded-full font-medium text-sm transition-all">Electric</button>
+        <button onclick="filterVehicles('Truck')" data-filter="Truck" class="filter-btn px-5 py-2.5 rounded-full font-medium text-sm transition-all">Truck</button>
+      </div>
+
+      <!-- Loading skeleton -->
+      <div id="loadingSkeleton" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div class="bg-white rounded-2xl overflow-hidden"><div class="skeleton h-48 w-full"></div><div class="p-5 space-y-3"><div class="skeleton h-4 rounded w-3/4"></div><div class="skeleton h-4 rounded w-1/2"></div><div class="skeleton h-10 rounded-xl"></div></div></div>
+        <div class="bg-white rounded-2xl overflow-hidden"><div class="skeleton h-48 w-full"></div><div class="p-5 space-y-3"><div class="skeleton h-4 rounded w-3/4"></div><div class="skeleton h-4 rounded w-1/2"></div><div class="skeleton h-10 rounded-xl"></div></div></div>
+        <div class="bg-white rounded-2xl overflow-hidden"><div class="skeleton h-48 w-full"></div><div class="p-5 space-y-3"><div class="skeleton h-4 rounded w-3/4"></div><div class="skeleton h-4 rounded w-1/2"></div><div class="skeleton h-10 rounded-xl"></div></div></div>
+      </div>
+
+      <!-- Vehicles Grid -->
+      <div id="vehiclesGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 hidden"></div>
+      <p id="noVehicles" class="text-center text-slate-500 py-16 hidden">No vehicles found in this category.</p>
+    </div>
+  </section>
+
+  <!-- ===== BOOKING MODAL ===== -->
+  <div id="bookingModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 modal-overlay bg-black/60">
+    <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md animate-fade-in">
+      <!-- Modal Header -->
+      <div class="p-6 border-b border-slate-100">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="text-xl font-bold text-slate-800">Reserve Your Vehicle</h3>
+            <p id="modalVehicleName" class="text-blue-600 font-medium mt-0.5 text-sm"></p>
+          </div>
+          <button onclick="closeModal()" class="w-8 h-8 flex items-center justify-center rounded-full bg-slate-100 hover:bg-slate-200 transition-colors text-slate-500">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Modal Body -->
+      <form id="bookingForm" class="p-6 space-y-4">
+        <input type="hidden" id="selectedVehicleId" />
+        <input type="hidden" id="selectedDailyRate" />
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">Full Name</label>
+            <input type="text" id="customerName" placeholder="John Doe" required
+              class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">Phone Number</label>
+            <input type="tel" id="customerPhone" placeholder="+1 555 0000" required
+              class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+          </div>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">Start Date</label>
+            <input type="date" id="startDate" required
+              class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-1.5">End Date</label>
+            <input type="date" id="endDate" required
+              class="w-full border border-slate-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent" />
+          </div>
+        </div>
+
+        <!-- Price Calculation -->
+        <div id="pricePreview" class="hidden bg-blue-50 border border-blue-100 rounded-xl p-4">
+          <div class="flex justify-between items-center text-sm text-slate-600 mb-2">
+            <span id="daysLabel">0 days</span>
+            <span id="rateLabel">$0/day</span>
+          </div>
+          <div class="flex justify-between items-center font-bold text-blue-700 text-lg">
+            <span>Total Estimate</span>
+            <span id="totalPrice">$0</span>
+          </div>
+        </div>
+
+        <button type="submit" id="submitBtn"
+          class="btn-primary w-full text-white font-semibold py-3.5 rounded-xl flex items-center justify-center gap-2 shadow-lg shadow-blue-500/25">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+          Confirm Booking
+        </button>
+
+        <p id="formError" class="text-red-500 text-sm text-center hidden"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== SUCCESS TOAST ===== -->
+  <div id="successToast" class="fixed bottom-6 right-6 z-50 hidden animate-fade-in">
+    <div class="bg-emerald-600 text-white rounded-2xl px-6 py-4 shadow-2xl max-w-sm flex items-start gap-3">
+      <div class="mt-0.5 shrink-0">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+      <div>
+        <p class="font-semibold">Booking Confirmed!</p>
+        <p id="toastMsg" class="text-sm text-emerald-100 mt-0.5"></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="bg-slate-900 text-slate-400 py-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="flex items-center justify-center gap-2 mb-4">
+        <span class="text-2xl">🚗</span>
+        <span class="text-xl font-bold text-white">Drive<span class="text-blue-400">Easy</span></span>
+      </div>
+      <p class="text-sm">© 2026 DriveEasy. All rights reserved.</p>
+      <p class="text-xs mt-2">Built on Cloudflare Pages + D1</p>
+    </div>
+  </footer>
+
+  <style>
+    .filter-btn { background: white; color: #64748b; border: 2px solid #e2e8f0; }
+    .filter-btn:hover { border-color: #3b82f6; color: #3b82f6; }
+    .active-filter { background: #3b82f6 !important; color: white !important; border-color: #3b82f6 !important; }
+  </style>
+
+  <script>
+    let allVehicles = [];
+    let activeFilter = 'all';
+
+    // ─── Fetch & render vehicles ───────────────────────────────────────────────
+    async function loadVehicles() {
+      try {
+        const res = await fetch('/api/vehicles');
+        const data = await res.json();
+        allVehicles = data.data || [];
+        document.getElementById('loadingSkeleton').classList.add('hidden');
+        renderVehicles(allVehicles);
+      } catch (err) {
+        document.getElementById('loadingSkeleton').classList.add('hidden');
+        document.getElementById('noVehicles').textContent = 'Failed to load vehicles. Please refresh.';
+        document.getElementById('noVehicles').classList.remove('hidden');
+      }
+    }
+
+    function renderVehicles(vehicles) {
+      const grid = document.getElementById('vehiclesGrid');
+      const noVehicles = document.getElementById('noVehicles');
+      const available = vehicles.filter(v => v.is_available);
+
+      if (available.length === 0) {
+        grid.classList.add('hidden');
+        noVehicles.classList.remove('hidden');
+        return;
+      }
+
+      noVehicles.classList.add('hidden');
+      grid.innerHTML = available.map(v => `
+        <article class="bg-white rounded-2xl overflow-hidden card-hover border border-slate-100 shadow-sm animate-fade-in">
+          <div class="relative overflow-hidden h-48 bg-slate-100">
+            <img src="${v.image_url || 'https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&q=80'}"
+              alt="${v.name}"
+              class="w-full h-full object-cover transition-transform duration-500 hover:scale-105"
+              onerror="this.src='https://images.unsplash.com/photo-1503376780353-7e6692767b70?w=600&q=80'" />
+            <span class="absolute top-3 left-3 badge-available text-white text-xs font-semibold px-3 py-1 rounded-full">
+              Available
+            </span>
+            <span class="absolute top-3 right-3 bg-white/90 backdrop-blur-sm text-slate-600 text-xs font-medium px-3 py-1 rounded-full">
+              ${v.type}
+            </span>
+          </div>
+          <div class="p-5">
+            <h3 class="text-lg font-bold text-slate-800 mb-1">${v.name}</h3>
+            <div class="flex items-center justify-between mb-4">
+              <div class="flex items-baseline gap-1">
+                <span class="text-2xl font-extrabold text-blue-600">$${v.daily_rate}</span>
+                <span class="text-slate-400 text-sm">/day</span>
+              </div>
+              <div class="flex items-center gap-1 text-amber-500 text-sm">
+                ★★★★★ <span class="text-slate-400 ml-1">(4.9)</span>
+              </div>
+            </div>
+            <button
+              onclick="openModal(${v.id}, '${v.name}', ${v.daily_rate})"
+              class="btn-primary w-full text-white font-semibold py-3 rounded-xl shadow-md shadow-blue-500/20">
+              Book Now
+            </button>
+          </div>
+        </article>
+      `).join('');
+      grid.classList.remove('hidden');
+    }
+
+    function filterVehicles(type) {
+      activeFilter = type;
+      document.querySelectorAll('.filter-btn').forEach(btn => {
+        btn.classList.toggle('active-filter', btn.dataset.filter === type);
+      });
+      const filtered = type === 'all' ? allVehicles : allVehicles.filter(v => v.type === type);
+      renderVehicles(filtered);
+    }
+
+    // ─── Modal ─────────────────────────────────────────────────────────────────
+    function openModal(vehicleId, vehicleName, dailyRate) {
+      document.getElementById('selectedVehicleId').value = vehicleId;
+      document.getElementById('selectedDailyRate').value = dailyRate;
+      document.getElementById('modalVehicleName').textContent = vehicleName + ' · $' + dailyRate + '/day';
+      document.getElementById('pricePreview').classList.add('hidden');
+      document.getElementById('formError').classList.add('hidden');
+      document.getElementById('bookingForm').reset();
+      document.getElementById('selectedVehicleId').value = vehicleId;
+      document.getElementById('selectedDailyRate').value = dailyRate;
+
+      // Set min dates
+      const today = new Date().toISOString().split('T')[0];
+      document.getElementById('startDate').min = today;
+      document.getElementById('endDate').min = today;
+
+      document.getElementById('bookingModal').classList.remove('hidden');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+      document.getElementById('bookingModal').classList.add('hidden');
+      document.body.style.overflow = '';
+    }
+
+    // Close modal clicking outside
+    document.getElementById('bookingModal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('bookingModal')) closeModal();
+    });
+
+    // ─── Price Calculation ─────────────────────────────────────────────────────
+    function calcPrice() {
+      const start = document.getElementById('startDate').value;
+      const end = document.getElementById('endDate').value;
+      const rate = parseInt(document.getElementById('selectedDailyRate').value);
+
+      if (start && end && rate) {
+        const days = Math.ceil((new Date(end) - new Date(start)) / 86400000);
+        if (days > 0) {
+          document.getElementById('daysLabel').textContent = days + ' day' + (days !== 1 ? 's' : '');
+          document.getElementById('rateLabel').textContent = '$' + rate + '/day';
+          document.getElementById('totalPrice').textContent = '$' + (days * rate).toLocaleString();
+          document.getElementById('pricePreview').classList.remove('hidden');
+        } else {
+          document.getElementById('pricePreview').classList.add('hidden');
+        }
+      }
+    }
+
+    document.getElementById('startDate').addEventListener('change', () => {
+      const start = document.getElementById('startDate').value;
+      document.getElementById('endDate').min = start;
+      calcPrice();
+    });
+    document.getElementById('endDate').addEventListener('change', calcPrice);
+
+    // ─── Form Submission ───────────────────────────────────────────────────────
+    document.getElementById('bookingForm').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submitBtn');
+      const errEl = document.getElementById('formError');
+      errEl.classList.add('hidden');
+      btn.disabled = true;
+      btn.innerHTML = '<svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/></svg> Processing…';
+
+      const payload = {
+        vehicle_id: parseInt(document.getElementById('selectedVehicleId').value),
+        customer_name: document.getElementById('customerName').value,
+        customer_phone: document.getElementById('customerPhone').value,
+        start_date: document.getElementById('startDate').value,
+        end_date: document.getElementById('endDate').value,
+      };
+
+      try {
+        const res = await fetch('/api/bookings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        const data = await res.json();
+
+        if (data.success) {
+          closeModal();
+          const toast = document.getElementById('successToast');
+          document.getElementById('toastMsg').textContent =
+            `${data.days} day(s) · Total: $${data.total_price}. Booking ID: #${data.booking_id}`;
+          toast.classList.remove('hidden');
+          setTimeout(() => toast.classList.add('hidden'), 6000);
+        } else {
+          errEl.textContent = data.error || 'Booking failed. Please try again.';
+          errEl.classList.remove('hidden');
+        }
+      } catch {
+        errEl.textContent = 'Network error. Please try again.';
+        errEl.classList.remove('hidden');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Confirm Booking';
+      }
+    });
+
+    // ─── Init ──────────────────────────────────────────────────────────────────
+    loadVehicles();
+  </script>
+</body>
+</html>
