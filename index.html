@@ -79,11 +79,11 @@
         @media (max-width: 1100px) {
             .dashboard-grid { grid-template-columns: 1fr 1fr; grid-template-areas: "welcome welcome" "current actions" "fleet fleet" "activity activity"; }
         }
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .dashboard-grid { grid-template-columns: 1fr; grid-template-areas: "welcome" "current" "actions" "fleet" "activity"; }
-            .sidebar { position: fixed; height: 100%; transform: translateX(-100%); }
+            .sidebar { position: fixed; height: 100%; transform: translateX(-100%); z-index: 100; box-shadow: none; }
             .sidebar.mobile-open { transform: translateX(0); box-shadow: 10px 0 30px rgba(0,0,0,0.15); }
-            .mobile-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.4); backdrop-filter: blur(2px); z-index: 40; }
+            .mobile-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.4); backdrop-filter: blur(2px); z-index: 90; }
             .mobile-overlay.active { display: block; }
         }
 
@@ -99,10 +99,11 @@
         .search-wrapper input { flex: 1; padding: 16px 16px 16px 0; border: none; outline: none; font-size: 16px; font-weight: 500; color: #0f172a; }
 
         /* Booking Modal */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(4px); z-index: 100; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; padding: 20px; }
         .modal.open { display: flex; opacity: 1; }
-        .modal-content { background: #fff; width: 100%; max-width: 500px; border-radius: 20px; padding: 28px; transform: scale(0.95) translateY(20px); transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .modal-content { background: #fff; width: 100%; max-width: 500px; border-radius: 20px; transform: scale(0.95) translateY(20px); transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); max-height: calc(100vh - 40px); display: flex; flex-direction: column; box-shadow: 0 20px 40px rgba(0,0,0,0.2); overflow: hidden; }
         .modal.open .modal-content { transform: scale(1) translateY(0); }
+        .modal-scroll { padding: 28px; overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
         
         .input-group { margin-bottom: 20px; }
         .input-group label { display: block; font-size: 13px; font-weight: 700; color: #475569; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -311,61 +312,63 @@
     <!-- BOOKING MODAL -->
     <div id="booking-modal" class="modal">
         <div class="modal-content relative overflow-hidden">
-            <!-- Decorative header background -->
-            <div class="absolute top-0 inset-x-0 h-24 bg-gradient-to-r from-brandBlue to-blue-600"></div>
-            
-            <div class="relative z-10 flex justify-between items-start mb-6 pt-2">
-                <h2 class="text-2xl font-black text-white">Reserve Ride</h2>
-                <button onclick="closeBooking()" class="w-8 h-8 rounded-full bg-white/20 text-white hover:bg-white/40 border-none outline-none backdrop-blur-sm"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <div class="relative z-10 flex gap-5 items-center mb-8 p-4 bg-white rounded-2xl shadow-lg border border-slate-100">
-                <img id="m-img" src="" class="w-20 h-20 rounded-xl object-cover border border-slate-200 shadow-sm">
-                <div>
-                    <div class="text-[10px] font-bold text-brandBlue uppercase tracking-widest mb-1" id="m-type">SUV</div>
-                    <h3 id="m-name" class="font-black text-slate-800 text-xl leading-tight">Name</h3>
-                </div>
-                <div class="ml-auto text-right pl-4 border-l border-slate-100">
-                    <p class="font-black text-slate-800 text-2xl">₹<span id="m-rate">0</span></p>
-                    <p class="text-xs font-bold text-slate-500 uppercase">per day</p>
-                </div>
-            </div>
-
-            <form id="booking-form" onsubmit="submitBooking(event)" class="relative z-10 mt-4">
-                <div class="input-group">
-                    <label>Guest Full Name</label>
-                    <input type="text" id="cust-name" required placeholder="John Doe">
+            <div class="modal-scroll">
+                <!-- Decorative header background -->
+                <div class="absolute top-0 inset-x-0 h-24 bg-gradient-to-r from-brandBlue to-blue-600"></div>
+                
+                <div class="relative z-10 flex justify-between items-start mb-6 pt-2">
+                    <h2 class="text-2xl font-black text-white">Reserve Ride</h2>
+                    <button onclick="closeBooking()" class="w-8 h-8 rounded-full bg-white/20 text-white hover:bg-white/40 border-none outline-none backdrop-blur-sm"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 
-                <div class="flex gap-4">
-                    <div class="input-group flex-1">
-                        <label>Pickup Date</label>
-                        <input type="date" id="start-date" required>
+                <div class="relative z-10 flex gap-5 items-center mb-8 p-4 bg-white rounded-2xl shadow-lg border border-slate-100">
+                    <img id="m-img" src="" class="w-20 h-20 rounded-xl object-cover border border-slate-200 shadow-sm">
+                    <div>
+                        <div class="text-[10px] font-bold text-brandBlue uppercase tracking-widest mb-1" id="m-type">SUV</div>
+                        <h3 id="m-name" class="font-black text-slate-800 text-xl leading-tight">Name</h3>
                     </div>
-                    <div class="input-group flex-1">
-                        <label>Return Date</label>
-                        <input type="date" id="end-date" required>
-                    </div>
-                </div>
-                
-                <div id="date-error" class="hidden text-xs font-bold text-red-600 bg-red-50 p-3 rounded-lg mb-4 border border-red-100">Return date must be after pickup.</div>
-                
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 mb-6">
-                    <div class="flex justify-between items-center mb-3">
-                        <span class="text-sm font-semibold text-slate-500">Duration Scheduled</span>
-                        <span class="text-sm font-black text-slate-800 bg-white px-2 py-1 rounded shadow-sm border border-slate-100" id="r-days">0 Days</span>
-                    </div>
-                    <div class="h-px w-full bg-slate-200 mb-3"></div>
-                    <div class="flex justify-between items-center">
-                        <span class="text-sm font-bold text-slate-500 uppercase tracking-widest">Total Valuation</span>
-                        <span class="text-3xl font-black text-brandBlue">₹<span id="r-total">0</span></span>
+                    <div class="ml-auto text-right pl-4 border-l border-slate-100">
+                        <p class="font-black text-slate-800 text-2xl">₹<span id="m-rate">0</span></p>
+                        <p class="text-xs font-bold text-slate-500 uppercase">per day</p>
                     </div>
                 </div>
 
-                <button type="submit" id="wa-btn" disabled class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-slate-900/20 flex justify-center items-center gap-3 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none disabled:cursor-not-allowed">
-                    <i class="fa-brands fa-whatsapp text-xl"></i> Complete Reservation Request
-                </button>
-            </form>
+                <form id="booking-form" onsubmit="submitBooking(event)" class="relative z-10 mt-4">
+                    <div class="input-group">
+                        <label>Guest Full Name</label>
+                        <input type="text" id="cust-name" required placeholder="John Doe">
+                    </div>
+                    
+                    <div class="flex gap-4">
+                        <div class="input-group flex-1">
+                            <label>Pickup Date</label>
+                            <input type="date" id="start-date" required>
+                        </div>
+                        <div class="input-group flex-1">
+                            <label>Return Date</label>
+                            <input type="date" id="end-date" required>
+                        </div>
+                    </div>
+                    
+                    <div id="date-error" class="hidden text-xs font-bold text-red-600 bg-red-50 p-3 rounded-lg mb-4 border border-red-100">Return date must be after pickup.</div>
+                    
+                    <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 mb-6">
+                        <div class="flex justify-between items-center mb-3">
+                            <span class="text-sm font-semibold text-slate-500">Duration Scheduled</span>
+                            <span class="text-sm font-black text-slate-800 bg-white px-2 py-1 rounded shadow-sm border border-slate-100" id="r-days">0 Days</span>
+                        </div>
+                        <div class="h-px w-full bg-slate-200 mb-3"></div>
+                        <div class="flex justify-between items-center">
+                            <span class="text-sm font-bold text-slate-500 uppercase tracking-widest">Total Valuation</span>
+                            <span class="text-3xl font-black text-brandBlue">₹<span id="r-total">0</span></span>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="wa-btn" disabled class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-slate-900/20 flex justify-center items-center gap-3 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none disabled:cursor-not-allowed">
+                        <i class="fa-brands fa-whatsapp text-xl"></i> Complete Reservation Request
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -411,7 +414,7 @@
                 else { el.classList.remove('active'); }
             });
 
-            if(window.innerWidth <= 768) toggleSidebar(); // Close mobile menu after click
+            if(window.innerWidth <= 1024) toggleSidebar(); // Close mobile menu after click
         }
 
         function toggleSidebar() {

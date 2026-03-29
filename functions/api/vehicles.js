@@ -55,9 +55,9 @@ export async function onRequestPost(context) {
         }
 
         const result = await context.env.DB.prepare(
-            "INSERT INTO vehicles (name, type, daily_rate, image_url, plate_number, description, features, is_available) VALUES (?, ?, ?, ?, ?, ?, ?, 1)"
+            "INSERT INTO vehicles (name, type, daily_rate, image_url, plate_number, description, is_available) VALUES (?, ?, ?, ?, ?, ?, 1)"
         )
-            .bind(name, type, parseInt(daily_rate), image_url || "", plate_number || "", description || "", features || "[]")
+            .bind(name, type, parseInt(daily_rate), image_url || "", plate_number || "", description || "")
             .run();
 
         return new Response(
@@ -91,9 +91,9 @@ export async function onRequestPut(context) {
         if (name !== undefined) {
             // Full update
             await context.env.DB.prepare(
-                `UPDATE vehicles SET name = ?, type = ?, daily_rate = ?, image_url = ?, plate_number = ?, description = ?, features = ?, is_available = ? WHERE id = ?`
+                `UPDATE vehicles SET name = ?, type = ?, daily_rate = ?, image_url = ?, plate_number = ?, description = ?, is_available = ? WHERE id = ?`
             )
-                .bind(name, type, parseInt(daily_rate), image_url || "", plate_number || "", description || "", features || "[]", is_available ? 1 : 0, id)
+                .bind(name, type, parseInt(daily_rate), image_url || "", plate_number || "", description || "", is_available ? 1 : 0, id)
                 .run();
         } else {
             // Partial update just for availability

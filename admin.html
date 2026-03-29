@@ -80,11 +80,11 @@
         @media (max-width: 1200px) {
             .dashboard-grid { grid-template-columns: 1fr 1fr; grid-template-areas: "overview overview" "tools tools" "fleet fleet" "activity activity"; }
         }
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .dashboard-grid { grid-template-columns: 1fr; grid-template-areas: "overview" "tools" "fleet" "activity"; padding: 16px; gap: 16px; }
-            .sidebar { position: fixed; height: 100%; transform: translateX(-100%); width: 260px; }
-            .sidebar.mobile-open { transform: translateX(0); box-shadow: 10px 0 30px rgba(15,23,42,0.3); }
-            .mobile-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.5); backdrop-filter: blur(2px); z-index: 40; }
+            .sidebar { position: fixed; height: 100%; transform: translateX(-100%); width: 280px; z-index: 100; box-shadow: none; }
+            .sidebar.mobile-open { transform: translateX(0); box-shadow: 10px 0 30px rgba(15,23,42,0.6); }
+            .mobile-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.5); backdrop-filter: blur(2px); z-index: 90; }
             .mobile-overlay.active { display: block; }
             .table-container { overflow-x: auto; -webkit-overflow-scrolling: touch; }
         }
@@ -95,10 +95,11 @@
         @keyframes slideUp { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
 
         /* Modals */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); backdrop-filter: blur(4px); z-index: 100; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.7); backdrop-filter: blur(4px); z-index: 200; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; padding: 20px; }
         .modal.open { display: flex; opacity: 1; }
-        .modal-content { background: #fff; width: 100%; max-width: 550px; border-radius: 20px; padding: 32px; transform: scale(0.95) translateY(20px); transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.3); }
+        .modal-content { background: #fff; width: 100%; max-width: 550px; border-radius: 20px; transform: scale(0.95) translateY(20px); transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); max-height: calc(100vh - 40px); overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.3); display: flex; flex-direction: column; }
         .modal.open .modal-content { transform: scale(1) translateY(0); }
+        .modal-scroll { padding: 32px; overflow-y: auto; flex: 1; -webkit-overflow-scrolling: touch; }
 
         .input-group { margin-bottom: 20px; }
         .input-group label { display: block; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; color: #64748b; margin-bottom: 8px; }
@@ -408,66 +409,71 @@
     <!-- VEHICLE MODAL (VModal) -->
     <div id="v-modal" class="modal">
         <div class="modal-content relative overflow-hidden">
-            <div class="absolute top-0 inset-x-0 h-2 bg-brandBlue"></div>
-            <div class="flex justify-between items-start mb-6 pt-2">
-                <div>
-                    <h2 class="text-2xl font-black text-slate-800 tracking-tight" id="v-title">Inject New Asset</h2>
-                    <p class="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest"><i class="fa-solid fa-database mr-1"></i> Synchronizing to Edge</p>
-                </div>
-                <button onclick="closeVModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 border-none outline-none"><i class="fa-solid fa-xmark"></i></button>
-            </div>
-            
-            <form id="v-form">
-                <input type="hidden" id="v-id">
-                
-                <div class="upload-zone mb-6 shadow-inner" id="u-zone">
-                    <input type="file" id="r2-uploader" accept="image/*">
-                    <img id="v-preview" class="upload-zone-img shadow-sm">
-                    <div id="u-content">
-                        <div class="w-16 h-16 rounded-full bg-blue-50 text-brandBlue flex items-center justify-center text-2xl mx-auto mb-4"><i class="fa-solid fa-cloud-arrow-up" id="u-icon"></i></div>
-                        <p class="text-base font-bold text-slate-700" id="u-text">Provide High-Resolution Visual data</p>
-                        <p class="text-xs font-semibold text-slate-400 mt-2">JPG, PNG, WebP supported for R2 Edge Storage.</p>
+            <div class="modal-scroll">
+                <div class="absolute top-0 inset-x-0 h-2 bg-brandBlue"></div>
+                <div class="flex justify-between items-start mb-6 pt-2">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-800 tracking-tight" id="v-title">Inject New Asset</h2>
+                        <p class="text-xs font-bold text-slate-400 mt-1 uppercase tracking-widest"><i class="fa-solid fa-database mr-1"></i> Synchronizing to Edge</p>
                     </div>
-                    <input type="hidden" id="v-image">
+                    <button onclick="closeVModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 border-none outline-none"><i class="fa-solid fa-xmark"></i></button>
                 </div>
                 
-                <div class="flex flex-col md:flex-row gap-5 mb-5">
-                    <div class="input-group mb-0 flex-1">
-                        <label>Identity / Model</label>
-                        <input type="text" id="v-name" required placeholder="Tesla Model X">
+                <form id="v-form">
+                    <input type="hidden" id="v-id">
+                    
+                    <div class="upload-zone mb-6 shadow-inner" id="u-zone">
+                        <input type="file" id="r2-uploader" accept="image/*">
+                        <img id="v-preview" class="upload-zone-img shadow-sm">
+                        <div id="u-content">
+                            <div class="w-16 h-16 rounded-full bg-blue-50 text-brandBlue flex items-center justify-center text-2xl mx-auto mb-4"><i class="fa-solid fa-cloud-arrow-up" id="u-icon"></i></div>
+                            <p class="text-base font-bold text-slate-700" id="u-text">Provide High-Resolution Visual data</p>
+                            <p class="text-xs font-semibold text-slate-400 mt-2">JPG, PNG, WebP supported for R2 Edge Storage.</p>
+                        </div>
+                        <input type="hidden" id="v-image">
                     </div>
-                    <div class="input-group mb-0 flex-1">
-                        <label>Structural Class</label>
-                        <select id="v-type" class="bg-white">
-                            <option value="SUV">SUV Segment</option>
-                            <option value="Sedan">Sedan Class</option>
-                            <option value="Electric">EV Platform</option>
-                            <option value="Luxury">Executive Tier</option>
-                        </select>
+                    
+                    <div class="flex flex-col md:flex-row gap-5 mb-5">
+                        <div class="input-group mb-0 flex-1">
+                            <label>Identity / Model</label>
+                            <input type="text" id="v-name" required placeholder="Tesla Model X">
+                        </div>
+                        <div class="input-group mb-0 flex-1">
+                            <label>Structural Class</label>
+                            <select id="v-type" class="bg-white">
+                                <option value="SUV">SUV Segment</option>
+                                <option value="Sedan">Sedan Class</option>
+                                <option value="Crossover">Crossover</option>
+                                <option value="Electric">EV Platform</option>
+                                <option value="Luxury">Executive Tier</option>
+                                <option value="Sports">Sports</option>
+                                <option value="Truck">Truck</option>
+                            </select>
+                        </div>
                     </div>
-                </div>
-                
-                <div class="flex flex-col md:flex-row gap-5 mb-5">
-                    <div class="input-group mb-0 flex-1">
-                        <label>License Plate</label>
-                        <input type="text" id="v-plate" placeholder="OPTIONAL" class="uppercase">
+                    
+                    <div class="flex flex-col md:flex-row gap-5 mb-5">
+                        <div class="input-group mb-0 flex-1">
+                            <label>License Plate</label>
+                            <input type="text" id="v-plate" placeholder="OPTIONAL" class="uppercase">
+                        </div>
+                        <div class="input-group mb-0 flex-1">
+                            <label>Fiscal Rate (₹/Day)</label>
+                            <input type="number" id="v-rate" required placeholder="0">
+                        </div>
                     </div>
-                    <div class="input-group mb-0 flex-1">
-                        <label>Fiscal Rate (₹/Day)</label>
-                        <input type="number" id="v-rate" required placeholder="0">
+                    
+                    <div class="input-group mb-8">
+                        <label>Client-Facing Metadata (Description)</label>
+                        <textarea id="v-desc" rows="2" placeholder="Describe the asset for the client portal..."></textarea>
                     </div>
-                </div>
-                
-                <div class="input-group mb-8">
-                    <label>Client-Facing Metadata (Description)</label>
-                    <textarea id="v-desc" rows="2" placeholder="Describe the asset for the client portal..."></textarea>
-                </div>
 
-                <div class="flex justify-between items-center bg-slate-50 p-4 -mx-8 -mb-8 mt-4 border-t border-slate-100 rounded-b-20">
-                    <button type="button" onclick="closeVModal()" class="px-5 py-2.5 font-bold text-slate-500 hover:text-slate-800 transition">Abort Protocol</button>
-                    <button type="button" onclick="saveVehicle()" id="btn-save" class="px-8 py-3 bg-slate-900 hover:bg-black text-white font-bold rounded-xl shadow-[0_4px_16px_rgba(15,23,42,0.2)] transition text-[15px] tracking-wide flex items-center gap-2">Execute Injection <i class="fa-solid fa-bolt text-brandBlue"></i></button>
-                </div>
-            </form>
+                    <div class="flex justify-between items-center bg-slate-50 p-4 -mx-8 -mb-8 pt-5 border-t border-slate-100 mt-4 rounded-b-20">
+                        <button type="button" onclick="closeVModal()" class="px-5 py-2.5 font-bold text-slate-500 hover:text-slate-800 transition">Abort Protocol</button>
+                        <button type="button" onclick="saveVehicle()" id="btn-save" class="px-8 py-3 bg-slate-900 hover:bg-black text-white font-bold rounded-xl shadow-[0_4px_16px_rgba(15,23,42,0.2)] transition text-[15px] tracking-wide flex items-center gap-2">Execute Injection <i class="fa-solid fa-bolt text-brandBlue"></i></button>
+                    </div>
+                </form>
+            </div>
         </div>
     </div>
 
@@ -488,7 +494,7 @@
                 if(el.dataset.nav === viewId) el.classList.add('active'); else el.classList.remove('active');
             });
 
-            if(window.innerWidth <= 768) toggleSidebar();
+            if(window.innerWidth <= 1024) toggleSidebar();
         }
 
         function toggleSidebar() {
@@ -709,13 +715,17 @@
             const pl = {
                 name:document.getElementById('v-name').value, type:document.getElementById('v-type').value,
                 daily_rate:document.getElementById('v-rate').value, image_url:document.getElementById('v-image').value,
-                plate_number:document.getElementById('v-plate').value, description:document.getElementById('v-desc').value,
-                features:"[]"
+                plate_number:document.getElementById('v-plate').value, description:document.getElementById('v-desc').value
             };
             try {
                 const r = await fetch('/api/vehicles',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(id?{id,...pl}:pl)});
-                if(r.ok) { closeVModal(); pullServerData(); } else { alert('Database fault.'); }
-            } catch(e) { console.error(e); }
+                if(r.ok) { closeVModal(); pullServerData(); } 
+                else { 
+                    const eData = await r.json(); 
+                    console.error("DB Fault:", eData);
+                    alert('Database fault: ' + (eData.details || eData.error || 'Unknown error')); 
+                }
+            } catch(e) { console.error(e); alert("Network fault. Check connection."); }
             btn.innerHTML='Execute Injection <i class="fa-solid fa-bolt text-brandBlue"></i>';
         }
 
