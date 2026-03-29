@@ -1,439 +1,540 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#000000">
-    <title>Benaka Elite - Admin</title>
-
+    <meta name="theme-color" content="#ffffff">
+    <title>Benaka Travels - Admin</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="apple-touch-icon" href="/benaka_travels_logo.png">
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        dark: '#050505',
-                        surface: '#0d0d10',
-                        brand: { 500: '#3b82f6', 600: '#2563eb' }
-                    },
-                    fontFamily: { sans: ['"Outfit"', 'sans-serif'] }
-                }
-            }
-        }
-    </script>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <style>
-        body { font-family: 'Outfit', sans-serif; background-color: #050505; color: #fff; -webkit-tap-highlight-color: transparent; }
-        ::-webkit-scrollbar { display: none; }
-        
-        .safe-pb { padding-bottom: env(safe-area-inset-bottom, 24px); }
-        .safe-pt { padding-top: env(safe-area-inset-top, 40px); }
-        
-        .glass-header { background: rgba(5, 5, 5, 0.7); backdrop-filter: blur(24px); border-bottom: 1px solid rgba(255,255,255,0.03); }
-        .glass-pill { background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(24px); border: 1px solid rgba(255,255,255,0.1); }
-        .glass-card { background: linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); }
-        .glass-sheet { background: rgba(13, 13, 16, 0.95); backdrop-filter: blur(40px); border-top: 1px solid rgba(255,255,255,0.1); }
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{font-family:'Inter',sans-serif;background:#f5f5f7;color:#1a1a1a;-webkit-tap-highlight-color:transparent;overflow-x:hidden;}
+        ::-webkit-scrollbar{display:none;}
+        .safe-top{padding-top:max(env(safe-area-inset-top),16px);}
+        .safe-bottom{padding-bottom:max(env(safe-area-inset-bottom),20px);}
 
-        .app-nav { position: fixed; bottom: env(safe-area-inset-bottom, 24px); left: 50%; transform: translateX(-50%); z-index: 40; }
-        .slide-up-modal { transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1); }
-        .slide-up-modal.closed { transform: translateY(105%); }
-        .slide-up-modal.open { transform: translateY(0); }
-        
-        #toast { transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1); transform: translateY(-100%) scale(0.9); opacity: 0; pointer-events: none; }
-        #toast.show { transform: translateY(0) scale(1); opacity: 1; z-index: 9999; }
+        /* LOGIN */
+        .login-screen{position:fixed;inset:0;z-index:200;background:#f5f5f7;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px;transition:opacity 0.4s;}
+        .login-screen.hidden{opacity:0;pointer-events:none;}
+        .login-box{width:100%;max-width:340px;text-align:center;}
+        .login-icon{width:64px;height:64px;border-radius:18px;background:linear-gradient(135deg,#007AFF,#0051D5);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:900;font-size:28px;margin:0 auto 20px;box-shadow:0 4px 16px rgba(0,122,255,0.3);}
+        .login-box h1{font-size:22px;font-weight:800;letter-spacing:-0.4px;margin-bottom:4px;}
+        .login-box p{font-size:13px;color:#8e8e93;margin-bottom:28px;font-weight:500;}
+        .login-input{width:100%;padding:16px;border-radius:16px;border:1.5px solid #e8e8ed;font-size:18px;font-weight:700;text-align:center;letter-spacing:4px;font-family:'Inter',sans-serif;color:#1a1a1a;outline:none;background:#fff;margin-bottom:14px;transition:border 0.2s;}
+        .login-input:focus{border-color:#007AFF;}
+        .login-btn{width:100%;padding:16px;border-radius:16px;border:none;background:#007AFF;color:#fff;font-size:16px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;transition:all 0.15s;box-shadow:0 4px 16px rgba(0,122,255,0.3);}
+        .login-btn:active{transform:scale(0.97);}
 
-        input, select, textarea { background: rgba(255,255,255,0.03) !important; color: white !important; border: 1px solid rgba(255,255,255,0.08) !important; transition: all 0.2s; }
-        input:focus, select:focus, textarea:focus { border-color: #3b82f6 !important; background: rgba(59,130,246,0.05) !important; box-shadow: 0 0 20px rgba(59,130,246,0.2) !important; }
-        select option { background: #0d0d10; color: white; }
+        /* APP HEADER */
+        .app-header{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(245,245,247,0.85);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:0.5px solid rgba(0,0,0,0.08);}
+        .header-inner{padding:12px 20px 14px;display:flex;justify-content:space-between;align-items:center;}
+        .header-left h1{font-size:28px;font-weight:900;letter-spacing:-0.6px;}
+        .header-left p{font-size:10px;font-weight:700;color:#007AFF;letter-spacing:1.5px;text-transform:uppercase;}
+        .header-right{display:flex;gap:10px;}
+        .hdr-btn{width:40px;height:40px;border-radius:50%;background:#e8e8ed;border:none;display:flex;align-items:center;justify-content:center;font-size:16px;color:#636366;cursor:pointer;transition:all 0.15s;}
+        .hdr-btn:active{transform:scale(0.9);}
+        .hdr-btn.danger{color:#FF3B30;}
+
+        /* TABS CONTENT */
+        .tab-content{padding-top:90px;padding-bottom:100px;min-height:100vh;}
+        .tab-panel{display:none;padding:0 20px;}
+        .tab-panel.active{display:block;}
+
+        /* STAT CARDS */
+        .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px;}
+        .stat-card{background:#fff;border-radius:20px;padding:20px;box-shadow:0 1px 8px rgba(0,0,0,0.04);}
+        .stat-card .sc-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;margin-bottom:14px;font-size:16px;}
+        .stat-card .sc-icon.blue{background:#EBF5FF;color:#007AFF;}
+        .stat-card .sc-icon.green{background:#E8FAF0;color:#34C759;}
+        .stat-card .sc-icon.orange{background:#FFF4E6;color:#FF9500;}
+        .stat-card .sc-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#8e8e93;margin-bottom:4px;}
+        .stat-card .sc-value{font-size:32px;font-weight:900;letter-spacing:-1px;color:#1a1a1a;}
+        .revenue-card{background:linear-gradient(135deg,#007AFF,#0051D5);border-radius:24px;padding:24px;color:#fff;box-shadow:0 8px 24px rgba(0,122,255,0.25);position:relative;overflow:hidden;}
+        .revenue-card::after{content:'';position:absolute;right:-30px;top:-30px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.1);}
+        .revenue-card .rc-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.7);margin-bottom:8px;}
+        .revenue-card .rc-value{font-size:36px;font-weight:900;letter-spacing:-1px;position:relative;z-index:1;}
+
+        /* FLEET LIST */
+        .fleet-list{display:flex;flex-direction:column;gap:12px;}
+        .fleet-card{background:#fff;border-radius:20px;overflow:hidden;box-shadow:0 1px 8px rgba(0,0,0,0.04);}
+        .fleet-card .fc-top{display:flex;gap:14px;padding:14px;}
+        .fleet-card .fc-img{width:80px;height:80px;border-radius:14px;object-fit:cover;background:#e8e8ed;flex-shrink:0;}
+        .fleet-card .fc-info{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;}
+        .fleet-card .fc-name{font-size:16px;font-weight:700;letter-spacing:-0.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:3px;}
+        .fleet-card .fc-meta{display:flex;align-items:center;gap:6px;margin-bottom:6px;}
+        .fleet-card .fc-tag{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;color:#007AFF;background:#EBF5FF;padding:2px 8px;border-radius:6px;}
+        .fleet-card .fc-plate{font-size:10px;font-weight:600;color:#8e8e93;letter-spacing:0.5px;}
+        .fleet-card .fc-price{font-size:18px;font-weight:800;letter-spacing:-0.3px;}
+        .fleet-card .fc-price span{font-size:11px;font-weight:500;color:#8e8e93;}
+        .fleet-card .fc-status{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-left:auto;}
+        .fleet-card .fc-status.avail{color:#34C759;}
+        .fleet-card .fc-status.rented{color:#FF3B30;}
+        .fleet-card .fc-actions{display:flex;border-top:0.5px solid rgba(0,0,0,0.06);}
+        .fleet-card .fc-actions button{flex:1;padding:12px;border:none;background:none;font-family:'Inter',sans-serif;font-size:12px;font-weight:700;cursor:pointer;transition:all 0.15s;display:flex;align-items:center;justify-content:center;gap:4px;}
+        .fleet-card .fc-actions button:active{background:#f5f5f7;}
+        .fleet-card .fc-actions button:not(:last-child){border-right:0.5px solid rgba(0,0,0,0.06);}
+        .fleet-card .fc-actions .act-edit{color:#007AFF;}
+        .fleet-card .fc-actions .act-toggle{color:#FF9500;}
+        .fleet-card .fc-actions .act-delete{color:#FF3B30;}
+
+        /* BOOKING CARDS */
+        .booking-list{display:flex;flex-direction:column;gap:12px;}
+        .booking-card{background:#fff;border-radius:20px;padding:16px;box-shadow:0 1px 8px rgba(0,0,0,0.04);}
+        .booking-card .bc-top{display:flex;justify-content:space-between;align-items:start;margin-bottom:12px;}
+        .booking-card .bc-name{font-size:16px;font-weight:700;letter-spacing:-0.2px;}
+        .booking-card .bc-dates{font-size:11px;font-weight:600;color:#8e8e93;margin-top:2px;}
+        .booking-card .bc-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:0.6px;padding:4px 10px;border-radius:100px;}
+        .bc-badge.pending{background:#FFF4E6;color:#FF9500;}
+        .bc-badge.confirmed{background:#EBF5FF;color:#007AFF;}
+        .bc-badge.completed{background:#E8FAF0;color:#34C759;}
+        .bc-badge.cancelled{background:#FFF0EF;color:#FF3B30;}
+        .booking-card .bc-detail-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;}
+        .booking-card .bc-label{font-size:11px;font-weight:600;color:#8e8e93;text-transform:uppercase;letter-spacing:0.5px;}
+        .booking-card .bc-val{font-size:14px;font-weight:700;}
+        .booking-card .bc-val.price{color:#007AFF;font-size:18px;font-weight:800;}
+        .booking-card .bc-actions{display:flex;gap:8px;margin-top:12px;padding-top:12px;border-top:0.5px solid rgba(0,0,0,0.06);}
+        .booking-card .bc-actions button{flex:1;padding:10px;border-radius:12px;border:none;font-family:'Inter',sans-serif;font-size:11px;font-weight:700;cursor:pointer;transition:all 0.15s;text-transform:uppercase;letter-spacing:0.5px;}
+        .booking-card .bc-actions button:active{transform:scale(0.95);}
+        .bc-actions .ba-confirm{background:#EBF5FF;color:#007AFF;}
+        .bc-actions .ba-complete{background:#E8FAF0;color:#34C759;}
+        .bc-actions .ba-cancel{background:#FFF0EF;color:#FF3B30;}
+
+        /* BOTTOM NAV */
+        .bottom-nav{position:fixed;bottom:0;left:0;right:0;z-index:50;background:rgba(245,245,247,0.9);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-top:0.5px solid rgba(0,0,0,0.08);display:flex;justify-content:space-around;padding:8px 0 4px;}
+        .nav-item{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 16px;border:none;background:none;cursor:pointer;font-family:'Inter',sans-serif;}
+        .nav-item i{font-size:20px;}
+        .nav-item span{font-size:10px;font-weight:600;}
+        .nav-item.active i,.nav-item.active span{color:#007AFF;}
+        .nav-item:not(.active) i,.nav-item:not(.active) span{color:#8e8e93;}
+
+        /* FAB */
+        .fab{position:fixed;bottom:80px;right:20px;width:56px;height:56px;border-radius:50%;background:#007AFF;color:#fff;border:none;font-size:22px;display:none;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(0,122,255,0.35);z-index:40;transition:all 0.15s;}
+        .fab:active{transform:scale(0.9);}
+        .fab.show{display:flex;}
+
+        /* VEHICLE EDIT SHEET */
+        .edit-overlay{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.35);backdrop-filter:blur(4px);display:none;opacity:0;transition:opacity 0.3s;}
+        .edit-overlay.show{opacity:1;}
+        .edit-sheet{position:fixed;inset:0;z-index:101;background:#f5f5f7;transform:translateY(100%);transition:transform 0.45s cubic-bezier(0.32,0.72,0,1);display:flex;flex-direction:column;}
+        .edit-sheet.open{transform:translateY(0);}
+        .edit-header{padding:14px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:0.5px solid rgba(0,0,0,0.08);background:#fff;flex-shrink:0;}
+        .edit-header h2{font-size:17px;font-weight:700;}
+        .edit-close{width:30px;height:30px;border-radius:50%;background:#e8e8ed;border:none;display:flex;align-items:center;justify-content:center;font-size:12px;color:#636366;cursor:pointer;}
+        .edit-body{flex:1;overflow-y:auto;padding:20px;padding-bottom:120px;}
+
+        /* Upload Zone */
+        .upload-zone{width:100%;height:180px;border-radius:20px;border:2px dashed #d1d1d6;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;margin-bottom:20px;transition:border 0.2s;}
+        .upload-zone:active{border-color:#007AFF;}
+        .upload-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;z-index:5;}
+        .upload-zone img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;z-index:2;}
+        .upload-zone .uz-content{text-align:center;pointer-events:none;z-index:3;}
+        .upload-zone .uz-content i{font-size:28px;color:#007AFF;margin-bottom:8px;}
+        .upload-zone .uz-content span{display:block;font-size:12px;font-weight:600;color:#8e8e93;}
+
+        .form-group{margin-bottom:14px;}
+        .form-group label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.8px;color:#8e8e93;margin-bottom:6px;}
+        .form-group input,.form-group select,.form-group textarea{width:100%;padding:14px 16px;border-radius:14px;border:1.5px solid #e8e8ed;font-size:15px;font-weight:600;font-family:'Inter',sans-serif;color:#1a1a1a;outline:none;background:#fff;transition:border 0.2s;}
+        .form-group input:focus,.form-group select:focus,.form-group textarea:focus{border-color:#007AFF;}
+        .form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+
+        .save-bar{position:fixed;bottom:0;left:0;right:0;padding:14px 20px;background:rgba(245,245,247,0.9);backdrop-filter:blur(20px);border-top:0.5px solid rgba(0,0,0,0.08);z-index:102;}
+        .save-btn{width:100%;padding:16px;border-radius:16px;border:none;background:#007AFF;color:#fff;font-size:16px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;box-shadow:0 4px 16px rgba(0,122,255,0.3);transition:all 0.15s;}
+        .save-btn:active{transform:scale(0.97);}
+
+        /* TOAST */
+        .toast{position:fixed;top:60px;left:50%;transform:translateX(-50%) translateY(-20px);z-index:300;opacity:0;transition:all 0.3s;pointer-events:none;}
+        .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+        .toast-inner{background:#1a1a1a;color:#fff;padding:12px 24px;border-radius:100px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px;box-shadow:0 8px 24px rgba(0,0,0,0.2);white-space:nowrap;}
+        .toast-inner i{font-size:14px;}
+
+        .empty-msg{text-align:center;padding:60px 20px;color:#8e8e93;font-size:14px;font-weight:600;}
     </style>
 </head>
+<body>
 
-<body class="antialiased min-h-screen relative overflow-hidden flex flex-col">
-
-    <!-- Ambient Background -->
-    <div class="fixed top-0 inset-x-0 w-full h-[500px] bg-brand-600/10 blur-[150px] pointer-events-none rounded-full transform -translate-y-1/2"></div>
-    <div class="fixed bottom-0 right-0 w-96 h-96 bg-purple-600/10 blur-[120px] pointer-events-none rounded-full"></div>
-
-    <!-- LOGIN SCREEN -->
-    <div id="login-screen" class="absolute inset-0 z-50 bg-[#050505] flex flex-col items-center justify-center px-6 transition-all duration-500">
-        <div class="w-full max-w-sm flex flex-col items-center relative z-10">
-            <h1 class="text-4xl font-black text-white mb-2 tracking-tighter">Benaka Elite</h1>
-            <p class="text-sm text-brand-500 font-bold tracking-[0.2em] uppercase mb-12">Command Center</p>
-            
-            <input type="password" id="admin-pwd" placeholder="Enter Access Code" class="w-full rounded-[20px] p-5 text-center font-bold text-xl tracking-widest mb-6 focus:outline-none">
-            
-            <button onclick="login()" class="w-full bg-white text-dark font-black tracking-wider text-lg p-5 rounded-[20px] shadow-[0_0_40px_rgba(255,255,255,0.2)] active:scale-[0.98] transition-transform">
-                AUTHORIZE <i class="fa-solid fa-arrow-right ml-2 opacity-50"></i>
-            </button>
+    <!-- LOGIN -->
+    <div class="login-screen safe-top" id="login-screen">
+        <div class="login-box">
+            <div class="login-icon">B</div>
+            <h1>Benaka Travels</h1>
+            <p>Admin Dashboard</p>
+            <input type="password" class="login-input" id="admin-pwd" placeholder="••••••">
+            <button class="login-btn" onclick="login()">Sign In</button>
         </div>
     </div>
 
-    <!-- MAIN APP -->
-    <div id="app-screen" class="hidden flex-1 flex flex-col h-full relative z-10">
-        
-        <header class="glass-header safe-pt px-6 pb-4 flex justify-between items-center z-30 shrink-0">
-            <div>
-                <h1 id="header-title" class="font-black text-3xl text-white tracking-tighter">Metrics</h1>
-                <p id="header-sub" class="text-[10px] font-bold text-brand-500 uppercase tracking-widest mt-1">Today's Pulse</p>
+    <!-- APP -->
+    <div id="app-screen" style="display:none;">
+
+        <!-- HEADER -->
+        <header class="app-header safe-top">
+            <div class="header-inner">
+                <div class="header-left">
+                    <h1 id="page-title">Dashboard</h1>
+                    <p id="page-sub">Overview</p>
+                </div>
+                <div class="header-right">
+                    <button class="hdr-btn danger" onclick="logout()"><i class="fa-solid fa-arrow-right-from-bracket"></i></button>
+                </div>
             </div>
-            <button onclick="logout()" class="w-12 h-12 rounded-full glass-pill text-white flex items-center justify-center active:scale-90 transition-transform shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
-                <i class="fa-solid fa-power-off text-red-400"></i>
-            </button>
         </header>
 
-        <main class="flex-1 overflow-y-auto no-scrollbar pt-6 pb-36 px-5 relative h-full">
+        <!-- TAB PANELS -->
+        <div class="tab-content safe-top">
 
-            <!-- DASHBOARD TAB -->
-            <section id="tab-dashboard" class="space-y-5">
-                <div class="grid grid-cols-2 gap-4">
-                    <div class="glass-card p-6 rounded-[32px] shadow-lg relative overflow-hidden group">
-                        <div class="absolute -right-4 -top-4 w-24 h-24 bg-brand-500/20 rounded-full blur-2xl group-hover:bg-brand-500/40 transition-colors"></div>
-                        <div class="w-12 h-12 border border-white/10 rounded-full flex items-center justify-center mb-6 bg-white/5"><i class="fa-solid fa-car-rear text-brand-400"></i></div>
-                        <h2 class="text-5xl font-black text-white tracking-tighter mb-1" id="stat-fleet">0</h2>
-                        <p class="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">Total Fleet</p>
+            <!-- DASHBOARD -->
+            <div class="tab-panel active" id="panel-dash">
+                <div class="stat-grid">
+                    <div class="stat-card">
+                        <div class="sc-icon blue"><i class="fa-solid fa-car"></i></div>
+                        <div class="sc-label">Fleet Size</div>
+                        <div class="sc-value" id="st-fleet">0</div>
                     </div>
-                    <div class="glass-card p-6 rounded-[32px] shadow-lg relative overflow-hidden group">
-                        <div class="absolute -right-4 -top-4 w-24 h-24 bg-emerald-500/20 rounded-full blur-2xl group-hover:bg-emerald-500/40 transition-colors"></div>
-                        <div class="w-12 h-12 border border-white/10 rounded-full flex items-center justify-center mb-6 bg-white/5"><i class="fa-solid fa-bolt text-emerald-400"></i></div>
-                        <h2 class="text-5xl font-black text-white tracking-tighter mb-1" id="stat-active">0</h2>
-                        <p class="text-[10px] font-bold text-white/40 uppercase tracking-[0.2em]">Rented</p>
+                    <div class="stat-card">
+                        <div class="sc-icon green"><i class="fa-solid fa-circle-check"></i></div>
+                        <div class="sc-label">Available</div>
+                        <div class="sc-value" id="st-avail">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="sc-icon orange"><i class="fa-solid fa-key"></i></div>
+                        <div class="sc-label">Rented</div>
+                        <div class="sc-value" id="st-rented">0</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="sc-icon blue"><i class="fa-solid fa-calendar-check"></i></div>
+                        <div class="sc-label">Bookings</div>
+                        <div class="sc-value" id="st-bookings">0</div>
                     </div>
                 </div>
-                
-                <div class="bg-gradient-to-br from-brand-600/90 to-blue-900/90 p-8 rounded-[36px] shadow-[0_20px_50px_rgba(37,99,235,0.3)] relative overflow-hidden border border-white/10">
-                    <div class="absolute right-0 top-0 w-64 h-64 bg-white/10 blur-[50px] rounded-full"></div>
-                    <p class="text-[10px] font-black text-white/60 uppercase tracking-[0.3em] mb-2 relative z-10">Forecasted Revenue</p>
-                    <h2 class="text-6xl font-black tracking-tighter text-white relative z-10" id="stat-rev">₹0</h2>
+                <div class="revenue-card">
+                    <div class="rc-label">Total Revenue</div>
+                    <div class="rc-value" id="st-revenue">₹0</div>
                 </div>
-            </section>
+            </div>
 
-            <!-- FLEET TAB -->
-            <section id="tab-fleet" class="hidden">
-                <div id="fleet-list" class="space-y-5"></div>
-            </section>
+            <!-- FLEET -->
+            <div class="tab-panel" id="panel-fleet">
+                <div class="fleet-list" id="fleet-list"></div>
+            </div>
 
-            <!-- BOOKINGS TAB -->
-            <section id="tab-bookings" class="hidden">
-                <div id="bookings-list" class="space-y-4"></div>
-            </section>
-
-        </main>
-
-        <!-- Floating App Navigation -->
-        <nav class="app-nav glass-pill rounded-[28px] px-2 py-2 flex items-center shadow-[0_30px_60px_rgba(0,0,0,0.8)] border border-white/10">
-            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="nav-btn px-6 py-4 rounded-[20px] bg-white/10 text-white transition-all flex items-center gap-2">
-                <i class="fa-solid fa-chart-line text-lg"></i>
-            </button>
-            <button onclick="switchTab('fleet')" id="nav-fleet" class="nav-btn px-6 py-4 rounded-[20px] text-white/40 hover:text-white transition-all flex items-center gap-2">
-                <i class="fa-solid fa-car-side text-lg"></i>
-            </button>
-            <button onclick="switchTab('bookings')" id="nav-bookings" class="nav-btn px-6 py-4 rounded-[20px] text-white/40 hover:text-white transition-all flex items-center gap-2">
-                <i class="fa-solid fa-calendar-check text-lg"></i>
-            </button>
-        </nav>
-        
-        <!-- Add FAB for Fleet (Only visible on fleet tab) -->
-        <button onclick="openVehicleModal()" id="fab-add" class="fixed bottom-36 right-6 w-[68px] h-[68px] bg-white text-dark rounded-full shadow-[0_10px_30px_rgba(255,255,255,0.3)] text-2xl flex items-center justify-center active:scale-90 transition-transform z-30 hidden">
-            <i class="fa-solid fa-plus font-bold"></i>
-        </button>
-    </div>
-
-    <!-- VEHICLE EDITOR SHEET (FULL SCREEN) -->
-    <div id="vehicle-sheet" class="fixed inset-0 z-50 flex flex-col slide-up-modal closed glass-sheet">
-        <div class="safe-pt px-6 pb-5 flex items-center justify-between shrink-0 border-b border-white/10">
-            <h2 id="modal-title" class="font-black text-2xl text-white tracking-tight">Add Vehicle</h2>
-            <button onclick="closeVehicleModal()" class="w-12 h-12 rounded-full glass-pill flex items-center justify-center text-white/60 active:scale-90"><i class="fa-solid fa-xmark"></i></button>
+            <!-- BOOKINGS -->
+            <div class="tab-panel" id="panel-bookings">
+                <div class="booking-list" id="booking-list"></div>
+            </div>
         </div>
 
-        <div class="flex-1 overflow-y-auto px-6 py-6 pb-36 no-scrollbar">
-            <form id="vehicle-form" class="space-y-6 block">
+        <!-- FAB -->
+        <button class="fab" id="fab" onclick="openEditor()"><i class="fa-solid fa-plus"></i></button>
+
+        <!-- BOTTOM NAV -->
+        <nav class="bottom-nav safe-bottom">
+            <button class="nav-item active" id="nav-dash" onclick="switchTab('dash')">
+                <i class="fa-solid fa-chart-pie"></i><span>Dashboard</span>
+            </button>
+            <button class="nav-item" id="nav-fleet" onclick="switchTab('fleet')">
+                <i class="fa-solid fa-car-side"></i><span>Fleet</span>
+            </button>
+            <button class="nav-item" id="nav-bookings" onclick="switchTab('bookings')">
+                <i class="fa-solid fa-calendar"></i><span>Bookings</span>
+            </button>
+        </nav>
+    </div>
+
+    <!-- EDIT SHEET -->
+    <div class="edit-sheet" id="edit-sheet">
+        <div class="edit-header safe-top">
+            <h2 id="editor-title">Add Vehicle</h2>
+            <button class="edit-close" onclick="closeEditor()"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="edit-body">
+            <form id="vehicle-form">
                 <input type="hidden" id="v-id">
-                
-                <!-- Cloudflare R2 Upload Zone -->
-                <div>
-                    <div class="relative w-full h-56 rounded-[32px] border border-white/10 bg-white/5 flex flex-col items-center justify-center overflow-hidden group">
-                        <input type="file" id="r2-uploader" accept="image/*" class="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-20">
-                        <img id="v-preview" src="" class="absolute inset-0 w-full h-full object-cover hidden z-10">
-                        <div class="absolute inset-0 bg-black/40 z-[15] hidden" id="v-overlay"></div>
-                        <div id="v-upload-ui" class="flex flex-col items-center justify-center z-[16] pointer-events-none">
-                            <i class="fa-solid fa-camera text-4xl mb-3 text-brand-500"></i>
-                            <span id="v-upload-text" class="text-xs font-bold text-white/60 uppercase tracking-widest">Tap to add photo</span>
-                        </div>
-                        <input type="hidden" id="v-image">
+                <div class="upload-zone" id="upload-zone">
+                    <input type="file" id="r2-uploader" accept="image/*">
+                    <img id="v-preview">
+                    <div class="uz-content" id="uz-content">
+                        <i class="fa-solid fa-camera" id="uz-icon"></i>
+                        <span id="uz-text">Tap to upload photo</span>
+                    </div>
+                    <input type="hidden" id="v-image">
+                </div>
+                <div class="form-group">
+                    <label>Vehicle Name</label>
+                    <input type="text" id="v-name" required placeholder="e.g. Toyota Innova">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Category</label>
+                        <select id="v-type">
+                            <option value="SUV">SUV</option>
+                            <option value="Sedan">Sedan</option>
+                            <option value="Electric">Electric</option>
+                            <option value="Luxury">Luxury</option>
+                            <option value="Truck">Truck</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Rate (₹/day)</label>
+                        <input type="number" id="v-rate" required placeholder="1500">
                     </div>
                 </div>
-
-                <div class="space-y-5">
-                    <input type="text" id="v-name" required placeholder="Model Name (e.g. BMW X7)" class="w-full p-5 rounded-[20px] text-base font-bold outline-none placeholder:font-normal placeholder:text-white/30">
-                    <div class="flex gap-4">
-                        <select id="v-type" class="w-full p-5 rounded-[20px] text-sm font-bold outline-none flex-1">
-                            <option value="SUV">SUV</option><option value="Sedan">Sedan</option><option value="Electric">Electric</option><option value="Luxury">Luxury</option><option value="Truck">Truck</option>
-                        </select>
-                        <input type="number" id="v-rate" required placeholder="₹/Day" class="w-full p-5 rounded-[20px] text-sm font-bold outline-none flex-1">
-                    </div>
-                    <input type="text" id="v-plate" placeholder="License Plate" class="w-full p-5 rounded-[20px] text-sm font-bold outline-none uppercase placeholder:font-normal placeholder:text-white/30">
-                    <textarea id="v-desc" rows="3" placeholder="Luxury description..." class="w-full p-5 rounded-[20px] text-sm outline-none placeholder:text-white/30"></textarea>
-                    <input type="text" id="v-feats" placeholder='["Leather", "Sunroof"]' class="w-full p-5 rounded-[20px] text-sm font-mono outline-none placeholder:text-white/20 text-brand-300">
+                <div class="form-group">
+                    <label>Plate Number</label>
+                    <input type="text" id="v-plate" placeholder="KA-01-AB-1234" style="text-transform:uppercase;">
+                </div>
+                <div class="form-group">
+                    <label>Description</label>
+                    <textarea id="v-desc" rows="3" placeholder="Vehicle details shown to customers..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Features (JSON)</label>
+                    <input type="text" id="v-feats" placeholder='["AC", "Bluetooth", "5 Seats"]' style="font-family:monospace;">
                 </div>
             </form>
         </div>
-
-        <div class="fixed bottom-0 inset-x-0 safe-pb px-6 pb-6 pt-4 bg-[#0d0d10]/90 backdrop-blur-xl border-t border-white/5 z-50 shrink-0">
-            <button onclick="saveVehicle()" id="btn-save" class="w-full py-5 bg-white text-dark rounded-[24px] font-black uppercase tracking-wider text-base shadow-[0_0_30px_rgba(255,255,255,0.2)] active:scale-[0.98] transition-all">Save to Fleet</button>
+        <div class="save-bar safe-bottom">
+            <button class="save-btn" id="save-btn" onclick="saveVehicle()">Save Vehicle</button>
         </div>
     </div>
 
     <!-- TOAST -->
-    <div id="toast" class="fixed top-[env(safe-area-inset-top,20px)] left-1/2 -translate-x-1/2 max-w-[90%] z-[1000] flex justify-center mt-4">
-        <div class="px-6 py-4 rounded-[20px] bg-white text-dark shadow-[0_20px_40px_rgba(0,0,0,0.8)] flex items-center gap-3 font-bold text-sm">
-            <i id="toast-icon" class="fa-solid fa-circle-check text-green-500 text-lg"></i>
-            <span id="toast-msg">Updated</span>
-        </div>
-    </div>
+    <div class="toast" id="toast"><div class="toast-inner"><i class="fa-solid fa-check-circle" id="toast-icon"></i><span id="toast-msg">Saved</span></div></div>
 
-    <!-- JS Logic -->
     <script>
         let token = localStorage.getItem('adminToken');
-        let appVehicles = []; let appBookings = [];
+        let vehicles = [], bookings = [];
 
-        if(token) {
-            document.getElementById('login-screen').classList.add('opacity-0', 'pointer-events-none');
-            setTimeout(() => document.getElementById('login-screen').classList.add('hidden'), 500);
-            document.getElementById('app-screen').classList.remove('hidden');
-            loadData();
-        }
+        if(token) { showApp(); loadAll(); }
 
         async function login() {
             const pwd = document.getElementById('admin-pwd').value;
             const btn = event.currentTarget;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+            btn.textContent = 'Signing in...';
             try {
-                const res = await fetch('/api/login', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({password: pwd}) });
-                const data = await res.json();
-                if(data.success) {
-                    token = data.token; localStorage.setItem('adminToken', token);
-                    document.getElementById('login-screen').classList.add('opacity-0');
-                    setTimeout(() => { document.getElementById('login-screen').classList.add('hidden'); document.getElementById('app-screen').classList.remove('hidden'); loadData(); }, 300);
-                } else { toast(data.message || 'Denied', true); btn.innerHTML = 'AUTHORIZE <i class="fa-solid fa-arrow-right ml-2 opacity-50"></i>'; }
-            } catch(e) { toast("Network Error", true); btn.innerHTML = 'AUTHORIZE'; }
+                const res = await fetch('/api/login', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({password:pwd})});
+                const d = await res.json();
+                if(d.success) { token = d.token; localStorage.setItem('adminToken',token); showApp(); loadAll(); }
+                else { toast(d.message||'Wrong password',true); btn.textContent='Sign In'; }
+            } catch(e) { toast('Network error',true); btn.textContent='Sign In'; }
+        }
+
+        function showApp() {
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('app-screen').style.display='block';
         }
 
         function logout() { localStorage.removeItem('adminToken'); location.reload(); }
 
-        function switchTab(tabId) {
-            ['dashboard', 'fleet', 'bookings'].forEach(t => {
-                document.getElementById(`tab-${t}`).classList.add('hidden');
-                document.getElementById(`nav-${t}`).classList.remove('bg-white/10', 'text-white');
-                document.getElementById(`nav-${t}`).classList.add('text-white/40');
+        function switchTab(id) {
+            ['dash','fleet','bookings'].forEach(t => {
+                document.getElementById('panel-'+t).classList.remove('active');
+                document.getElementById('nav-'+t).classList.remove('active');
             });
-            document.getElementById(`tab-${tabId}`).classList.remove('hidden');
-            document.getElementById(`nav-${tabId}`).classList.remove('text-white/40');
-            document.getElementById(`nav-${tabId}`).classList.add('bg-white/10', 'text-white');
+            document.getElementById('panel-'+id).classList.add('active');
+            document.getElementById('nav-'+id).classList.add('active');
 
-            const titles = { dashboard: ['Metrics', "Today's Pulse"], fleet: ['Fleet', 'Manage Units'], bookings: ['Bookings', 'Rental Log']};
-            document.getElementById('header-title').textContent = titles[tabId][0];
-            document.getElementById('header-sub').textContent = titles[tabId][1];
-            
-            const fab = document.getElementById('fab-add');
-            tabId === 'fleet' ? fab.classList.remove('hidden') : fab.classList.add('hidden');
+            const titles = {dash:['Dashboard','Overview'],fleet:['Fleet','Manage Vehicles'],bookings:['Bookings','Reservations']};
+            document.getElementById('page-title').textContent = titles[id][0];
+            document.getElementById('page-sub').textContent = titles[id][1];
 
-            if(tabId === 'fleet') renderFleet();
-            if(tabId === 'bookings') loadBookings();
+            document.getElementById('fab').classList.toggle('show', id==='fleet');
+            if(id==='fleet') renderFleet();
+            if(id==='bookings') loadBookings();
         }
 
-        async function loadData() {
+        async function loadAll() {
             try {
-                const res = await fetch('/api/vehicles', {headers: {'Authorization': `Bearer ${token}`}});
-                if(res.status === 401) return logout();
-                const d = await res.json();
-                if(d.success) { appVehicles = d.data; updateDash(); if(document.getElementById('tab-fleet').classList.contains('hidden')===false) renderFleet(); }
-            } catch(e) { toast("API Error", true); }
+                const r = await fetch('/api/vehicles',{headers:{'Authorization':'Bearer '+token}});
+                if(r.status===401) return logout();
+                const d = await r.json();
+                if(d.success) { vehicles = d.data; updateStats(); }
+            } catch(e){}
+            loadBookings();
         }
 
         async function loadBookings() {
             try {
-                const res = await fetch('/api/bookings', {headers: {'Authorization': `Bearer ${token}`}});
-                if(res.status === 401) return logout();
-                const d = await res.json();
-                if(d.success) { appBookings = d.data; renderBookings(); }
-            } catch(e) {}
+                const r = await fetch('/api/bookings',{headers:{'Authorization':'Bearer '+token}});
+                const d = await r.json();
+                if(d.success) { bookings = d.data; updateStats(); renderBookings(); }
+            } catch(e){}
         }
 
-        function updateDash() {
-            document.getElementById('stat-fleet').textContent = appVehicles.length;
-            document.getElementById('stat-active').textContent = appVehicles.filter(v => v.is_available === 0 || v.is_available === false).length;
-            fetch('/api/bookings', {headers: {'Authorization': `Bearer ${token}`}}).then(r=>r.json()).then(d=>{
-                if(d.success) {
-                    const total = d.data.reduce((sum, b) => sum + parseInt(b.total_price||0), 0);
-                    document.getElementById('stat-rev').textContent = '₹' + total.toLocaleString();
-                }
-            });
-        }
-
-        document.getElementById('r2-uploader').addEventListener('change', async (e) => {
-            const file = e.target.files[0]; if(!file) return;
-            const uiStatus = document.getElementById('v-upload-text');
-            const icon = document.getElementById('v-upload-ui').querySelector('i');
-            
-            uiStatus.textContent = "UPLOADING TO R2...";
-            icon.className = "fa-solid fa-spinner fa-spin text-4xl mb-3 text-brand-400";
-            
-            const formData = new FormData(); formData.append('image', file);
-            try {
-                const res = await fetch('/api/upload', { method: 'POST', headers: { 'Authorization': `Bearer ${token}` }, body: formData });
-                const data = await res.json();
-                if(data.success) {
-                    document.getElementById('v-image').value = data.url;
-                    const r = new FileReader(); r.onload = function(e) {
-                        document.getElementById('v-preview').src = e.target.result;
-                        document.getElementById('v-preview').classList.remove('hidden');
-                        document.getElementById('v-overlay').classList.remove('hidden');
-                        icon.className = "fa-solid fa-check text-4xl mb-3 text-white shadow-lg";
-                        uiStatus.textContent = "IMAGE SECURED";
-                        document.getElementById('v-upload-ui').classList.add('text-white');
-                    }; r.readAsDataURL(file);
-                } else { toast("Upload failed", true); resetUploadUI(); }
-            } catch(err) { toast("Network error", true); resetUploadUI(); }
-        });
-
-        function resetUploadUI() {
-            const uiStatus = document.getElementById('v-upload-text');
-            const icon = document.getElementById('v-upload-ui').querySelector('i');
-            uiStatus.textContent = "Tap to add photo";
-            icon.className = "fa-solid fa-camera text-4xl mb-3 text-brand-500";
-            document.getElementById('v-upload-ui').classList.remove('text-white');
-        }
-
-        function openVehicleModal(v = null) {
-            document.getElementById('vehicle-form').reset();
-            document.getElementById('v-id').value = '';
-            document.getElementById('v-preview').classList.add('hidden');
-            document.getElementById('v-overlay').classList.add('hidden');
-            resetUploadUI();
-
-            if(v) {
-                document.getElementById('modal-title').textContent = 'Modify Asset';
-                document.getElementById('v-id').value = v.id; document.getElementById('v-name').value = v.name;
-                document.getElementById('v-type').value = v.type; document.getElementById('v-rate').value = v.daily_rate;
-                document.getElementById('v-plate').value = v.plate_number; document.getElementById('v-desc').value = v.description;
-                document.getElementById('v-feats').value = v.features; document.getElementById('v-image').value = v.image_url;
-                if(v.image_url) {
-                    document.getElementById('v-preview').src = v.image_url;
-                    document.getElementById('v-preview').classList.remove('hidden');
-                    document.getElementById('v-overlay').classList.remove('hidden');
-                    document.getElementById('v-upload-text').textContent = "CHANGE PHOTO";
-                }
-            } else { document.getElementById('modal-title').textContent = 'Add Fleet Vehicle'; }
-
-            const sheet = document.getElementById('vehicle-sheet');
-            sheet.classList.remove('closed'); sheet.classList.add('open');
-        }
-
-        function closeVehicleModal() { document.getElementById('vehicle-sheet').classList.remove('open'); document.getElementById('vehicle-sheet').classList.add('closed'); }
-
-        async function saveVehicle() {
-            const id = document.getElementById('v-id').value;
-            const btn = document.getElementById('btn-save'); btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-            const payload = {
-                name: document.getElementById('v-name').value, type: document.getElementById('v-type').value,
-                daily_rate: document.getElementById('v-rate').value, image_url: document.getElementById('v-image').value,
-                plate_number: document.getElementById('v-plate').value, description: document.getElementById('v-desc').value,
-                features: document.getElementById('v-feats').value || "[]"
-            };
-            try {
-                const res = await fetch('/api/vehicles', { method: id ? 'PUT' : 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }, body: JSON.stringify(id ? {id, ...payload} : payload) });
-                if(res.ok) { toast('Fleet Updated'); closeVehicleModal(); loadData(); } else { toast("Error", true); }
-            } catch(e) { toast("Error", true); }
-            btn.innerHTML = 'Save to Fleet';
-        }
-
-        async function toggleAvailability(id, is_available) {
-            try { fetch('/api/vehicles', { method: 'PUT', headers: {'Content-Type': 'application/json', 'Authorization':`Bearer ${token}`}, body: JSON.stringify({id, is_available: !is_available}) }).then(() => loadData()); } catch(e){}
-        }
-
-        async function delVehicle(id) {
-            if(!confirm("Erase vehicle permanently?")) return;
-            try { const res = await fetch(`/api/vehicles?id=${id}`, { method: 'DELETE', headers: {'Authorization':`Bearer ${token}`} }); if(res.ok) { loadData(); } } catch(e){}
+        function updateStats() {
+            const avail = vehicles.filter(v=>v.is_available===1||v.is_available===true).length;
+            document.getElementById('st-fleet').textContent = vehicles.length;
+            document.getElementById('st-avail').textContent = avail;
+            document.getElementById('st-rented').textContent = vehicles.length - avail;
+            document.getElementById('st-bookings').textContent = bookings.length;
+            const rev = bookings.reduce((s,b)=>s+parseInt(b.total_price||0),0);
+            document.getElementById('st-revenue').textContent = '₹'+rev.toLocaleString();
         }
 
         function renderFleet() {
-            const list = document.getElementById('fleet-list'); list.innerHTML = '';
-            if(!appVehicles.length) return list.innerHTML = '<p class="text-center text-white/40 mt-10 text-sm font-bold tracking-widest uppercase">No vehicles deployed</p>';
-            
-            appVehicles.forEach((v,i) => {
-                const isAvail = v.is_available === 1 || v.is_available === true;
-                list.innerHTML += `
-                    <div class="glass-card rounded-[28px] overflow-hidden flex flex-col transform transition-all animate-fade-up" style="animation-delay: ${i*0.05}s">
-                        <div class="flex gap-4 p-4">
-                            <div class="w-28 h-28 rounded-[20px] bg-white/5 shrink-0 overflow-hidden relative">
-                                <img src="${v.image_url}" class="w-full h-full object-cover">
-                                ${!isAvail ? '<div class="absolute inset-0 bg-red-500/80 backdrop-blur flex items-center justify-center"><i class="fa-solid fa-lock text-white"></i></div>':''}
+            const el = document.getElementById('fleet-list');
+            if(!vehicles.length) { el.innerHTML='<div class="empty-msg">No vehicles yet. Tap + to add.</div>'; return; }
+            el.innerHTML = vehicles.map(v => {
+                const avail = v.is_available===1||v.is_available===true;
+                return `
+                <div class="fleet-card">
+                    <div class="fc-top">
+                        <img class="fc-img" src="${v.image_url}" onerror="this.src='https://images.unsplash.com/photo-1542282088-fe8426682b8f?w=300'">
+                        <div class="fc-info">
+                            <div class="fc-name">${v.name}</div>
+                            <div class="fc-meta">
+                                <span class="fc-tag">${v.type}</span>
+                                ${v.plate_number?`<span class="fc-plate">${v.plate_number}</span>`:''}
+                                <span class="fc-status ${avail?'avail':'rented'}">${avail?'● Available':'● Rented'}</span>
                             </div>
-                            <div class="flex-1 py-1 flex flex-col justify-between">
-                                <div>
-                                    <h3 class="font-black text-xl leading-none text-white tracking-tight mb-1">${v.name}</h3>
-                                    <span class="text-[10px] font-bold text-brand-400 uppercase tracking-widest">${v.type}</span>
-                                </div>
-                                <div class="text-2xl font-black text-white">₹${v.daily_rate}<span class="text-xs text-white/40 uppercase tracking-widest font-bold ml-1">/d</span></div>
-                            </div>
-                        </div>
-                        <div class="flex border-t border-white/5">
-                            <button onclick='openVehicleModal(${JSON.stringify(v).replace(/'/g, "&#39;")})' class="flex-1 py-4 text-white hover:bg-white/5 transition-colors"><i class="fa-solid fa-pen"></i></button>
-                            <div class="w-px bg-white/5"></div>
-                            <button onclick='toggleAvailability(${v.id}, ${isAvail})' class="flex-1 py-4 text-white hover:bg-white/5 transition-colors"><i class="fa-solid ${isAvail ? 'fa-eye' : 'fa-eye-slash text-red-400'}"></i></button>
-                            <div class="w-px bg-white/5"></div>
-                            <button onclick='delVehicle(${v.id})' class="flex-1 py-4 text-red-500 hover:bg-white/5 transition-colors"><i class="fa-solid fa-trash-can"></i></button>
+                            <div class="fc-price">₹${v.daily_rate}<span>/day</span></div>
                         </div>
                     </div>
-                `;
-            });
+                    <div class="fc-actions">
+                        <button class="act-edit" onclick='openEditor(${JSON.stringify(v).replace(/'/g,"&#39;")})'><i class="fa-solid fa-pen"></i> Edit</button>
+                        <button class="act-toggle" onclick="toggleAvail(${v.id},${avail})"><i class="fa-solid fa-${avail?'eye-slash':'eye'}"></i> ${avail?'Hide':'Show'}</button>
+                        <button class="act-delete" onclick="delVehicle(${v.id})"><i class="fa-solid fa-trash"></i> Delete</button>
+                    </div>
+                </div>`;
+            }).join('');
         }
 
         function renderBookings() {
-            const list = document.getElementById('bookings-list'); list.innerHTML = '';
-            if(!appBookings.length) return list.innerHTML = '<p class="text-center text-white/40 mt-10 text-sm font-bold tracking-widest uppercase">No pending action</p>';
-
-            appBookings.forEach(b => {
-                const c = { 'pending': 'bg-amber-500/20 text-amber-400 border-amber-500/30', 'confirmed': 'bg-blue-500/20 text-blue-400 border-blue-500/30', 'completed': 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30', 'cancelled': 'bg-red-500/20 text-red-400 border-red-500/30' }[b.status] || 'bg-white/10 text-white';
-                list.innerHTML += `
-                    <div class="glass-card p-5 rounded-[28px]">
-                        <div class="flex justify-between items-start mb-4 border-b border-white/5 pb-4">
-                            <div>
-                                <h4 class="font-black text-xl text-white tracking-tight leading-none mb-1">${b.customer_name}</h4>
-                                <p class="text-[10px] font-bold text-white/40 tracking-widest uppercase">${b.start_date.slice(5)} to ${b.end_date.slice(5)}</p>
-                            </div>
-                            <span class="text-[9px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full border ${c}">${b.status}</span>
+            const el = document.getElementById('booking-list');
+            if(!bookings.length) { el.innerHTML='<div class="empty-msg">No bookings yet.</div>'; return; }
+            el.innerHTML = bookings.map(b => `
+                <div class="booking-card">
+                    <div class="bc-top">
+                        <div>
+                            <div class="bc-name">${b.customer_name}</div>
+                            <div class="bc-dates">${b.start_date} → ${b.end_date}</div>
                         </div>
-                        <div class="flex justify-between items-end mb-4">
-                            <div><p class="text-[10px] uppercase font-bold text-white/30 tracking-widest mb-0.5">Asset Req</p><p class="font-bold text-white/90 text-sm">${b.vehicle_name}</p></div>
-                            <div class="text-right"><p class="text-[10px] uppercase font-bold text-brand-500 tracking-widest mb-0.5">Value</p><p class="font-black text-white text-2xl leading-none">₹${b.total_price}</p></div>
-                        </div>
-                        <div class="flex gap-2">
-                            <button onclick="updateBooking(${b.id}, 'confirmed')" class="flex-1 py-3 rounded-[16px] bg-white/5 text-white text-xs font-bold uppercase tracking-wider active:scale-95 text-blue-400">Confirm</button>
-                            <button onclick="updateBooking(${b.id}, 'completed')" class="flex-1 py-3 rounded-[16px] bg-white/5 text-white text-xs font-bold uppercase tracking-wider active:scale-95 text-emerald-400">End</button>
-                            <button onclick="updateBooking(${b.id}, 'cancelled')" class="flex-1 py-3 rounded-[16px] bg-white/5 text-white text-xs font-bold uppercase tracking-wider active:scale-95 text-red-400 opacity-50">Kill</button>
-                        </div>
+                        <span class="bc-badge ${b.status}">${b.status}</span>
                     </div>
-                `;
-            });
+                    <div class="bc-detail-row">
+                        <span class="bc-label">Vehicle</span>
+                        <span class="bc-val">${b.vehicle_name||'—'}</span>
+                    </div>
+                    <div class="bc-detail-row">
+                        <span class="bc-label">Revenue</span>
+                        <span class="bc-val price">₹${parseInt(b.total_price||0).toLocaleString()}</span>
+                    </div>
+                    <div class="bc-actions">
+                        <button class="ba-confirm" onclick="updateBooking(${b.id},'confirmed')">Confirm</button>
+                        <button class="ba-complete" onclick="updateBooking(${b.id},'completed')">Complete</button>
+                        <button class="ba-cancel" onclick="updateBooking(${b.id},'cancelled')">Cancel</button>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        async function updateBooking(id, status) { try { await fetch('/api/bookings', { method: 'PUT', headers: {'Content-Type': 'application/json', 'Authorization':`Bearer ${token}`}, body: JSON.stringify({id, status}) }); loadBookings(); } catch(e){} }
-
-        function toast(msg, isErr=false) {
-            const t = document.getElementById('toast'); document.getElementById('toast-msg').textContent = msg;
-            document.getElementById('toast-icon').className = isErr ? 'fa-solid fa-triangle-exclamation text-red-500 text-lg' : 'fa-solid fa-circle-check text-green-400 text-lg';
-            t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2500);
+        async function updateBooking(id,status) {
+            try {
+                await fetch('/api/bookings',{method:'PUT',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({id,status})});
+                toast('Booking updated'); loadBookings();
+            } catch(e){}
         }
-        if ('serviceWorker' in navigator) { navigator.serviceWorker.getRegistrations().then(r => r.forEach(reg => reg.update())); }
+
+        /* EDITOR */
+        function openEditor(v=null) {
+            document.getElementById('vehicle-form').reset();
+            document.getElementById('v-id').value='';
+            document.getElementById('v-preview').style.display='none';
+            document.getElementById('uz-content').style.opacity='1';
+            document.getElementById('uz-icon').className='fa-solid fa-camera';
+            document.getElementById('uz-text').textContent='Tap to upload photo';
+
+            if(v) {
+                document.getElementById('editor-title').textContent='Edit Vehicle';
+                document.getElementById('v-id').value=v.id;
+                document.getElementById('v-name').value=v.name;
+                document.getElementById('v-type').value=v.type;
+                document.getElementById('v-rate').value=v.daily_rate;
+                document.getElementById('v-plate').value=v.plate_number||'';
+                document.getElementById('v-desc').value=v.description||'';
+                document.getElementById('v-feats').value=v.features||'';
+                document.getElementById('v-image').value=v.image_url||'';
+                if(v.image_url) {
+                    document.getElementById('v-preview').src=v.image_url;
+                    document.getElementById('v-preview').style.display='block';
+                    document.getElementById('uz-text').textContent='Tap to change';
+                }
+            } else { document.getElementById('editor-title').textContent='Add Vehicle'; }
+
+            document.getElementById('edit-sheet').classList.add('open');
+        }
+
+        function closeEditor() { document.getElementById('edit-sheet').classList.remove('open'); }
+
+        // R2 Upload
+        document.getElementById('r2-uploader').addEventListener('change', async (e) => {
+            const file = e.target.files[0]; if(!file) return;
+            document.getElementById('uz-icon').className='fa-solid fa-spinner fa-spin';
+            document.getElementById('uz-text').textContent='Uploading...';
+
+            const fd = new FormData(); fd.append('image',file);
+            try {
+                const r = await fetch('/api/upload',{method:'POST',headers:{'Authorization':'Bearer '+token},body:fd});
+                const d = await r.json();
+                if(d.success) {
+                    document.getElementById('v-image').value=d.url;
+                    const reader = new FileReader();
+                    reader.onload = (ev) => {
+                        document.getElementById('v-preview').src=ev.target.result;
+                        document.getElementById('v-preview').style.display='block';
+                        document.getElementById('uz-icon').className='fa-solid fa-check-circle';
+                        document.getElementById('uz-text').textContent='Uploaded ✓';
+                    };
+                    reader.readAsDataURL(file);
+                } else { toast('Upload failed',true); resetUZ(); }
+            } catch(e) { toast('Upload error',true); resetUZ(); }
+        });
+
+        function resetUZ() {
+            document.getElementById('uz-icon').className='fa-solid fa-camera';
+            document.getElementById('uz-text').textContent='Tap to upload photo';
+        }
+
+        async function saveVehicle() {
+            const id = document.getElementById('v-id').value;
+            const btn = document.getElementById('save-btn'); btn.textContent='Saving...';
+            const payload = {
+                name:document.getElementById('v-name').value, type:document.getElementById('v-type').value,
+                daily_rate:document.getElementById('v-rate').value, image_url:document.getElementById('v-image').value,
+                plate_number:document.getElementById('v-plate').value, description:document.getElementById('v-desc').value,
+                features:document.getElementById('v-feats').value||'[]'
+            };
+            try {
+                const r = await fetch('/api/vehicles',{method:id?'PUT':'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify(id?{id,...payload}:payload)});
+                if(r.ok) { toast(id?'Vehicle updated':'Vehicle added'); closeEditor(); loadAll(); } else toast('Error',true);
+            } catch(e) { toast('Error',true); }
+            btn.textContent='Save Vehicle';
+        }
+
+        async function toggleAvail(id,avail) {
+            try { await fetch('/api/vehicles',{method:'PUT',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},body:JSON.stringify({id,is_available:!avail})}); loadAll(); renderFleet(); } catch(e){}
+        }
+
+        async function delVehicle(id) {
+            if(!confirm('Delete this vehicle permanently?')) return;
+            try { await fetch('/api/vehicles?id='+id,{method:'DELETE',headers:{'Authorization':'Bearer '+token}}); toast('Deleted'); loadAll(); renderFleet(); } catch(e){}
+        }
+
+        function toast(msg,isErr=false) {
+            document.getElementById('toast-msg').textContent=msg;
+            document.getElementById('toast-icon').className=isErr?'fa-solid fa-exclamation-circle':'fa-solid fa-check-circle';
+            document.getElementById('toast-icon').style.color=isErr?'#FF3B30':'#34C759';
+            const t=document.getElementById('toast'); t.classList.add('show');
+            setTimeout(()=>t.classList.remove('show'),2500);
+        }
+
+        if('serviceWorker' in navigator) navigator.serviceWorker.getRegistrations().then(r=>r.forEach(reg=>reg.update()));
     </script>
 </body>
 </html>
