@@ -1,1 +1,18 @@
-{ "name": "car-rental", "pages_build_output_dir": ".", "compatibility_date": "2024-01-01", "d1_databases": [{"binding": "DB", "database_name": "car-rental-db", "database_id": "ea218514-1bc0-4b1a-8fe0-027c464a14ca"}] }
+{
+  "name": "car-rental",
+  "pages_build_output_dir": ".",
+  "compatibility_date": "2024-01-01",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "car-rental-db",
+      "database_id": "ea218514-1bc0-4b1a-8fe0-027c464a14ca"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "R2_BUCKET",
+      "bucket_name": "benaka-assets"
+    }
+  ]
+}
