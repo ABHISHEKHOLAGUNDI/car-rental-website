@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Benaka Travels - Dashboard</title>
+    <title>Benaka Travels - Client Portal</title>
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#f3f4f6">
     <script src="https://cdn.tailwindcss.com"></script>
@@ -12,101 +12,125 @@
             theme: {
                 extend: {
                     colors: {
-                        sidebar: '#2c3746',
-                        sidebarActive: '#3a4759',
+                        sidebar: '#1e293b',
+                        sidebarHover: '#334155',
                         brandBlue: '#0ea5e9',
-                        bgLight: '#f4f6f8'
+                        brandLight: '#e0f2fe'
                     },
                     fontFamily: { sans: ['"Inter"', 'sans-serif'] }
                 }
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     
     <style>
-        body { font-family: 'Inter', sans-serif; background-color: #f4f6f8; color: #1e293b; }
+        body { font-family: 'Inter', sans-serif; background-color: #f8fafc; color: #0f172a; overflow-x: hidden; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
         
-        /* Grid Layout System */
+        /* Layout Structure */
         .layout-wrapper { display: flex; min-height: 100vh; }
-        .sidebar { width: 240px; background-color: #2c3746; color: #94a3b8; flex-shrink: 0; display: flex; flex-direction: column; transition: transform 0.3s; }
+        .sidebar { width: 250px; background-color: #1e293b; color: #94a3b8; flex-shrink: 0; display: flex; flex-direction: column; transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1); z-index: 50; }
         .main-container { flex: 1; display: flex; flex-direction: column; min-width: 0; }
         
-        .nav-item { display: flex; align-items: center; padding: 16px 24px; gap: 12px; cursor: pointer; transition: 0.2s; font-weight: 500; font-size: 14px; border-left: 4px solid transparent; }
-        .nav-item:hover { color: #f8fafc; background: #3a4759; }
-        .nav-item.active { background: #3a4759; color: #fff; border-left-color: #0ea5e9; }
-        
-        .topbar { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 0 24px; height: 72px; display: flex; justify-content: space-between; align-items: center; }
+        .nav-item { display: flex; align-items: center; padding: 14px 24px; gap: 14px; cursor: pointer; transition: all 0.2s; font-weight: 500; font-size: 14px; border-left: 4px solid transparent; }
+        .nav-item:hover { color: #f8fafc; background: #334155; }
+        .nav-item.active { background: #334155; color: #fff; border-left-color: #0ea5e9; font-weight: 600; }
+        .nav-item i { width: 20px; text-align: center; }
+
+        .topbar { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 0 24px; height: 72px; display: flex; justify-content: space-between; align-items: center; z-index: 40; position: sticky; top: 0; }
         .topbar-tabs { display: flex; height: 100%; overflow-x: auto; scrollbar-width: none; }
-        .topbar-tab { padding: 0 20px; font-weight: 600; font-size: 14px; color: #64748b; display: flex; align-items: center; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
+        .topbar-tab { padding: 0 20px; font-weight: 600; font-size: 14px; color: #64748b; display: flex; align-items: center; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; transition: 0.2s; }
+        .topbar-tab:hover { color: #0ea5e9; }
         .topbar-tab.active { color: #0ea5e9; border-bottom-color: #0ea5e9; }
         
+        /* Dashboard Grids */
         .dashboard-grid { 
             display: grid; padding: 24px; gap: 24px; 
-            grid-template-columns: 320px 1fr 280px; 
+            grid-template-columns: minmax(320px, 1.2fr) minmax(300px, 1fr) 280px; 
             grid-template-areas: 
                 "welcome current actions"
                 "fleet fleet fleet"
                 "activity activity activity";
         }
 
-        .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 4px rgba(100,116,133,0.05); border: 1px solid #e2e8f0; padding: 24px; }
-        .card-header { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
+        .card { background: #fff; border-radius: 16px; box-shadow: 0 2px 10px rgba(15,23,42,0.03); border: 1px solid #e2e8f0; padding: 24px; transition: box-shadow 0.2s; }
+        .card:hover { box-shadow: 0 6px 20px rgba(15,23,42,0.06); }
+        .card-header { font-size: 17px; font-weight: 800; color: #0f172a; margin-bottom: 16px; letter-spacing: -0.3px; }
 
-        /* Vehicle Fleet Cards */
         .fleet-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
-        .vehicle-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; transition: transform 0.2s; display: flex; flex-direction: column; }
-        .vehicle-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(100,116,133,0.1); }
-        .vehicle-img { width: 100%; height: 140px; object-fit: cover; border-radius: 8px; margin-bottom: 16px; background: #f8fafc; }
+        .vehicle-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 16px; padding: 16px; transition: transform 0.2s, box-shadow 0.2s; display: flex; flex-direction: column; cursor: pointer; }
+        .vehicle-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(15,23,42,0.08); border-color: #cbd5e1; }
+        .vehicle-img { width: 100%; height: 160px; object-fit: cover; border-radius: 12px; margin-bottom: 16px; background: #f8fafc; }
         
         table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 12px 16px; color: #64748b; font-weight: 600; font-size: 13px; border-bottom: 1px solid #e2e8f0; }
-        td { padding: 16px; border-bottom: 1px solid #f1f5f9; font-size: 14px; color: #1e293b; font-weight: 500; }
-        .status-badge { padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+        th { text-align: left; padding: 16px; color: #64748b; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 1px solid #e2e8f0; }
+        td { padding: 18px 16px; border-bottom: 1px solid #f1f5f9; font-size: 14px; color: #334155; font-weight: 500; }
+        tr:hover td { background: #f8fafc; }
+        
+        .status-badge { padding: 4px 12px; border-radius: 999px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+        .status-pending { background: #fef3c7; color: #d97706; }
+        .status-confirmed { background: #e0f2fe; color: #0284c7; }
+        .status-completed { background: #dcfce7; color: #16a34a; }
+        .status-cancelled { background: #fee2e2; color: #dc2626; }
 
-        /* Mobile View toggle */
-        @media (max-width: 1024px) {
+        @media (max-width: 1100px) {
+            .dashboard-grid { grid-template-columns: 1fr 1fr; grid-template-areas: "welcome welcome" "current actions" "fleet fleet" "activity activity"; }
+        }
+        @media (max-width: 768px) {
             .dashboard-grid { grid-template-columns: 1fr; grid-template-areas: "welcome" "current" "actions" "fleet" "activity"; }
-            .sidebar { position: fixed; z-index: 50; height: 100%; transform: translateX(-100%); width: 260px; }
-            .sidebar.mobile-open { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,0.2); }
-            .mobile-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 40; }
+            .sidebar { position: fixed; height: 100%; transform: translateX(-100%); }
+            .sidebar.mobile-open { transform: translateX(0); box-shadow: 10px 0 30px rgba(0,0,0,0.15); }
+            .mobile-overlay { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.4); backdrop-filter: blur(2px); z-index: 40; }
             .mobile-overlay.active { display: block; }
         }
 
-        /* Modals mapped to sheet concepts */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 100; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
+        /* View Management */
+        .app-view { display: none; animation: fadeIn 0.3s ease-out; }
+        .app-view.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Fancy Search Box */
+        .search-wrapper { position: relative; display: flex; align-items: center; background: #fff; border: 2px solid #e2e8f0; border-radius: 12px; overflow: hidden; transition: all 0.2s; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .search-wrapper:focus-within { border-color: #0ea5e9; box-shadow: 0 0 0 4px rgba(14,165,233,0.1); }
+        .search-wrapper i { padding: 0 16px; color: #94a3b8; font-size: 18px; }
+        .search-wrapper input { flex: 1; padding: 16px 16px 16px 0; border: none; outline: none; font-size: 16px; font-weight: 500; color: #0f172a; }
+
+        /* Booking Modal */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.6); backdrop-filter: blur(4px); z-index: 100; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
         .modal.open { display: flex; opacity: 1; }
-        .modal-content { background: #fff; width: 100%; max-width: 480px; border-radius: 16px; padding: 24px; transform: scale(0.95); transition: 0.2s; max-height: 90vh; overflow-y: auto; }
-        .modal.open .modal-content { transform: scale(1); }
+        .modal-content { background: #fff; width: 100%; max-width: 500px; border-radius: 20px; padding: 28px; transform: scale(0.95) translateY(20px); transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1); max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 40px rgba(0,0,0,0.2); }
+        .modal.open .modal-content { transform: scale(1) translateY(0); }
         
-        .input-group { margin-bottom: 16px; }
-        .input-group label { display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px; }
-        .input-group input { width: 100%; padding: 12px 16px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; transition: border 0.2s; font-size: 14px; font-weight: 500;}
-        .input-group input:focus { border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14,165,233,0.1); }
+        .input-group { margin-bottom: 20px; }
+        .input-group label { display: block; font-size: 13px; font-weight: 700; color: #475569; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .input-group input { width: 100%; padding: 14px 16px; border: 2px solid #e2e8f0; border-radius: 10px; outline: none; transition: all 0.2s; font-size: 15px; font-weight: 600; color: #0f172a; background: #fafafa; }
+        .input-group input:focus { border-color: #0ea5e9; background: #fff; box-shadow: 0 4px 12px rgba(14,165,233,0.1); }
     </style>
 </head>
 <body>
 
     <div class="layout-wrapper">
-        <!-- Overlay for mobile sidebar -->
         <div class="mobile-overlay" id="mobile-overlay" onclick="toggleSidebar()"></div>
 
         <!-- SIDEBAR -->
-        <aside class="sidebar flex flex-col" id="sidebar">
-            <div class="h-[72px] flex items-center px-6 border-b border-[#3a4759] shrink-0 bg-[#232c3a]">
-                <div class="w-8 h-8 rounded-lg bg-brandBlue flex items-center justify-center text-white font-bold text-xl mr-3 shadow-lg shadow-brandBlue/30">B</div>
-                <span class="text-white font-bold text-xl tracking-tight">Benaka</span>
+        <aside class="sidebar" id="sidebar">
+            <div class="h-[72px] flex items-center px-6 border-b border-slate-700/50 shrink-0 bg-[#161f2e]">
+                <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-brandBlue to-blue-600 flex items-center justify-center text-white font-black text-xl mr-3 shadow-lg shadow-brandBlue/30 border border-white/10">B</div>
+                <span class="text-white font-bold text-[19px] tracking-tight">Benaka</span>
             </div>
             
-            <div class="py-6 flex-1 flex flex-col gap-1 overflow-y-auto">
-                <a href="#" class="nav-item active"><i class="fa-solid fa-house w-5"></i> Home</a>
-                <a href="#fleet" class="nav-item"><i class="fa-solid fa-car w-5"></i> Vehicles</a>
-                <a href="#activity" class="nav-item"><i class="fa-solid fa-map-location-dot w-5"></i> Trips</a>
-                <a href="#activity" class="nav-item"><i class="fa-solid fa-clock-rotate-left w-5"></i> History</a>
-                <a href="/admin.html" class="nav-item mt-auto border-t border-[#3a4759] pt-4"><i class="fa-solid fa-shield-halved w-5"></i> Admin Control</a>
+            <div class="py-6 flex-1 flex flex-col gap-1 overflow-y-auto px-3">
+                <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-4 mb-2">Main Menu</div>
+                <a onclick="switchView('dashboard')" class="nav-item rounded-lg active" data-nav="dashboard"><i class="fa-solid fa-house"></i> Home Dashboard</a>
+                <a onclick="switchView('vehicles')" class="nav-item rounded-lg" data-nav="vehicles"><i class="fa-solid fa-car"></i> Browse Vehicles</a>
+                <a onclick="switchView('activity')" class="nav-item rounded-lg" data-nav="activity"><i class="fa-solid fa-map-location-dot"></i> My Trips</a>
+                <a onclick="switchView('activity')" class="nav-item rounded-lg" data-nav="activity"><i class="fa-solid fa-clock-rotate-left"></i> History Log</a>
+                
+                <div class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-4 mb-2 mt-8">System</div>
+                <a href="/admin.html" class="nav-item rounded-lg hover:text-white hover:bg-slate-800"><i class="fa-solid fa-shield-halved"></i> Admin Control</a>
             </div>
         </aside>
 
@@ -115,158 +139,199 @@
             <!-- TOPNAV -->
             <header class="topbar">
                 <div class="flex items-center h-full flex-1 min-w-0">
-                    <button class="lg:hidden text-slate-500 mr-4 text-xl" onclick="toggleSidebar()">
+                    <button class="md:hidden text-slate-500 hover:text-slate-800 mr-4 text-xl w-10 h-10 rounded-full hover:bg-slate-100 flex items-center justify-center transition" onclick="toggleSidebar()">
                         <i class="fa-solid fa-bars"></i>
                     </button>
-                    <div class="topbar-tabs hidden md:flex">
-                        <div class="topbar-tab active">Dashboard</div>
-                        <div class="topbar-tab">Browse Vehicles</div>
-                        <div class="topbar-tab">My Bookings</div>
-                    </div>
                     <div class="font-bold text-lg md:hidden text-slate-800">Benaka Travels</div>
+                    
+                    <div class="topbar-tabs hidden md:flex">
+                        <div onclick="switchView('dashboard')" class="topbar-tab active" data-nav="dashboard">Dashboard</div>
+                        <div onclick="switchView('vehicles')" class="topbar-tab" data-nav="vehicles">Browse Vehicles</div>
+                        <div onclick="switchView('activity')" class="topbar-tab" data-nav="activity">My Bookings</div>
+                    </div>
                 </div>
                 
                 <div class="flex items-center gap-6 shrink-0">
-                    <div class="hidden sm:flex items-center gap-3">
-                        <img src="https://ui-avatars.com/api/?name=Guest+User&background=0D8ABC&color=fff" class="w-9 h-9 border border-indigo-100 rounded-full">
-                        <div>
-                            <div class="text-sm font-bold leading-tight">Guest User <i class="fa-solid fa-chevron-down text-xs ml-1 text-slate-400"></i></div>
-                        </div>
-                    </div>
-                    <div class="flex items-center gap-4 text-slate-400">
-                        <i class="fa-regular fa-bell hover:text-slate-600 cursor-pointer text-lg"></i>
-                        <i class="fa-solid fa-gear hover:text-slate-600 cursor-pointer text-lg"></i>
+                    <div class="hidden sm:flex items-center gap-3 bg-slate-50 py-1.5 px-3 rounded-full border border-slate-200 cursor-pointer hover:bg-slate-100 transition">
+                        <img src="https://ui-avatars.com/api/?name=Guest+User&background=0284c7&color=fff&bold=true" class="w-8 h-8 rounded-full shadow-sm">
+                        <div class="text-sm font-bold text-slate-700 pr-1">Guest User</div>
                     </div>
                 </div>
             </header>
 
-            <!-- DASHBOARD CONTENT -->
-            <div class="overflow-y-auto flex-1">
-                <div class="dashboard-grid">
-                    
-                    <!-- WELCOME CARD -->
-                    <div style="grid-area: welcome;" class="flex flex-col gap-6">
-                        <div>
-                            <h1 class="text-3xl font-bold text-slate-800 tracking-tight">Welcome back,</h1>
-                            <h1 class="text-3xl font-bold text-slate-800 mb-6 tracking-tight">Traveler!</h1>
+            <!-- VIEWS CONTAINER -->
+            <div class="overflow-y-auto flex-1 bg-slate-50/50">
+                
+                <!-- 1. DASHBOARD VIEW -->
+                <div id="view-dashboard" class="app-view active">
+                    <div class="dashboard-grid">
+                        
+                        <!-- WELCOME CARD -->
+                        <div style="grid-area: welcome;" class="flex flex-col justify-center gap-6">
+                            <div>
+                                <h1 class="text-4xl font-black text-slate-800 tracking-tight leading-tight">Welcome back,</h1>
+                                <h1 class="text-4xl font-black text-brandBlue mb-8 tracking-tight leading-tight">Traveler!</h1>
+                                
+                                <div class="search-wrapper mb-4">
+                                    <i class="fa-solid fa-location-dot"></i>
+                                    <input type="text" id="route-search" placeholder="Search for your next adventure...">
+                                </div>
+                                
+                                <button onclick="switchView('vehicles')" class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-xl transition-colors shadow-lg shadow-slate-900/20 text-lg flex justify-center items-center gap-2">
+                                    Find a Vehicle <i class="fa-solid fa-arrow-right text-sm"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- CURRENT BOOKING -->
+                        <div style="grid-area: current;" class="card !p-0 overflow-hidden flex flex-col h-full relative group">
+                            <div class="flex flex-col h-full" id="active-booking-container">
+                                <div class="p-8 flex-1 flex flex-col justify-center items-center text-center bg-slate-50">
+                                    <div class="w-20 h-20 rounded-full bg-slate-100 flex items-center justify-center mb-4">
+                                        <i class="fa-solid fa-car-side text-3xl text-slate-400"></i>
+                                    </div>
+                                    <h3 class="text-lg font-bold text-slate-700">No active bookings</h3>
+                                    <p class="text-sm text-slate-500 mt-2 max-w-[200px]">Book a premium vehicle from the fleet to see your trip details right here.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- QUICK ACTIONS -->
+                        <div style="grid-area: actions;" class="flex flex-col gap-4">
+                            <div class="card-header mb-0">Quick Actions</div>
                             
-                            <div class="bg-white border border-slate-200 rounded-xl p-2 flex items-center shadow-sm relative focus-within:ring-2 focus-within:ring-brandBlue/50 transition-all">
-                                <i class="fa-solid fa-location-dot text-slate-400 ml-3 mr-3"></i>
-                                <input type="text" id="route-search" placeholder="Where do you want to go?" class="w-full bg-transparent border-none outline-none font-medium text-slate-700 min-h-[40px]">
-                            </div>
+                            <a onclick="switchView('activity')" class="bg-white border border-slate-200 rounded-xl p-4 flex items-center justify-between hover:border-brandBlue hover:shadow-md transition-all group cursor-pointer">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-xl bg-blue-50 text-brandBlue flex items-center justify-center text-xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-calendar-check"></i></div>
+                                    <div><div class="font-bold text-slate-800">Trip Histories</div><div class="text-xs font-semibold text-slate-400" id="qa-trips">0 recorded</div></div>
+                                </div>
+                                <i class="fa-solid fa-angle-right text-slate-300 group-hover:text-brandBlue transition-colors"></i>
+                            </a>
                             
-                            <button onclick="document.getElementById('fleet').scrollIntoView({behavior:'smooth'})" class="w-full mt-4 bg-brandBlue hover:bg-[#0284c7] text-white font-bold py-4 rounded-xl transition-colors shadow-md shadow-brandBlue/20">
-                                Book a Ride
-                            </button>
+                            <a href="#" class="bg-white border border-slate-200 rounded-xl p-4 flex items-center justify-between hover:border-brandBlue hover:shadow-md transition-all group cursor-pointer">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-12 h-12 rounded-xl bg-slate-50 text-slate-600 flex items-center justify-center text-xl group-hover:scale-110 transition-transform"><i class="fa-solid fa-headset"></i></div>
+                                    <div><div class="font-bold text-slate-800">Support Center</div></div>
+                                </div>
+                                <i class="fa-solid fa-angle-right text-slate-300 group-hover:text-brandBlue transition-colors"></i>
+                            </a>
                         </div>
-                    </div>
 
-                    <!-- CURRENT BOOKING -->
-                    <div style="grid-area: current;" class="card !p-0 overflow-hidden flex flex-col h-full border-brandBlue/30 relative">
-                        <div class="absolute right-0 top-0 bg-[#f0fdf4] text-[#16a34a] font-bold text-xs uppercase tracking-wider px-3 py-1 rounded-bl-lg border-b border-l border-[#dcfce7]">No Active Trips</div>
-                        <div class="p-5 flex-1 flex flex-col justify-center items-center text-center">
-                            <i class="fa-solid fa-car-side text-5xl text-slate-200 mb-4"></i>
-                            <h3 class="text-lg font-bold text-slate-700">No active bookings</h3>
-                            <p class="text-sm text-slate-500 mt-1">Book a premium vehicle from the fleet below to see your trip details right here.</p>
-                        </div>
-                    </div>
-
-                    <!-- QUICK ACTIONS -->
-                    <div style="grid-area: actions;" class="flex flex-col gap-5">
-                        <div class="card-header mb-0">Quick Actions</div>
-                        
-                        <a href="#" class="bg-white border border-slate-200 rounded-xl p-4 flex items-center justify-between hover:border-brandBlue transition-colors group cursor-pointer shadow-sm">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover:bg-brandBlue/10 group-hover:text-brandBlue transition-colors"><i class="fa-solid fa-calendar-check text-lg"></i></div>
-                                <div><div class="font-bold text-slate-800">Upcoming Trips</div><div class="text-xs text-slate-500">0 booked</div></div>
+                        <!-- FLEET PREVIEW -->
+                        <div style="grid-area: fleet;" class="card">
+                            <div class="flex justify-between items-center mb-6">
+                                <div class="card-header mb-0">Featured Fleet Access</div>
+                                <button onclick="switchView('vehicles')" class="text-sm font-bold text-brandBlue hover:text-blue-700">View All <i class="fa-solid fa-chevron-right text-[10px] ml-1"></i></button>
                             </div>
-                            <i class="fa-solid fa-angle-right text-slate-400"></i>
-                        </a>
-                        
-                        <a href="#" class="bg-white border border-slate-200 rounded-xl p-4 flex items-center justify-between hover:border-brandBlue transition-colors group cursor-pointer shadow-sm">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover:bg-brandBlue/10 group-hover:text-brandBlue transition-colors"><i class="fa-solid fa-headset text-lg"></i></div>
-                                <div><div class="font-bold text-slate-800">Support Center</div></div>
+                            <div id="loader" class="text-center py-10 text-slate-400 font-bold"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Loading Assets...</div>
+                            <div class="fleet-grid" id="fleet-preview-list"></div>
+                        </div>
+
+                        <!-- RECENT ACTIVITY PREVIEW -->
+                        <div style="grid-area: activity;" class="card !p-0 overflow-hidden">
+                            <div class="p-6 border-b border-slate-100 flex justify-between items-center">
+                                <div class="card-header mb-0">Recent Activity</div>
+                                <button onclick="switchView('activity')" class="text-sm font-bold text-brandBlue hover:text-blue-700">Full History</button>
                             </div>
-                            <i class="fa-solid fa-angle-right text-slate-400"></i>
-                        </a>
-                        
-                        <a href="#" class="bg-white border border-slate-200 rounded-xl p-4 flex items-center justify-between hover:border-brandBlue transition-colors group cursor-pointer shadow-sm">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover:bg-brandBlue/10 group-hover:text-brandBlue transition-colors"><i class="fa-solid fa-right-left text-lg"></i></div>
-                                <div><div class="font-bold text-slate-800">Extend Trip</div></div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full min-w-[700px]">
+                                    <thead class="bg-slate-50/80">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Booking Details</th>
+                                            <th>Status</th>
+                                            <th align="right">Pricing</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="activity-preview-list">
+                                        <tr><td colspan="4" class="text-center py-8 text-slate-400 font-bold">No recent history logs.</td></tr>
+                                    </tbody>
+                                </table>
                             </div>
-                            <i class="fa-solid fa-angle-right text-slate-400"></i>
-                        </a>
-                    </div>
-
-                    <!-- FLEET TABLE / CARDS -->
-                    <div style="grid-area: fleet;" id="fleet">
-                        <div class="card-header">Your Fleet Access</div>
-                        <div id="loader" class="text-center py-10 text-slate-400 font-bold"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Loading Assets...</div>
-                        
-                        <div class="fleet-grid" id="fleet-list">
-                            <!-- Injected by JS -->
                         </div>
-                    </div>
 
-                    <!-- RECENT ACTIVITY -->
-                    <div style="grid-area: activity;" class="card !p-0 overflow-hidden" id="activity">
-                        <div class="p-6 pb-2 border-b border-slate-100 flex justify-between items-center">
-                            <div class="card-header mb-0">Recent Activity</div>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left border-collapse min-w-[700px]">
-                                <thead class="bg-slate-50/50">
-                                    <tr>
-                                        <th class="w-24">Date</th>
-                                        <th>Booking <i class="fa-solid fa-sort ml-1 text-slate-300"></i></th>
-                                        <th>Status <i class="fa-solid fa-circle-info ml-1 text-slate-300"></i></th>
-                                        <th>Map</th>
-                                        <th>Expected</th>
-                                        <th align="right">Price</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr class="hover:bg-slate-50 transition-colors">
-                                        <td class="text-slate-500 font-medium">Oct 10</td>
-                                        <td class="font-bold text-slate-800 flex items-center gap-3"><img src="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=200" class="w-10 h-10 object-cover rounded-md border border-slate-200"> Sample Book</td>
-                                        <td><span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-md text-xs font-bold w-fit">Completed</span></td>
-                                        <td><div class="w-8 h-8 rounded bg-[#e2f1fa] text-brandBlue flex items-center justify-center border border-[#badbf0]"><i class="fa-solid fa-map-pin"></i></div></td>
-                                        <td><div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-brandBlue w-full"></div></div></td>
-                                        <td align="right" class="font-bold text-slate-800">₹2400</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
                     </div>
-
                 </div>
+
+                <!-- 2. FULL VEHICLES VIEW -->
+                <div id="view-vehicles" class="app-view">
+                    <div class="p-8">
+                        <div class="flex flex-col md:flex-row justify-between items-end md:items-center gap-6 mb-8">
+                            <div>
+                                <h1 class="text-3xl font-black text-slate-800 tracking-tight">Browse Vehicles</h1>
+                                <p class="text-slate-500 font-medium mt-1">Select from our premium enterprise fleet.</p>
+                            </div>
+                            
+                            <!-- Filters -->
+                            <div class="flex gap-2 bg-white p-1 rounded-xl border border-slate-200 shadow-sm" id="fleet-filters">
+                                <button onclick="filterFleet('all')" class="px-5 py-2 rounded-lg text-sm font-bold bg-slate-800 text-white shadow" data-filter="all">All</button>
+                                <button onclick="filterFleet('SUV')" class="px-5 py-2 rounded-lg text-sm font-bold text-slate-600 hover:bg-slate-100" data-filter="SUV">SUV</button>
+                                <button onclick="filterFleet('Sedan')" class="px-5 py-2 rounded-lg text-sm font-bold text-slate-600 hover:bg-slate-100" data-filter="Sedan">Sedan</button>
+                                <button onclick="filterFleet('Electric')" class="px-5 py-2 rounded-lg text-sm font-bold text-slate-600 hover:bg-slate-100" data-filter="Electric">Electric</button>
+                            </div>
+                        </div>
+                        
+                        <div class="fleet-grid" id="full-fleet-list"></div>
+                    </div>
+                </div>
+
+                <!-- 3. FULL ACTIVITY VIEW -->
+                <div id="view-activity" class="app-view">
+                    <div class="p-8">
+                        <div class="mb-8">
+                            <h1 class="text-3xl font-black text-slate-800 tracking-tight">Booking History</h1>
+                            <p class="text-slate-500 font-medium mt-1">Complete log of your trips and reservations.</p>
+                        </div>
+                        
+                        <div class="card !p-0 overflow-hidden">
+                            <div class="overflow-x-auto">
+                                <table class="w-full min-w-[800px]">
+                                    <thead class="bg-slate-50">
+                                        <tr>
+                                            <th>Guest Name</th>
+                                            <th>Requested Asset</th>
+                                            <th>Duration</th>
+                                            <th>Status</th>
+                                            <th align="right">Total Expected</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="full-activity-list">
+                                        <tr><td colspan="5" class="text-center py-10 text-slate-400 font-bold">No booking records found.</td></tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
         </main>
     </div>
 
     <!-- BOOKING MODAL -->
     <div id="booking-modal" class="modal">
-        <div class="modal-content">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-bold text-slate-800">Book Ride</h2>
-                <button onclick="closeBooking()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 border-none outline-none"><i class="fa-solid fa-xmark"></i></button>
+        <div class="modal-content relative overflow-hidden">
+            <!-- Decorative header background -->
+            <div class="absolute top-0 inset-x-0 h-24 bg-gradient-to-r from-brandBlue to-blue-600"></div>
+            
+            <div class="relative z-10 flex justify-between items-start mb-6 pt-2">
+                <h2 class="text-2xl font-black text-white">Reserve Ride</h2>
+                <button onclick="closeBooking()" class="w-8 h-8 rounded-full bg-white/20 text-white hover:bg-white/40 border-none outline-none backdrop-blur-sm"><i class="fa-solid fa-xmark"></i></button>
             </div>
             
-            <div class="flex gap-4 items-center mb-6 p-4 bg-slate-50 border border-slate-200 rounded-xl">
-                <img id="m-img" src="" class="w-16 h-16 rounded-lg object-cover bg-white border border-slate-200">
+            <div class="relative z-10 flex gap-5 items-center mb-8 p-4 bg-white rounded-2xl shadow-lg border border-slate-100">
+                <img id="m-img" src="" class="w-20 h-20 rounded-xl object-cover border border-slate-200 shadow-sm">
                 <div>
-                    <h3 id="m-name" class="font-bold text-slate-800 text-lg leading-tight">Name</h3>
-                    <p class="text-brandBlue font-bold text-sm" id="m-type">SUV</p>
+                    <div class="text-[10px] font-bold text-brandBlue uppercase tracking-widest mb-1" id="m-type">SUV</div>
+                    <h3 id="m-name" class="font-black text-slate-800 text-xl leading-tight">Name</h3>
                 </div>
-                <div class="ml-auto text-right">
-                    <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Pricing</p>
-                    <p class="font-black text-slate-800 text-xl">₹<span id="m-rate">0</span><span class="text-sm font-medium text-slate-500">/d</span></p>
+                <div class="ml-auto text-right pl-4 border-l border-slate-100">
+                    <p class="font-black text-slate-800 text-2xl">₹<span id="m-rate">0</span></p>
+                    <p class="text-xs font-bold text-slate-500 uppercase">per day</p>
                 </div>
             </div>
 
-            <form id="booking-form" onsubmit="submitBooking(event)">
+            <form id="booking-form" onsubmit="submitBooking(event)" class="relative z-10 mt-4">
                 <div class="input-group">
                     <label>Guest Full Name</label>
                     <input type="text" id="cust-name" required placeholder="John Doe">
@@ -285,37 +350,36 @@
                 
                 <div id="date-error" class="hidden text-xs font-bold text-red-600 bg-red-50 p-3 rounded-lg mb-4 border border-red-100">Return date must be after pickup.</div>
                 
-                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-6">
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-5 mb-6">
                     <div class="flex justify-between items-center mb-3">
-                        <span class="text-sm font-semibold text-slate-500">Duration</span>
-                        <span class="text-sm font-bold text-slate-800" id="r-days">0 Days</span>
+                        <span class="text-sm font-semibold text-slate-500">Duration Scheduled</span>
+                        <span class="text-sm font-black text-slate-800 bg-white px-2 py-1 rounded shadow-sm border border-slate-100" id="r-days">0 Days</span>
                     </div>
                     <div class="h-px w-full bg-slate-200 mb-3"></div>
                     <div class="flex justify-between items-center">
-                        <span class="text-base font-bold text-slate-800">Total Price</span>
-                        <span class="text-2xl font-black text-brandBlue">₹<span id="r-total">0</span></span>
+                        <span class="text-sm font-bold text-slate-500 uppercase tracking-widest">Total Valuation</span>
+                        <span class="text-3xl font-black text-brandBlue">₹<span id="r-total">0</span></span>
                     </div>
                 </div>
 
-                <button type="submit" id="wa-btn" disabled class="w-full bg-brandBlue hover:bg-[#0284c7] text-white font-bold py-4 rounded-xl transition-colors shadow-md shadow-brandBlue/20 flex justify-center items-center gap-2 disabled:bg-slate-300 disabled:shadow-none disabled:cursor-not-allowed">
-                    <i class="fa-brands fa-whatsapp text-lg"></i> Finalize Booking
+                <button type="submit" id="wa-btn" disabled class="w-full bg-slate-900 hover:bg-slate-800 text-white font-bold py-4 rounded-xl transition-all shadow-lg shadow-slate-900/20 flex justify-center items-center gap-3 disabled:bg-slate-200 disabled:text-slate-400 disabled:shadow-none disabled:cursor-not-allowed">
+                    <i class="fa-brands fa-whatsapp text-xl"></i> Complete Reservation Request
                 </button>
             </form>
         </div>
     </div>
 
-    <!-- JS -->
+    <!-- JS LOGIC - SPA ENGINE & DATA -->
     <script>
         const WA_NUM = "919876543210";
-        let allVehicles = [], currentVehicle = null;
+        let allVehicles = [];
+        let clientBookings = [];
+        let currentVehicle = null;
+        let currentFilter = 'all';
 
-        function toggleSidebar() {
-            document.getElementById('sidebar').classList.toggle('mobile-open');
-            document.getElementById('mobile-overlay').classList.toggle('active');
-        }
-
+        // Initialize SPA
         document.addEventListener('DOMContentLoaded', () => {
-            fetchVehicles();
+            fetchData();
             
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('start-date').min = today;
@@ -325,84 +389,213 @@
                 document.getElementById(id).addEventListener('input', calculatePrice);
             });
             
-            // Search filter
             document.getElementById('route-search').addEventListener('input', (e) => {
                 const term = e.target.value.toLowerCase();
                 const filtered = allVehicles.filter(v => v.name.toLowerCase().includes(term) || (v.plate_number||'').toLowerCase().includes(term));
-                renderFleet(filtered);
+                renderFleetCards(filtered, 'fleet-preview-list', 4); // Dashboard search searches preview
             });
         });
 
-        async function fetchVehicles() {
-            try {
-                const res = await fetch('/api/vehicles');
-                const data = await res.json();
-                document.getElementById('loader').style.display = 'none';
-                if(data.success) {
-                    allVehicles = data.data;
-                    renderFleet(allVehicles);
-                }
-            } catch(e) { document.getElementById('loader').style.display = 'none'; }
+        // SPA Navigation Logic
+        function switchView(viewId) {
+            document.querySelectorAll('.app-view').forEach(el => el.classList.remove('active'));
+            document.getElementById(`view-${viewId}`).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(el => {
+                if(el.dataset.nav === viewId) { el.classList.add('active'); el.classList.add('font-bold'); }
+                else { el.classList.remove('active'); el.classList.remove('font-bold'); }
+            });
+            
+            document.querySelectorAll('.topbar-tab').forEach(el => {
+                if(el.dataset.nav === viewId) { el.classList.add('active'); }
+                else { el.classList.remove('active'); }
+            });
+
+            if(window.innerWidth <= 768) toggleSidebar(); // Close mobile menu after click
         }
 
-        function renderFleet(vehicles) {
-            const grid = document.getElementById('fleet-list');
-            if(vehicles.length === 0) {
-                grid.innerHTML = '<div class="col-span-full py-10 text-center text-slate-400 font-bold border-2 border-dashed border-slate-200 rounded-xl">No vehicles found.</div>';
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+            document.getElementById('mobile-overlay').classList.toggle('active');
+        }
+
+        async function fetchData() {
+            try {
+                // Fetch Vehicles
+                const vRes = await fetch('/api/vehicles');
+                const vData = await vRes.json();
+                document.getElementById('loader').style.display = 'none';
+                if(vData.success) {
+                    allVehicles = vData.data;
+                    renderFleetCards(allVehicles, 'fleet-preview-list', 4);
+                    renderFleetCards(allVehicles, 'full-fleet-list');
+                }
+
+                // Fetch Bookings (Simulating client fetching their own)
+                const bRes = await fetch('/api/bookings');
+                const bData = await bRes.json();
+                if(bData.success) {
+                    clientBookings = bData.data;
+                    document.getElementById('qa-trips').textContent = `${clientBookings.length} recorded`;
+                    renderActivityTables();
+                    buildActiveBookingWidget();
+                }
+            } catch(e) { console.error("Data Load Error", e); }
+        }
+
+        function renderFleetCards(dataArray, containerId, limit = null) {
+            const container = document.getElementById(containerId);
+            const dataToRender = limit ? dataArray.slice(0, limit) : dataArray;
+            
+            if(dataToRender.length === 0) {
+                container.innerHTML = '<div class="col-span-full py-12 px-6 text-center text-slate-500 font-bold bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl">No assets available matching criteria.</div>';
                 return;
             }
-            grid.innerHTML = vehicles.map(v => {
-                const avail = v.is_available === 1 || v.is_available === true;
+            
+            container.innerHTML = dataToRender.map(v => {
+                const avail = (v.is_available === 1 || v.is_available === true);
                 return `
-                <div class="vehicle-card">
-                    <img src="${v.image_url}" class="vehicle-img" onerror="this.src='https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=600'">
+                <div class="vehicle-card group" onclick='${avail ? `openBooking(${JSON.stringify(v).replace(/'/g,"&#39;")})` : ""}'>
+                    <div class="relative overflow-hidden rounded-xl mb-4">
+                        <img src="${v.image_url}" class="w-full h-40 object-cover transform group-hover:scale-105 transition-transform duration-500" onerror="this.src='https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=600'">
+                        ${!avail ? '<div class="absolute inset-0 bg-white/60 backdrop-blur-[2px] flex items-center justify-center"><span class="bg-slate-900 text-white font-bold px-4 py-2 rounded-lg text-sm shadow-xl">Rented Out</span></div>' : ''}
+                        <div class="absolute top-3 right-3 bg-white/90 backdrop-blur font-bold text-xs px-3 py-1.5 rounded-full shadow-sm text-brandBlue uppercase tracking-widest">${v.type}</div>
+                    </div>
                     <div class="flex-1 flex flex-col justify-between">
                         <div class="mb-4">
-                            <h3 class="font-bold text-slate-800 text-lg leading-tight mb-1">${v.name}</h3>
-                            <div class="text-sm font-bold text-slate-500 mb-2">₹${v.daily_rate}/day <span class="mx-1">•</span> <span class="capitalize text-slate-400">${v.type}</span></div>
-                            <div class="text-lg font-black text-slate-800">₹${v.daily_rate}<span class="text-sm font-medium text-slate-400">/day</span></div>
+                            <h3 class="font-black text-slate-800 text-xl leading-tight mb-2">${v.name}</h3>
+                            <div class="flex items-end justify-between">
+                                <div class="text-sm font-medium text-slate-500 line-clamp-1 mr-4">${v.description || 'Premium Enterprise Asset'}</div>
+                                <div class="text-right shrink-0">
+                                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Rate</div>
+                                    <div class="text-2xl font-black text-slate-800 leading-none">₹${v.daily_rate}</div>
+                                </div>
+                            </div>
                         </div>
-                        ${avail ? `<button onclick='openBooking(${JSON.stringify(v).replace(/'/g,"&#39;")})' class="w-full bg-brandBlue hover:bg-[#0284c7] text-white font-bold py-3 rounded-lg transition-colors">Book Now</button>` : `<button disabled class="w-full bg-slate-100 text-slate-400 font-bold py-3 rounded-lg border border-slate-200">Rented Out</button>`}
+                        <button ${!avail ? 'disabled' : ''} class="w-full ${avail ? 'bg-slate-100 hover:bg-brandBlue hover:text-white text-brandBlue' : 'bg-slate-50 text-slate-300 border border-slate-100'} font-bold py-3.5 rounded-xl transition-all shadow-sm">
+                            ${avail ? 'Schedule Asset' : 'Unavailable'}
+                        </button>
                     </div>
                 </div>
                 `;
             }).join('');
         }
 
+        function filterFleet(type) {
+            currentFilter = type;
+            // Update filter buttons UI
+            const btns = document.querySelectorAll('#fleet-filters button');
+            btns.forEach(b => {
+                if(b.dataset.filter === type) { b.className = "px-5 py-2 rounded-lg text-sm font-bold bg-slate-800 text-white shadow transition-all"; }
+                else { b.className = "px-5 py-2 rounded-lg text-sm font-bold text-slate-600 hover:bg-slate-100 transition-all"; }
+            });
+            // Apply filter
+            const filtered = type === 'all' ? allVehicles : allVehicles.filter(v => v.type === type);
+            renderFleetCards(filtered, 'full-fleet-list');
+        }
+
+        function renderActivityTables() {
+            const previewHtml = clientBookings.slice(0,3).map(b => buildTableRow(b, true)).join('');
+            const fullHtml = clientBookings.map(b => buildTableRow(b, false)).join('');
+            
+            if(previewHtml) document.getElementById('activity-preview-list').innerHTML = previewHtml;
+            if(fullHtml) document.getElementById('full-activity-list').innerHTML = fullHtml;
+        }
+
+        function buildTableRow(b, isPreview) {
+            const sc = {pending:'status-pending', confirmed:'status-confirmed', completed:'status-completed', cancelled:'status-cancelled'}[b.status] || 'bg-slate-100';
+            if(isPreview) {
+                return `
+                <tr>
+                    <td><div class="text-sm font-bold text-slate-600">${b.start_date.substring(5)} → ${b.end_date.substring(5)}</div></td>
+                    <td>
+                        <div class="font-bold text-slate-800">${b.vehicle_name}</div>
+                        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${b.customer_name}</div>
+                    </td>
+                    <td><span class="status-badge ${sc}">${b.status}</span></td>
+                    <td align="right" class="font-black text-slate-800">₹${b.total_price}</td>
+                </tr>`;
+            } else {
+                return `
+                <tr>
+                    <td><div class="font-bold text-slate-800">${b.customer_name}</div></td>
+                    <td><div class="font-bold text-brandBlue bg-blue-50 px-3 py-1.5 rounded-lg inline-block">${b.vehicle_name}</div></td>
+                    <td><div class="text-sm font-bold text-slate-600">${b.start_date} <span class="text-slate-400 mx-1">until</span> ${b.end_date}</div></td>
+                    <td><span class="status-badge ${sc}">${b.status}</span></td>
+                    <td align="right" class="font-black text-xl text-slate-800">₹${b.total_price}</td>
+                </tr>`;
+            }
+        }
+
+        function buildActiveBookingWidget() {
+            // Find most recent pending/confirmed booking
+            const active = clientBookings.find(b => b.status === 'confirmed' || b.status === 'pending');
+            const container = document.getElementById('active-booking-container');
+            
+            if(!active) return; // Keep default empty state
+            
+            // Find car image
+            const car = allVehicles.find(v => v.name === active.vehicle_name);
+            const imgUrl = car ? car.image_url : 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=400';
+            
+            container.innerHTML = `
+                <div class="absolute right-0 top-0 bg-brandBlue text-white font-bold text-[10px] uppercase tracking-widest px-4 py-1.5 rounded-bl-xl shadow-md z-10 text-center flex items-center gap-1.5"><div class="w-1.5 h-1.5 bg-white rounded-full animate-pulse"></div> ACTIVE ASSET</div>
+                
+                <div class="h-32 w-full relative">
+                    <img src="${imgUrl}" class="w-full h-full object-cover">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 via-slate-900/40 to-transparent"></div>
+                    <div class="absolute bottom-4 left-5 right-5">
+                        <div class="text-[10px] font-bold text-emerald-400 uppercase tracking-widest mb-1 shadow-sm">Target Acquired</div>
+                        <div class="text-2xl font-black text-white leading-none">${active.vehicle_name}</div>
+                    </div>
+                </div>
+                
+                <div class="p-5 bg-white flex-1 flex flex-col justify-between">
+                    <div class="flex items-center gap-4 mb-4 pb-4 border-b border-slate-100">
+                        <div class="w-12 h-12 rounded-full bg-slate-50 flex items-center justify-center border border-slate-200 shrink-0"><i class="fa-regular fa-calendar text-slate-400 text-lg"></i></div>
+                        <div>
+                            <div class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-0.5">Deployment Window</div>
+                            <div class="font-bold text-slate-800 text-sm">${active.start_date} <i class="fa-solid fa-arrow-right text-[10px] text-slate-300 mx-1"></i> ${active.end_date}</div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <div class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-0.5">Guest Identity</div>
+                            <div class="font-bold text-slate-800 text-sm">${active.customer_name}</div>
+                        </div>
+                        <div class="text-right">
+                            <span class="status-badge ${active.status === 'confirmed' ? 'status-confirmed' : 'status-pending'} inline-block shadow-sm border border-slate-100">${active.status}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- BOOKING LOGIC ---
         function openBooking(v) {
             currentVehicle = v;
-            document.getElementById('m-title').textContent = v.name;
             document.getElementById('m-img').src = v.image_url;
             document.getElementById('m-name').textContent = v.name;
             document.getElementById('m-type').textContent = v.type;
             document.getElementById('m-rate').textContent = v.daily_rate;
-            
             document.getElementById('booking-form').reset();
             calculatePrice();
-            
             document.getElementById('booking-modal').classList.add('open');
         }
 
-        function closeBooking() {
-            document.getElementById('booking-modal').classList.remove('open');
-        }
+        function closeBooking() { document.getElementById('booking-modal').classList.remove('open'); }
 
         function calculatePrice() {
-            const s = document.getElementById('start-date').value;
-            const e = document.getElementById('end-date').value;
-            const n = document.getElementById('cust-name').value.trim();
-            const btn = document.getElementById('wa-btn');
-            const err = document.getElementById('date-error');
+            const s = document.getElementById('start-date').value, e = document.getElementById('end-date').value, n = document.getElementById('cust-name').value.trim();
+            const btn = document.getElementById('wa-btn'), err = document.getElementById('date-error');
             
             if(!s || !e) {
-                document.getElementById('r-days').textContent = '0 Days';
-                document.getElementById('r-total').textContent = '0';
+                document.getElementById('r-days').textContent = '0 Days'; document.getElementById('r-total').textContent = '0';
                 btn.disabled = true; return;
             }
-            
             const days = Math.ceil((new Date(e) - new Date(s))/86400000) + 1;
-            if(days <= 0) {
-                err.classList.remove('hidden'); btn.disabled = true;
+            if(days <= 0) { err.classList.remove('hidden'); btn.disabled = true;
             } else {
                 err.classList.add('hidden');
                 document.getElementById('r-days').textContent = days + (days>1?' Days':' Day');
@@ -413,37 +606,30 @@
 
         async function submitBooking(event) {
             event.preventDefault();
-            const btn = document.getElementById('wa-btn');
-            const origHTML = btn.innerHTML;
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-lg"></i> Registering...';
-            btn.disabled = true;
+            const btn = document.getElementById('wa-btn'); const origHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-xl"></i> Registering Protocol...'; btn.disabled = true;
             
             const payload = {
-                vehicle_id: currentVehicle.id,
-                customer_name: document.getElementById('cust-name').value,
-                customer_phone: "WhatsApp",
-                start_date: document.getElementById('start-date').value,
+                vehicle_id: currentVehicle.id, customer_name: document.getElementById('cust-name').value,
+                customer_phone: "WhatsApp Link", start_date: document.getElementById('start-date').value,
                 end_date: document.getElementById('end-date').value,
                 total_price: parseInt(document.getElementById('r-total').textContent.replace(/,/g,''))
             };
             
             try {
-                const r = await fetch('/api/bookings', {
-                    method: 'POST',
-                    headers: {'Content-Type':'application/json'},
-                    body: JSON.stringify(payload)
-                });
+                const r = await fetch('/api/bookings', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify(payload) });
                 const d = await r.json();
                 if(d.success) {
-                    const msg = `*New Enterprise Booking - Benaka Travels*\n\nAsset: ${currentVehicle.name}\nContractor: ${payload.customer_name}\nSchedule: ${payload.start_date} to ${payload.end_date}\nValue: ₹${payload.total_price}\n\nAwaiting Confirmation.`;
-                    closeBooking();
+                    const msg = `*New Enterprise Asset Reservation*\n\nAsset Protocol: ${currentVehicle.name}\nContractor: ${payload.customer_name}\nSchedule: ${payload.start_date} to ${payload.end_date}\nValuation: ₹${payload.total_price}\n\nAwaiting System Confirmation.`;
+                    closeBooking(); fetchData(); // reload data immediately
                     window.open(`https://wa.me/${WA_NUM}?text=${encodeURIComponent(msg)}`, '_blank');
-                } else { alert("Booking failed to register."); }
+                } else alert("Registration Failed.");
             } catch(e) { alert("Network Connection Error."); }
             
-            btn.innerHTML = origHTML;
-            btn.disabled = false;
+            btn.innerHTML = origHTML; btn.disabled = false;
         }
+
+        if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
     </script>
 </body>
 </html>
