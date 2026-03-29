@@ -17,15 +17,8 @@ function isAdmin(request) {
     return auth === `Bearer ${ADMIN_TOKEN}`;
 }
 
-// GET /api/bookings — admin fetches all bookings with vehicle info
+// GET /api/bookings — fetch all bookings with vehicle info (public for demo simulation)
 export async function onRequestGet(context) {
-    if (!isAdmin(context.request)) {
-        return new Response(JSON.stringify({ error: "Unauthorized" }), {
-            status: 401,
-            headers: corsHeaders,
-        });
-    }
-
     try {
         const { results } = await context.env.DB.prepare(`
       SELECT

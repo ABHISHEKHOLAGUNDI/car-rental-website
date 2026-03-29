@@ -1,4 +1,4 @@
-const CACHE_NAME = 'benaka-v7';
+const CACHE_NAME = 'benaka-v8';
 const ASSETS_TO_CACHE = [
     '/',
     '/index.html',

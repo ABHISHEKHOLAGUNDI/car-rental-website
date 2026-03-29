@@ -442,7 +442,7 @@
                     document.getElementById('qa-trips').textContent = `${clientBookings.length} recorded`;
                     renderActivityTables();
                     buildActiveBookingWidget();
-                }
+                } else { console.error("Bookings load error:", bData); }
             } catch(e) { console.error("Data Load Error", e); }
         }
 
@@ -626,8 +626,8 @@
                     const msg = `*New Enterprise Asset Reservation*\n\nAsset Protocol: ${currentVehicle.name}\nContractor: ${payload.customer_name}\nSchedule: ${payload.start_date} to ${payload.end_date}\nValuation: ₹${payload.total_price}\n\nAwaiting System Confirmation.`;
                     closeBooking(); fetchData(); // reload data immediately
                     window.open(`https://wa.me/${WA_NUM}?text=${encodeURIComponent(msg)}`, '_blank');
-                } else alert("Registration Failed.");
-            } catch(e) { alert("Network Connection Error."); }
+                } else alert("Registration Failed: " + (d.error || d.details || ""));
+            } catch(e) { alert("Network Connection Error: " + e.message); }
             
             btn.innerHTML = origHTML; btn.disabled = false;
         }
