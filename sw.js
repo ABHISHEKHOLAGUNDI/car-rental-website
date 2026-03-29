@@ -1,4 +1,4 @@
-const CACHE_NAME = 'driveeasy-v1';
+const CACHE_NAME = 'benaka-v2';
 const ASSETS_TO_CACHE = [
     '/',
     '/index.html',
