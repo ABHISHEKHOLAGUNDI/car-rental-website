@@ -2,490 +2,448 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#ffffff">
-    <title>Benaka Travels</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benaka Travels - Dashboard</title>
     <link rel="manifest" href="/manifest.json">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
-    <link rel="apple-touch-icon" href="/benaka_travels_logo.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#f3f4f6">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sidebar: '#2c3746',
+                        sidebarActive: '#3a4759',
+                        brandBlue: '#0ea5e9',
+                        bgLight: '#f4f6f8'
+                    },
+                    fontFamily: { sans: ['"Inter"', 'sans-serif'] }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: 'Inter', sans-serif; background: #f5f5f7; color: #1a1a1a; -webkit-tap-highlight-color: transparent; overflow-x: hidden; }
-        ::-webkit-scrollbar { display: none; }
-
-        /* ====== STATUS BAR & SAFE AREAS ====== */
-        .safe-top { padding-top: max(env(safe-area-inset-top), 16px); }
-        .safe-bottom { padding-bottom: max(env(safe-area-inset-bottom), 20px); }
-
-        /* ====== HEADER ====== */
-        .app-header {
-            position: fixed; top: 0; left: 0; right: 0; z-index: 50;
-            background: rgba(245, 245, 247, 0.85);
-            backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px);
-            border-bottom: 0.5px solid rgba(0,0,0,0.08);
+        body { font-family: 'Inter', sans-serif; background-color: #f4f6f8; color: #1e293b; }
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        
+        /* Grid Layout System */
+        .layout-wrapper { display: flex; min-height: 100vh; }
+        .sidebar { width: 240px; background-color: #2c3746; color: #94a3b8; flex-shrink: 0; display: flex; flex-direction: column; transition: transform 0.3s; }
+        .main-container { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+        
+        .nav-item { display: flex; align-items: center; padding: 16px 24px; gap: 12px; cursor: pointer; transition: 0.2s; font-weight: 500; font-size: 14px; border-left: 4px solid transparent; }
+        .nav-item:hover { color: #f8fafc; background: #3a4759; }
+        .nav-item.active { background: #3a4759; color: #fff; border-left-color: #0ea5e9; }
+        
+        .topbar { background: #fff; border-bottom: 1px solid #e2e8f0; padding: 0 24px; height: 72px; display: flex; justify-content: space-between; align-items: center; }
+        .topbar-tabs { display: flex; height: 100%; overflow-x: auto; scrollbar-width: none; }
+        .topbar-tab { padding: 0 20px; font-weight: 600; font-size: 14px; color: #64748b; display: flex; align-items: center; cursor: pointer; border-bottom: 2px solid transparent; white-space: nowrap; }
+        .topbar-tab.active { color: #0ea5e9; border-bottom-color: #0ea5e9; }
+        
+        .dashboard-grid { 
+            display: grid; padding: 24px; gap: 24px; 
+            grid-template-columns: 320px 1fr 280px; 
+            grid-template-areas: 
+                "welcome current actions"
+                "fleet fleet fleet"
+                "activity activity activity";
         }
-        .header-inner { padding: 12px 20px 14px; }
-        .header-brand { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-        .brand-icon { width: 36px; height: 36px; border-radius: 10px; background: linear-gradient(135deg, #007AFF, #0051D5); display: flex; align-items: center; justify-content: center; color: white; font-weight: 900; font-size: 16px; box-shadow: 0 2px 8px rgba(0,122,255,0.3); }
-        .brand-text h1 { font-size: 17px; font-weight: 800; letter-spacing: -0.3px; color: #1a1a1a; }
-        .brand-text p { font-size: 10px; font-weight: 700; color: #007AFF; letter-spacing: 1.5px; text-transform: uppercase; }
 
-        /* ====== SEARCH BAR ====== */
-        .search-bar {
-            display: flex; align-items: center; gap: 10px;
-            background: #e8e8ed; border-radius: 12px; padding: 10px 14px;
-            transition: all 0.2s;
-        }
-        .search-bar i { color: #8e8e93; font-size: 14px; }
-        .search-bar input { border: none; background: transparent; flex: 1; outline: none; font-size: 15px; font-weight: 500; color: #1a1a1a; font-family: 'Inter', sans-serif; }
-        .search-bar input::placeholder { color: #8e8e93; }
+        .card { background: #fff; border-radius: 12px; box-shadow: 0 2px 4px rgba(100,116,133,0.05); border: 1px solid #e2e8f0; padding: 24px; }
+        .card-header { font-size: 16px; font-weight: 700; color: #0f172a; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; }
 
-        /* ====== FILTER CHIPS ====== */
-        .filter-scroll { display: flex; gap: 8px; overflow-x: auto; padding: 16px 20px 4px; scroll-snap-type: x mandatory; }
-        .filter-chip {
-            flex-shrink: 0; padding: 8px 18px; border-radius: 100px;
-            font-size: 13px; font-weight: 600; border: none; cursor: pointer;
-            transition: all 0.2s; scroll-snap-align: start;
-            background: #e8e8ed; color: #636366;
-        }
-        .filter-chip.active { background: #1a1a1a; color: #fff; }
+        /* Vehicle Fleet Cards */
+        .fleet-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)); gap: 20px; }
+        .vehicle-card { background: #fff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px; transition: transform 0.2s; display: flex; flex-direction: column; }
+        .vehicle-card:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(100,116,133,0.1); }
+        .vehicle-img { width: 100%; height: 140px; object-fit: cover; border-radius: 8px; margin-bottom: 16px; background: #f8fafc; }
+        
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; padding: 12px 16px; color: #64748b; font-weight: 600; font-size: 13px; border-bottom: 1px solid #e2e8f0; }
+        td { padding: 16px; border-bottom: 1px solid #f1f5f9; font-size: 14px; color: #1e293b; font-weight: 500; }
+        .status-badge { padding: 4px 10px; border-radius: 999px; font-size: 12px; font-weight: 600; }
 
-        /* ====== MAIN CONTENT ====== */
-        .main-content { padding-top: 155px; padding-bottom: 100px; }
+        /* Mobile View toggle */
+        @media (max-width: 1024px) {
+            .dashboard-grid { grid-template-columns: 1fr; grid-template-areas: "welcome" "current" "actions" "fleet" "activity"; }
+            .sidebar { position: fixed; z-index: 50; height: 100%; transform: translateX(-100%); width: 260px; }
+            .sidebar.mobile-open { transform: translateX(0); box-shadow: 4px 0 24px rgba(0,0,0,0.2); }
+            .mobile-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 40; }
+            .mobile-overlay.active { display: block; }
+        }
 
-        /* ====== SECTION TITLES ====== */
-        .section-title {
-            padding: 20px 20px 12px; display: flex; justify-content: space-between; align-items: center;
-        }
-        .section-title h2 { font-size: 20px; font-weight: 800; letter-spacing: -0.4px; }
-        .section-title span { font-size: 13px; font-weight: 600; color: #007AFF; }
-
-        /* ====== FEATURED HORIZONTAL SCROLL ====== */
-        .featured-scroll { display: flex; gap: 14px; overflow-x: auto; padding: 0 20px 20px; scroll-snap-type: x mandatory; }
-        .featured-card {
-            flex-shrink: 0; width: 260px; background: #fff; border-radius: 20px;
-            overflow: hidden; scroll-snap-align: start;
-            box-shadow: 0 2px 16px rgba(0,0,0,0.06);
-            transition: transform 0.2s;
-        }
-        .featured-card:active { transform: scale(0.97); }
-        .featured-card .card-img { width: 100%; height: 150px; object-fit: cover; background: #e8e8ed; display: block; }
-        .featured-card .card-body { padding: 14px 16px 16px; }
-        .featured-card .card-body h3 { font-size: 16px; font-weight: 700; margin-bottom: 4px; letter-spacing: -0.2px; }
-        .featured-card .card-meta { display: flex; align-items: center; gap: 6px; margin-bottom: 10px; }
-        .featured-card .card-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #fff; background: #007AFF; padding: 3px 8px; border-radius: 6px; }
-        .featured-card .card-rating { font-size: 11px; color: #8e8e93; font-weight: 600; }
-        .featured-card .card-rating i { color: #FF9500; font-size: 10px; margin-right: 2px; }
-        .featured-card .card-footer { display: flex; justify-content: space-between; align-items: center; }
-        .featured-card .card-price { font-size: 20px; font-weight: 900; color: #1a1a1a; letter-spacing: -0.5px; }
-        .featured-card .card-price span { font-size: 12px; font-weight: 500; color: #8e8e93; }
-        .featured-card .card-book-btn {
-            padding: 8px 18px; border-radius: 10px; border: none;
-            background: #1a1a1a; color: white; font-size: 12px;
-            font-weight: 700; cursor: pointer; transition: all 0.15s;
-            font-family: 'Inter', sans-serif;
-        }
-        .featured-card .card-book-btn:active { transform: scale(0.93); }
-        .featured-card .card-book-btn:disabled { background: #d1d1d6; color: #fff; }
-
-        /* ====== COMPACT LIST CARDS ====== */
-        .vehicle-list { padding: 0 20px; display: flex; flex-direction: column; gap: 12px; }
-        .list-card {
-            display: flex; gap: 14px; padding: 14px; background: #fff;
-            border-radius: 18px; align-items: center;
-            box-shadow: 0 1px 8px rgba(0,0,0,0.04);
-            transition: transform 0.15s;
-        }
-        .list-card:active { transform: scale(0.98); }
-        .list-card .lc-img {
-            width: 90px; height: 90px; border-radius: 14px; object-fit: cover;
-            background: #e8e8ed; flex-shrink: 0; display: block;
-        }
-        .list-card .lc-info { flex: 1; min-width: 0; display: flex; flex-direction: column; justify-content: center; gap: 4px; }
-        .list-card .lc-name { font-size: 15px; font-weight: 700; letter-spacing: -0.2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .list-card .lc-tags { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
-        .list-card .lc-type { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.6px; color: #007AFF; background: #EBF5FF; padding: 3px 8px; border-radius: 6px; }
-        .list-card .lc-feat { font-size: 11px; color: #8e8e93; font-weight: 500; }
-        .list-card .lc-bottom { display: flex; justify-content: space-between; align-items: center; margin-top: 4px; }
-        .list-card .lc-price { font-size: 17px; font-weight: 800; letter-spacing: -0.3px; }
-        .list-card .lc-price span { font-size: 11px; font-weight: 500; color: #8e8e93; }
-        .list-card .lc-book {
-            width: 38px; height: 38px; border-radius: 12px; border: none;
-            background: #007AFF; color: white; font-size: 14px;
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; transition: all 0.15s; flex-shrink: 0;
-        }
-        .list-card .lc-book:active { transform: scale(0.88); }
-        .list-card .lc-book:disabled { background: #d1d1d6; }
-        .list-card .lc-unavail { font-size: 10px; font-weight: 700; color: #FF3B30; text-transform: uppercase; letter-spacing: 0.5px; }
-
-        /* ====== BOTTOM NAV ====== */
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0; z-index: 50;
-            background: rgba(245, 245, 247, 0.9);
-            backdrop-filter: saturate(180%) blur(20px);
-            -webkit-backdrop-filter: saturate(180%) blur(20px);
-            border-top: 0.5px solid rgba(0,0,0,0.08);
-            display: flex; justify-content: space-around; padding: 8px 0 4px;
-        }
-        .nav-item { display: flex; flex-direction: column; align-items: center; gap: 3px; padding: 4px 16px; text-decoration: none; }
-        .nav-item i { font-size: 20px; }
-        .nav-item span { font-size: 10px; font-weight: 600; }
-        .nav-item.active i, .nav-item.active span { color: #007AFF; }
-        .nav-item:not(.active) i, .nav-item:not(.active) span { color: #8e8e93; }
-
-        /* ====== BOOKING BOTTOM SHEET ====== */
-        .sheet-overlay { position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.35); backdrop-filter: blur(4px); display: none; opacity: 0; transition: opacity 0.3s; }
-        .sheet-overlay.show { opacity: 1; }
-        .booking-sheet {
-            position: fixed; bottom: 0; left: 0; right: 0; z-index: 101;
-            background: #fff; border-radius: 24px 24px 0 0;
-            max-height: 88vh; display: flex; flex-direction: column;
-            transform: translateY(100%);
-            transition: transform 0.45s cubic-bezier(0.32, 0.72, 0, 1);
-            box-shadow: 0 -10px 40px rgba(0,0,0,0.12);
-        }
-        .booking-sheet.open { transform: translateY(0); }
-        .sheet-handle { width: 36px; height: 4px; background: #d1d1d6; border-radius: 100px; margin: 10px auto 0; flex-shrink: 0; }
-        .sheet-header { padding: 16px 20px; display: flex; gap: 14px; align-items: center; border-bottom: 0.5px solid rgba(0,0,0,0.06); flex-shrink: 0; }
-        .sheet-header img { width: 72px; height: 72px; border-radius: 16px; object-fit: cover; background: #e8e8ed; }
-        .sheet-header-info h3 { font-size: 18px; font-weight: 800; letter-spacing: -0.3px; margin-bottom: 2px; }
-        .sheet-header-info .sh-tag { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #007AFF; }
-        .sheet-header-info .sh-price { font-size: 15px; font-weight: 700; color: #1a1a1a; margin-top: 4px; }
-        .sheet-header-info .sh-price span { color: #8e8e93; font-weight: 500; font-size: 12px; }
-
-        .sheet-body { padding: 20px; overflow-y: auto; flex: 1; }
+        /* Modals mapped to sheet concepts */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(15,23,42,0.6); z-index: 100; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.2s; }
+        .modal.open { display: flex; opacity: 1; }
+        .modal-content { background: #fff; width: 100%; max-width: 480px; border-radius: 16px; padding: 24px; transform: scale(0.95); transition: 0.2s; max-height: 90vh; overflow-y: auto; }
+        .modal.open .modal-content { transform: scale(1); }
+        
         .input-group { margin-bottom: 16px; }
-        .input-group label { display: block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: #8e8e93; margin-bottom: 6px; }
-        .input-group input { width: 100%; padding: 14px 16px; border-radius: 14px; border: 1.5px solid #e8e8ed; font-size: 15px; font-weight: 600; font-family: 'Inter', sans-serif; color: #1a1a1a; outline: none; transition: border 0.2s; background: #fafafa; }
-        .input-group input:focus { border-color: #007AFF; background: #fff; }
-        .input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-
-        .date-error { display: none; font-size: 12px; font-weight: 600; color: #FF3B30; background: #FFF0EF; padding: 10px 14px; border-radius: 10px; margin-bottom: 14px; }
-        .date-error.show { display: block; }
-
-        /* Receipt */
-        .receipt { background: #f5f5f7; border-radius: 18px; padding: 18px; margin: 8px 0 20px; }
-        .receipt-row { display: flex; justify-content: space-between; align-items: center; padding: 6px 0; }
-        .receipt-row .rr-label { font-size: 13px; font-weight: 500; color: #636366; }
-        .receipt-row .rr-value { font-size: 13px; font-weight: 700; color: #1a1a1a; }
-        .receipt-divider { height: 0.5px; background: #d1d1d6; margin: 8px 0; }
-        .receipt-total .rr-label { font-size: 15px; font-weight: 700; color: #1a1a1a; }
-        .receipt-total .rr-value { font-size: 24px; font-weight: 900; color: #007AFF; letter-spacing: -0.5px; }
-
-        .wa-btn {
-            width: 100%; padding: 16px; border-radius: 16px; border: none;
-            background: #25D366; color: #fff; font-size: 16px; font-weight: 700;
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            cursor: pointer; font-family: 'Inter', sans-serif;
-            transition: all 0.15s; box-shadow: 0 4px 16px rgba(37,211,102,0.3);
-        }
-        .wa-btn:active { transform: scale(0.97); }
-        .wa-btn:disabled { background: #d1d1d6; box-shadow: none; }
-        .wa-btn i { font-size: 20px; }
-
-        /* ====== SKELETON ====== */
-        @keyframes shimmer { 0% { background-position: -200px 0; } 100% { background-position: 200px 0; } }
-        .skeleton { background: linear-gradient(90deg, #e8e8ed 25%, #f0f0f3 50%, #e8e8ed 75%); background-size: 400px 100%; animation: shimmer 1.5s infinite linear; border-radius: 14px; }
-
-        /* ====== EMPTY STATE ====== */
-        .empty-state { text-align: center; padding: 60px 20px; }
-        .empty-state i { font-size: 40px; color: #d1d1d6; margin-bottom: 14px; }
-        .empty-state h3 { font-size: 17px; font-weight: 700; color: #1a1a1a; margin-bottom: 4px; }
-        .empty-state p { font-size: 13px; color: #8e8e93; }
+        .input-group label { display: block; font-size: 13px; font-weight: 600; color: #475569; margin-bottom: 6px; }
+        .input-group input { width: 100%; padding: 12px 16px; border: 1px solid #cbd5e1; border-radius: 8px; outline: none; transition: border 0.2s; font-size: 14px; font-weight: 500;}
+        .input-group input:focus { border-color: #0ea5e9; box-shadow: 0 0 0 3px rgba(14,165,233,0.1); }
     </style>
 </head>
 <body>
 
-    <!-- HEADER -->
-    <header class="app-header safe-top">
-        <div class="header-inner">
-            <div class="header-brand">
-                <div class="brand-icon">B</div>
-                <div class="brand-text">
-                    <h1>Benaka Travels</h1>
-                    <p>Premium Fleet</p>
+    <div class="layout-wrapper">
+        <!-- Overlay for mobile sidebar -->
+        <div class="mobile-overlay" id="mobile-overlay" onclick="toggleSidebar()"></div>
+
+        <!-- SIDEBAR -->
+        <aside class="sidebar flex flex-col" id="sidebar">
+            <div class="h-[72px] flex items-center px-6 border-b border-[#3a4759] shrink-0 bg-[#232c3a]">
+                <div class="w-8 h-8 rounded-lg bg-brandBlue flex items-center justify-center text-white font-bold text-xl mr-3 shadow-lg shadow-brandBlue/30">B</div>
+                <span class="text-white font-bold text-xl tracking-tight">Benaka</span>
+            </div>
+            
+            <div class="py-6 flex-1 flex flex-col gap-1 overflow-y-auto">
+                <a href="#" class="nav-item active"><i class="fa-solid fa-house w-5"></i> Home</a>
+                <a href="#fleet" class="nav-item"><i class="fa-solid fa-car w-5"></i> Vehicles</a>
+                <a href="#activity" class="nav-item"><i class="fa-solid fa-map-location-dot w-5"></i> Trips</a>
+                <a href="#activity" class="nav-item"><i class="fa-solid fa-clock-rotate-left w-5"></i> History</a>
+                <a href="/admin.html" class="nav-item mt-auto border-t border-[#3a4759] pt-4"><i class="fa-solid fa-shield-halved w-5"></i> Admin Control</a>
+            </div>
+        </aside>
+
+        <!-- MAIN LAYOUT -->
+        <main class="main-container">
+            <!-- TOPNAV -->
+            <header class="topbar">
+                <div class="flex items-center h-full flex-1 min-w-0">
+                    <button class="lg:hidden text-slate-500 mr-4 text-xl" onclick="toggleSidebar()">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="topbar-tabs hidden md:flex">
+                        <div class="topbar-tab active">Dashboard</div>
+                        <div class="topbar-tab">Browse Vehicles</div>
+                        <div class="topbar-tab">My Bookings</div>
+                    </div>
+                    <div class="font-bold text-lg md:hidden text-slate-800">Benaka Travels</div>
+                </div>
+                
+                <div class="flex items-center gap-6 shrink-0">
+                    <div class="hidden sm:flex items-center gap-3">
+                        <img src="https://ui-avatars.com/api/?name=Guest+User&background=0D8ABC&color=fff" class="w-9 h-9 border border-indigo-100 rounded-full">
+                        <div>
+                            <div class="text-sm font-bold leading-tight">Guest User <i class="fa-solid fa-chevron-down text-xs ml-1 text-slate-400"></i></div>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-4 text-slate-400">
+                        <i class="fa-regular fa-bell hover:text-slate-600 cursor-pointer text-lg"></i>
+                        <i class="fa-solid fa-gear hover:text-slate-600 cursor-pointer text-lg"></i>
+                    </div>
+                </div>
+            </header>
+
+            <!-- DASHBOARD CONTENT -->
+            <div class="overflow-y-auto flex-1">
+                <div class="dashboard-grid">
+                    
+                    <!-- WELCOME CARD -->
+                    <div style="grid-area: welcome;" class="flex flex-col gap-6">
+                        <div>
+                            <h1 class="text-3xl font-bold text-slate-800 tracking-tight">Welcome back,</h1>
+                            <h1 class="text-3xl font-bold text-slate-800 mb-6 tracking-tight">Traveler!</h1>
+                            
+                            <div class="bg-white border border-slate-200 rounded-xl p-2 flex items-center shadow-sm relative focus-within:ring-2 focus-within:ring-brandBlue/50 transition-all">
+                                <i class="fa-solid fa-location-dot text-slate-400 ml-3 mr-3"></i>
+                                <input type="text" id="route-search" placeholder="Where do you want to go?" class="w-full bg-transparent border-none outline-none font-medium text-slate-700 min-h-[40px]">
+                            </div>
+                            
+                            <button onclick="document.getElementById('fleet').scrollIntoView({behavior:'smooth'})" class="w-full mt-4 bg-brandBlue hover:bg-[#0284c7] text-white font-bold py-4 rounded-xl transition-colors shadow-md shadow-brandBlue/20">
+                                Book a Ride
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- CURRENT BOOKING -->
+                    <div style="grid-area: current;" class="card !p-0 overflow-hidden flex flex-col h-full border-brandBlue/30 relative">
+                        <div class="absolute right-0 top-0 bg-[#f0fdf4] text-[#16a34a] font-bold text-xs uppercase tracking-wider px-3 py-1 rounded-bl-lg border-b border-l border-[#dcfce7]">No Active Trips</div>
+                        <div class="p-5 flex-1 flex flex-col justify-center items-center text-center">
+                            <i class="fa-solid fa-car-side text-5xl text-slate-200 mb-4"></i>
+                            <h3 class="text-lg font-bold text-slate-700">No active bookings</h3>
+                            <p class="text-sm text-slate-500 mt-1">Book a premium vehicle from the fleet below to see your trip details right here.</p>
+                        </div>
+                    </div>
+
+                    <!-- QUICK ACTIONS -->
+                    <div style="grid-area: actions;" class="flex flex-col gap-5">
+                        <div class="card-header mb-0">Quick Actions</div>
+                        
+                        <a href="#" class="bg-white border border-slate-200 rounded-xl p-4 flex items-center justify-between hover:border-brandBlue transition-colors group cursor-pointer shadow-sm">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover:bg-brandBlue/10 group-hover:text-brandBlue transition-colors"><i class="fa-solid fa-calendar-check text-lg"></i></div>
+                                <div><div class="font-bold text-slate-800">Upcoming Trips</div><div class="text-xs text-slate-500">0 booked</div></div>
+                            </div>
+                            <i class="fa-solid fa-angle-right text-slate-400"></i>
+                        </a>
+                        
+                        <a href="#" class="bg-white border border-slate-200 rounded-xl p-4 flex items-center justify-between hover:border-brandBlue transition-colors group cursor-pointer shadow-sm">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover:bg-brandBlue/10 group-hover:text-brandBlue transition-colors"><i class="fa-solid fa-headset text-lg"></i></div>
+                                <div><div class="font-bold text-slate-800">Support Center</div></div>
+                            </div>
+                            <i class="fa-solid fa-angle-right text-slate-400"></i>
+                        </a>
+                        
+                        <a href="#" class="bg-white border border-slate-200 rounded-xl p-4 flex items-center justify-between hover:border-brandBlue transition-colors group cursor-pointer shadow-sm">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center group-hover:bg-brandBlue/10 group-hover:text-brandBlue transition-colors"><i class="fa-solid fa-right-left text-lg"></i></div>
+                                <div><div class="font-bold text-slate-800">Extend Trip</div></div>
+                            </div>
+                            <i class="fa-solid fa-angle-right text-slate-400"></i>
+                        </a>
+                    </div>
+
+                    <!-- FLEET TABLE / CARDS -->
+                    <div style="grid-area: fleet;" id="fleet">
+                        <div class="card-header">Your Fleet Access</div>
+                        <div id="loader" class="text-center py-10 text-slate-400 font-bold"><i class="fa-solid fa-spinner fa-spin mr-2"></i> Loading Assets...</div>
+                        
+                        <div class="fleet-grid" id="fleet-list">
+                            <!-- Injected by JS -->
+                        </div>
+                    </div>
+
+                    <!-- RECENT ACTIVITY -->
+                    <div style="grid-area: activity;" class="card !p-0 overflow-hidden" id="activity">
+                        <div class="p-6 pb-2 border-b border-slate-100 flex justify-between items-center">
+                            <div class="card-header mb-0">Recent Activity</div>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left border-collapse min-w-[700px]">
+                                <thead class="bg-slate-50/50">
+                                    <tr>
+                                        <th class="w-24">Date</th>
+                                        <th>Booking <i class="fa-solid fa-sort ml-1 text-slate-300"></i></th>
+                                        <th>Status <i class="fa-solid fa-circle-info ml-1 text-slate-300"></i></th>
+                                        <th>Map</th>
+                                        <th>Expected</th>
+                                        <th align="right">Price</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="hover:bg-slate-50 transition-colors">
+                                        <td class="text-slate-500 font-medium">Oct 10</td>
+                                        <td class="font-bold text-slate-800 flex items-center gap-3"><img src="https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=200" class="w-10 h-10 object-cover rounded-md border border-slate-200"> Sample Book</td>
+                                        <td><span class="bg-emerald-100 text-emerald-700 px-3 py-1 rounded-md text-xs font-bold w-fit">Completed</span></td>
+                                        <td><div class="w-8 h-8 rounded bg-[#e2f1fa] text-brandBlue flex items-center justify-center border border-[#badbf0]"><i class="fa-solid fa-map-pin"></i></div></td>
+                                        <td><div class="w-24 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-brandBlue w-full"></div></div></td>
+                                        <td align="right" class="font-bold text-slate-800">₹2400</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
                 </div>
             </div>
-            <div class="search-bar">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" id="search-input" placeholder="Search vehicles..." oninput="filterSearch()">
-            </div>
-        </div>
-    </header>
-
-    <!-- FILTER CHIPS -->
-    <div class="filter-scroll" style="position:fixed;top:0;left:0;right:0;z-index:49;background:rgba(245,245,247,0.85);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);margin-top:120px;" id="filter-bar">
-        <button class="filter-chip active" data-filter="all">All</button>
-        <button class="filter-chip" data-filter="SUV">🚙 SUV</button>
-        <button class="filter-chip" data-filter="Sedan">🚗 Sedan</button>
-        <button class="filter-chip" data-filter="Electric">⚡ Electric</button>
-        <button class="filter-chip" data-filter="Luxury">💎 Luxury</button>
-        <button class="filter-chip" data-filter="Truck">🛻 Truck</button>
+        </main>
     </div>
 
-    <!-- MAIN -->
-    <div class="main-content">
-        <!-- Loader -->
-        <div id="loader" style="padding:0 20px;">
-            <div class="skeleton" style="width:100%;height:100px;margin-bottom:12px;"></div>
-            <div class="skeleton" style="width:100%;height:100px;margin-bottom:12px;"></div>
-            <div class="skeleton" style="width:100%;height:100px;margin-bottom:12px;"></div>
-        </div>
-
-        <!-- Featured Section (horizontal scroll) -->
-        <div id="featured-section" style="display:none;">
-            <div class="section-title">
-                <h2>🔥 Featured</h2>
-                <span id="vehicle-count">0 vehicles</span>
+    <!-- BOOKING MODAL -->
+    <div id="booking-modal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-bold text-slate-800">Book Ride</h2>
+                <button onclick="closeBooking()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 hover:bg-slate-200 border-none outline-none"><i class="fa-solid fa-xmark"></i></button>
             </div>
-            <div class="featured-scroll" id="featured-scroll"></div>
-        </div>
-
-        <!-- All Vehicles list -->
-        <div id="all-section" style="display:none;">
-            <div class="section-title">
-                <h2>All Vehicles</h2>
+            
+            <div class="flex gap-4 items-center mb-6 p-4 bg-slate-50 border border-slate-200 rounded-xl">
+                <img id="m-img" src="" class="w-16 h-16 rounded-lg object-cover bg-white border border-slate-200">
+                <div>
+                    <h3 id="m-name" class="font-bold text-slate-800 text-lg leading-tight">Name</h3>
+                    <p class="text-brandBlue font-bold text-sm" id="m-type">SUV</p>
+                </div>
+                <div class="ml-auto text-right">
+                    <p class="text-xs font-bold text-slate-500 uppercase tracking-widest">Pricing</p>
+                    <p class="font-black text-slate-800 text-xl">₹<span id="m-rate">0</span><span class="text-sm font-medium text-slate-500">/d</span></p>
+                </div>
             </div>
-            <div class="vehicle-list" id="vehicle-list"></div>
-        </div>
 
-        <div id="empty-state" class="empty-state" style="display:none;">
-            <i class="fa-solid fa-car-burst"></i>
-            <h3>No vehicles found</h3>
-            <p>Try a different category or search term</p>
-        </div>
-    </div>
-
-    <!-- BOTTOM NAV -->
-    <nav class="bottom-nav safe-bottom">
-        <a href="#" class="nav-item active">
-            <i class="fa-solid fa-compass"></i>
-            <span>Explore</span>
-        </a>
-        <a href="#" class="nav-item">
-            <i class="fa-solid fa-clock-rotate-left"></i>
-            <span>Activity</span>
-        </a>
-        <a href="/admin.html" class="nav-item">
-            <i class="fa-solid fa-gear"></i>
-            <span>Admin</span>
-        </a>
-    </nav>
-
-    <!-- BOOKING SHEET -->
-    <div class="sheet-overlay" id="sheet-overlay" onclick="closeSheet()"></div>
-    <div class="booking-sheet" id="booking-sheet">
-        <div class="sheet-handle"></div>
-        <div class="sheet-header">
-            <img id="sh-img" src="">
-            <div class="sheet-header-info">
-                <div class="sh-tag" id="sh-type">SUV</div>
-                <h3 id="sh-name">Vehicle</h3>
-                <div class="sh-price">₹<span id="sh-rate" style="color:#1a1a1a;font-weight:800;">0</span> <span>/ day</span></div>
-            </div>
-        </div>
-        <div class="sheet-body">
             <form id="booking-form" onsubmit="submitBooking(event)">
                 <div class="input-group">
-                    <label>Your Name</label>
-                    <input type="text" id="cust-name" required placeholder="Full name">
+                    <label>Guest Full Name</label>
+                    <input type="text" id="cust-name" required placeholder="John Doe">
                 </div>
-                <div class="input-row">
-                    <div class="input-group">
-                        <label>Pick-up Date</label>
+                
+                <div class="flex gap-4">
+                    <div class="input-group flex-1">
+                        <label>Pickup Date</label>
                         <input type="date" id="start-date" required>
                     </div>
-                    <div class="input-group">
-                        <label>Drop-off Date</label>
+                    <div class="input-group flex-1">
+                        <label>Return Date</label>
                         <input type="date" id="end-date" required>
                     </div>
                 </div>
-                <div class="date-error" id="date-error">Drop-off date must be after pick-up date</div>
-
-                <div class="receipt">
-                    <div class="receipt-row"><span class="rr-label">Rate</span><span class="rr-value">₹<span id="r-rate">0</span>/day</span></div>
-                    <div class="receipt-row"><span class="rr-label">Duration</span><span class="rr-value" id="r-days">0 days</span></div>
-                    <div class="receipt-divider"></div>
-                    <div class="receipt-row receipt-total"><span class="rr-label">Total</span><span class="rr-value">₹<span id="r-total">0</span></span></div>
+                
+                <div id="date-error" class="hidden text-xs font-bold text-red-600 bg-red-50 p-3 rounded-lg mb-4 border border-red-100">Return date must be after pickup.</div>
+                
+                <div class="bg-slate-50 border border-slate-200 rounded-xl p-4 mb-6">
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-sm font-semibold text-slate-500">Duration</span>
+                        <span class="text-sm font-bold text-slate-800" id="r-days">0 Days</span>
+                    </div>
+                    <div class="h-px w-full bg-slate-200 mb-3"></div>
+                    <div class="flex justify-between items-center">
+                        <span class="text-base font-bold text-slate-800">Total Price</span>
+                        <span class="text-2xl font-black text-brandBlue">₹<span id="r-total">0</span></span>
+                    </div>
                 </div>
 
-                <button type="submit" class="wa-btn" id="wa-btn" disabled>
-                    <i class="fa-brands fa-whatsapp"></i> Book via WhatsApp
+                <button type="submit" id="wa-btn" disabled class="w-full bg-brandBlue hover:bg-[#0284c7] text-white font-bold py-4 rounded-xl transition-colors shadow-md shadow-brandBlue/20 flex justify-center items-center gap-2 disabled:bg-slate-300 disabled:shadow-none disabled:cursor-not-allowed">
+                    <i class="fa-brands fa-whatsapp text-lg"></i> Finalize Booking
                 </button>
             </form>
         </div>
     </div>
 
+    <!-- JS -->
     <script>
         const WA_NUM = "919876543210";
-        let allVehicles = [], currentVehicle = null, currentFilter = 'all', searchTerm = '';
+        let allVehicles = [], currentVehicle = null;
+
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('mobile-open');
+            document.getElementById('mobile-overlay').classList.toggle('active');
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             fetchVehicles();
+            
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('start-date').min = today;
             document.getElementById('end-date').min = today;
-            ['start-date','end-date','cust-name'].forEach(id => document.getElementById(id).addEventListener('input', calc));
-
-            document.querySelectorAll('.filter-chip').forEach(btn => {
-                btn.addEventListener('click', () => {
-                    document.querySelectorAll('.filter-chip').forEach(b => b.classList.remove('active'));
-                    btn.classList.add('active');
-                    currentFilter = btn.dataset.filter;
-                    render();
-                });
+            
+            ['start-date','end-date','cust-name'].forEach(id => {
+                document.getElementById(id).addEventListener('input', calculatePrice);
+            });
+            
+            // Search filter
+            document.getElementById('route-search').addEventListener('input', (e) => {
+                const term = e.target.value.toLowerCase();
+                const filtered = allVehicles.filter(v => v.name.toLowerCase().includes(term) || (v.plate_number||'').toLowerCase().includes(term));
+                renderFleet(filtered);
             });
         });
 
         async function fetchVehicles() {
             try {
                 const res = await fetch('/api/vehicles');
-                const d = await res.json();
+                const data = await res.json();
                 document.getElementById('loader').style.display = 'none';
-                if(d.success) { allVehicles = d.data; render(); }
+                if(data.success) {
+                    allVehicles = data.data;
+                    renderFleet(allVehicles);
+                }
             } catch(e) { document.getElementById('loader').style.display = 'none'; }
         }
 
-        function filterSearch() {
-            searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
-            render();
-        }
-
-        function getFiltered() {
-            let v = allVehicles;
-            if(currentFilter !== 'all') v = v.filter(x => x.type === currentFilter);
-            if(searchTerm) v = v.filter(x => x.name.toLowerCase().includes(searchTerm) || (x.description||'').toLowerCase().includes(searchTerm));
-            return v;
-        }
-
-        function render() {
-            const vehicles = getFiltered();
-            const featuredEl = document.getElementById('featured-section');
-            const allEl = document.getElementById('all-section');
-            const emptyEl = document.getElementById('empty-state');
-
+        function renderFleet(vehicles) {
+            const grid = document.getElementById('fleet-list');
             if(vehicles.length === 0) {
-                featuredEl.style.display = 'none'; allEl.style.display = 'none'; emptyEl.style.display = 'block'; return;
+                grid.innerHTML = '<div class="col-span-full py-10 text-center text-slate-400 font-bold border-2 border-dashed border-slate-200 rounded-xl">No vehicles found.</div>';
+                return;
             }
-            emptyEl.style.display = 'none';
-
-            // Featured = first 4 available
-            const featured = vehicles.filter(v => v.is_available === 1 || v.is_available === true).slice(0, 4);
-            const fScroll = document.getElementById('featured-scroll');
-            document.getElementById('vehicle-count').textContent = vehicles.length + ' vehicle' + (vehicles.length !== 1 ? 's' : '');
-
-            if(featured.length > 0) {
-                featuredEl.style.display = 'block';
-                fScroll.innerHTML = featured.map(v => {
-                    let feats = '';
-                    try { feats = JSON.parse(v.features || '[]').slice(0,2).join(' · '); } catch(e){}
-                    return `
-                    <div class="featured-card">
-                        <img class="card-img" src="${v.image_url}" onerror="this.src='https://images.unsplash.com/photo-1542282088-fe8426682b8f?w=600'" loading="lazy">
-                        <div class="card-body">
-                            <div class="card-meta">
-                                <span class="card-tag">${v.type}</span>
-                                <span class="card-rating"><i class="fa-solid fa-star"></i> ${(4 + Math.random()).toFixed(1)}</span>
-                            </div>
-                            <h3>${v.name}</h3>
-                            <div class="card-footer">
-                                <div class="card-price">₹${v.daily_rate}<span>/day</span></div>
-                                <button class="card-book-btn" onclick='openSheet(${JSON.stringify(v).replace(/'/g,"&#39;")})'>Book</button>
-                            </div>
-                        </div>
-                    </div>`;
-                }).join('');
-            } else { featuredEl.style.display = 'none'; }
-
-            // All vehicles compact list
-            allEl.style.display = 'block';
-            const listEl = document.getElementById('vehicle-list');
-            listEl.innerHTML = vehicles.map(v => {
+            grid.innerHTML = vehicles.map(v => {
                 const avail = v.is_available === 1 || v.is_available === true;
-                let feats = '';
-                try { feats = JSON.parse(v.features || '[]').slice(0,3).join(' · '); } catch(e){}
                 return `
-                <div class="list-card" onclick="${avail ? `openSheet(${JSON.stringify(v).replace(/'/g,"&#39;")})` : ''}">
-                    <img class="lc-img" src="${v.image_url}" onerror="this.src='https://images.unsplash.com/photo-1542282088-fe8426682b8f?w=300'" loading="lazy">
-                    <div class="lc-info">
-                        <div class="lc-name">${v.name}</div>
-                        <div class="lc-tags">
-                            <span class="lc-type">${v.type}</span>
-                            ${feats ? `<span class="lc-feat">${feats}</span>` : ''}
+                <div class="vehicle-card">
+                    <img src="${v.image_url}" class="vehicle-img" onerror="this.src='https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=600'">
+                    <div class="flex-1 flex flex-col justify-between">
+                        <div class="mb-4">
+                            <h3 class="font-bold text-slate-800 text-lg leading-tight mb-1">${v.name}</h3>
+                            <div class="text-sm font-bold text-slate-500 mb-2">₹${v.daily_rate}/day <span class="mx-1">•</span> <span class="capitalize text-slate-400">${v.type}</span></div>
+                            <div class="text-lg font-black text-slate-800">₹${v.daily_rate}<span class="text-sm font-medium text-slate-400">/day</span></div>
                         </div>
-                        <div class="lc-bottom">
-                            <div class="lc-price">₹${v.daily_rate}<span>/day</span></div>
-                            ${!avail ? '<span class="lc-unavail">Rented Out</span>' : ''}
-                        </div>
+                        ${avail ? `<button onclick='openBooking(${JSON.stringify(v).replace(/'/g,"&#39;")})' class="w-full bg-brandBlue hover:bg-[#0284c7] text-white font-bold py-3 rounded-lg transition-colors">Book Now</button>` : `<button disabled class="w-full bg-slate-100 text-slate-400 font-bold py-3 rounded-lg border border-slate-200">Rented Out</button>`}
                     </div>
-                    ${avail ? `<button class="lc-book" onclick="event.stopPropagation();openSheet(${JSON.stringify(v).replace(/'/g,"&#39;")})"><i class="fa-solid fa-arrow-right"></i></button>` : ''}
-                </div>`;
+                </div>
+                `;
             }).join('');
         }
 
-        function openSheet(v) {
+        function openBooking(v) {
             currentVehicle = v;
-            document.getElementById('sh-name').textContent = v.name;
-            document.getElementById('sh-type').textContent = v.type;
-            document.getElementById('sh-img').src = v.image_url;
-            document.getElementById('sh-rate').textContent = v.daily_rate;
-            document.getElementById('r-rate').textContent = v.daily_rate;
+            document.getElementById('m-title').textContent = v.name;
+            document.getElementById('m-img').src = v.image_url;
+            document.getElementById('m-name').textContent = v.name;
+            document.getElementById('m-type').textContent = v.type;
+            document.getElementById('m-rate').textContent = v.daily_rate;
+            
             document.getElementById('booking-form').reset();
-            calc();
-
-            document.getElementById('sheet-overlay').style.display = 'block';
-            requestAnimationFrame(() => {
-                document.getElementById('sheet-overlay').classList.add('show');
-                document.getElementById('booking-sheet').classList.add('open');
-            });
+            calculatePrice();
+            
+            document.getElementById('booking-modal').classList.add('open');
         }
 
-        function closeSheet() {
-            document.getElementById('sheet-overlay').classList.remove('show');
-            document.getElementById('booking-sheet').classList.remove('open');
-            setTimeout(() => document.getElementById('sheet-overlay').style.display = 'none', 350);
+        function closeBooking() {
+            document.getElementById('booking-modal').classList.remove('open');
         }
 
-        function calc() {
-            const s = document.getElementById('start-date').value, e = document.getElementById('end-date').value;
-            const n = document.getElementById('cust-name').value.trim(), btn = document.getElementById('wa-btn');
-            const err = document.getElementById('date-error');
-            if(!s || !e) { document.getElementById('r-days').textContent = '0 days'; document.getElementById('r-total').textContent = '0'; btn.disabled = true; return; }
-            const days = Math.ceil((new Date(e) - new Date(s)) / 86400000) + 1;
-            if(days <= 0) { err.classList.add('show'); btn.disabled = true; return; }
-            err.classList.remove('show');
-            document.getElementById('r-days').textContent = days + ' day' + (days>1?'s':'');
-            document.getElementById('r-total').textContent = (days * currentVehicle.daily_rate).toLocaleString();
-            btn.disabled = n.length === 0;
-        }
-
-        async function submitBooking(ev) {
-            ev.preventDefault();
+        function calculatePrice() {
+            const s = document.getElementById('start-date').value;
+            const e = document.getElementById('end-date').value;
+            const n = document.getElementById('cust-name').value.trim();
             const btn = document.getElementById('wa-btn');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Processing...'; btn.disabled = true;
+            const err = document.getElementById('date-error');
+            
+            if(!s || !e) {
+                document.getElementById('r-days').textContent = '0 Days';
+                document.getElementById('r-total').textContent = '0';
+                btn.disabled = true; return;
+            }
+            
+            const days = Math.ceil((new Date(e) - new Date(s))/86400000) + 1;
+            if(days <= 0) {
+                err.classList.remove('hidden'); btn.disabled = true;
+            } else {
+                err.classList.add('hidden');
+                document.getElementById('r-days').textContent = days + (days>1?' Days':' Day');
+                document.getElementById('r-total').textContent = (days * currentVehicle.daily_rate).toLocaleString();
+                btn.disabled = n.length === 0;
+            }
+        }
+
+        async function submitBooking(event) {
+            event.preventDefault();
+            const btn = document.getElementById('wa-btn');
+            const origHTML = btn.innerHTML;
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin text-lg"></i> Registering...';
+            btn.disabled = true;
+            
             const payload = {
-                vehicle_id: currentVehicle.id, customer_name: document.getElementById('cust-name').value,
-                customer_phone: 'WhatsApp', start_date: document.getElementById('start-date').value,
+                vehicle_id: currentVehicle.id,
+                customer_name: document.getElementById('cust-name').value,
+                customer_phone: "WhatsApp",
+                start_date: document.getElementById('start-date').value,
                 end_date: document.getElementById('end-date').value,
                 total_price: parseInt(document.getElementById('r-total').textContent.replace(/,/g,''))
             };
+            
             try {
-                await fetch('/api/bookings', { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload) });
-                const msg = `*Benaka Travels Booking*\n\nVehicle: ${currentVehicle.name}\nGuest: ${payload.customer_name}\nDates: ${payload.start_date} → ${payload.end_date}\nTotal: ₹${payload.total_price}\n\nPlease confirm!`;
-                closeSheet();
-                window.open(`https://wa.me/${WA_NUM}?text=${encodeURIComponent(msg)}`, '_blank');
-            } catch(e) { alert('Network error'); }
-            btn.innerHTML = '<i class="fa-brands fa-whatsapp"></i> Book via WhatsApp'; btn.disabled = false;
+                const r = await fetch('/api/bookings', {
+                    method: 'POST',
+                    headers: {'Content-Type':'application/json'},
+                    body: JSON.stringify(payload)
+                });
+                const d = await r.json();
+                if(d.success) {
+                    const msg = `*New Enterprise Booking - Benaka Travels*\n\nAsset: ${currentVehicle.name}\nContractor: ${payload.customer_name}\nSchedule: ${payload.start_date} to ${payload.end_date}\nValue: ₹${payload.total_price}\n\nAwaiting Confirmation.`;
+                    closeBooking();
+                    window.open(`https://wa.me/${WA_NUM}?text=${encodeURIComponent(msg)}`, '_blank');
+                } else { alert("Booking failed to register."); }
+            } catch(e) { alert("Network Connection Error."); }
+            
+            btn.innerHTML = origHTML;
+            btn.disabled = false;
         }
-
-        if('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
     </script>
 </body>
 </html>
