@@ -1,232 +1,209 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
-    <meta name="theme-color" content="#ffffff">
-    <title>Benaka Travels - Premium Rentals</title>
+    <meta name="theme-color" content="#000000">
+    <title>Benaka Travels - Elite Fleet</title>
     
-    <!-- PWA Setup -->
     <link rel="manifest" href="/manifest.json">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="apple-touch-icon" href="/benaka_travels_logo.png">
 
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
             theme: {
                 extend: {
                     colors: {
-                        brand: {
-                            50: '#f0f9ff',
-                            100: '#e0f2fe',
-                            500: '#0ea5e9',
-                            600: '#0284c7', // Benaka Primary Blue
-                            900: '#0c4a6e',
-                        },
-                        dark: '#0f172a'
+                        dark: '#0a0a0c',
+                        surface: '#121216',
+                        brand: { 500: '#3b82f6', 600: '#2563eb' },
+                        accent: '#f8fafc'
                     },
-                    fontFamily: {
-                        sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-                    },
-                    animation: {
-                        'slide-up': 'slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards',
-                        'fade-in': 'fadeIn 0.3s ease-out forwards',
-                        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
-                    },
-                    keyframes: {
-                        slideUp: {
-                            '0%': { transform: 'translateY(100%)', opacity: 0 },
-                            '100%': { transform: 'translateY(0)', opacity: 1 },
-                        },
-                        fadeIn: {
-                            '0%': { opacity: 0 },
-                            '100%': { opacity: 1 },
-                        }
-                    }
+                    fontFamily: { sans: ['"Outfit"', 'sans-serif'] },
+                    animation: { 'fade-up': 'fadeUp 0.6s cubic-bezier(0.25, 1, 0.5, 1) forwards' },
+                    keyframes: { fadeUp: { '0%': { transform: 'translateY(20px)', opacity: 0 }, '100%': { transform: 'translateY(0)', opacity: 1 } } }
                 }
             }
         }
     </script>
 
-    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- FontAwesome -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #fafafa; -webkit-tap-highlight-color: transparent; }
+        body { font-family: 'Outfit', sans-serif; background-color: #050505; color: #fff; -webkit-tap-highlight-color: transparent; }
+        ::-webkit-scrollbar { display: none; }
         
-        /* Hide scrollbar for clean app look */
-        ::-webkit-scrollbar { width: 0px; background: transparent; }
+        .glass-header { background: rgba(5, 5, 5, 0.6); backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px); border-bottom: 1px solid rgba(255,255,255,0.05); }
+        .glass-pill { background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); }
+        .glass-sheet { background: rgba(18, 18, 22, 0.95); backdrop-filter: blur(30px); border-top: 1px solid rgba(255,255,255,0.1); }
         
-        /* Safe Area Paddings for iOS */
-        .safe-pb { padding-bottom: env(safe-area-inset-bottom, 20px); }
-        .safe-pt { padding-top: env(safe-area-inset-top, 40px); }
-
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-        }
-
-        .bottom-sheet {
-            transition: transform 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
-        }
-        .bottom-sheet.closed { transform: translateY(105%); }
+        /* Floating App Nav */
+        .app-nav { position: fixed; bottom: env(safe-area-inset-bottom, 24px); left: 50%; transform: translateX(-50%); z-index: 40; }
+        
+        /* Cinematic Image Mask */
+        .cinematic-mask { background: linear-gradient(to top, rgba(0,0,0,0.9) 0%, rgba(0,0,0,0.4) 40%, transparent 100%); }
+        
+        .bottom-sheet { transition: transform 0.5s cubic-bezier(0.32, 0.72, 0, 1); }
+        .bottom-sheet.closed { transform: translateY(100%); }
         .bottom-sheet.open { transform: translateY(0); }
         
-        /* Input styling native feel */
-        input[type="date"], input[type="text"] {
-            appearance: none; -webkit-appearance: none;
-        }
+        input[type="date"], input[type="text"] { background: rgba(255,255,255,0.05); color: white !important; border: 1px solid rgba(255,255,255,0.1); }
+        input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1); }
     </style>
 </head>
 
-<body class="text-slate-800 antialiased relative min-h-screen pb-[90px]">
-    
-    <!-- App Header (Top Bar) -->
-    <header class="fixed top-0 inset-x-0 z-40 glass-panel safe-pt px-5 pb-4 flex justify-between items-center shadow-sm">
-        <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-brand-600 flex items-center justify-center shadow-lg shadow-brand-500/30 text-white font-bold text-xl">
-                B
-            </div>
-            <div>
-                <h1 class="font-extrabold text-lg leading-tight tracking-tight text-slate-900">Benaka Travels</h1>
-                <p class="text-[10px] uppercase font-bold text-slate-400 tracking-wider">Premium Fleet</p>
-            </div>
+<body class="antialiased min-h-screen pb-32">
+
+    <!-- Ambient Glow Background -->
+    <div class="fixed top-0 left-0 w-full h-96 bg-brand-600/20 blur-[120px] pointer-events-none rounded-full transform -translate-y-1/2"></div>
+
+    <!-- Header -->
+    <header class="fixed top-0 inset-x-0 z-40 glass-header pt-[env(safe-area-inset-top,40px)] px-6 pb-4 flex justify-between items-center">
+        <div>
+            <h1 class="font-black text-2xl tracking-tight text-white leading-none">Benaka</h1>
+            <p class="text-[10px] font-bold text-brand-500 uppercase tracking-[0.3em] mt-1">Elite Travels</p>
         </div>
-        <button class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center text-slate-600 active:scale-95 transition-transform">
+        <div class="w-10 h-10 rounded-full glass-pill flex items-center justify-center relative shadow-[0_0_20px_rgba(255,255,255,0.05)] text-white/80">
             <i class="fa-solid fa-bell"></i>
-        </button>
+            <span class="absolute top-2 right-2.5 w-2 h-2 bg-red-500 rounded-full animate-pulse border border-[#050505]"></span>
+        </div>
     </header>
 
-    <!-- Main Content Area -->
-    <main class="pt-[110px] px-4">
-        <!-- Search & Filter Bar -->
-        <div class="mb-6 flex gap-3 overflow-x-auto pb-2 scroll-smooth filter-bar">
-            <!-- Active pill -->
-            <button class="shrink-0 px-5 py-2.5 rounded-full bg-slate-900 text-white font-semibold text-sm shadow-md transition-transform active:scale-95" data-filter="all">All Vehicles</button>
-            <button class="shrink-0 px-5 py-2.5 rounded-full bg-white border border-slate-200 text-slate-600 font-semibold text-sm transition-transform active:scale-95" data-filter="SUV">SUV</button>
-            <button class="shrink-0 px-5 py-2.5 rounded-full bg-white border border-slate-200 text-slate-600 font-semibold text-sm transition-transform active:scale-95" data-filter="Sedan">Sedan</button>
-            <button class="shrink-0 px-5 py-2.5 rounded-full bg-white border border-slate-200 text-slate-600 font-semibold text-sm transition-transform active:scale-95" data-filter="Electric">Electric</button>
+    <main class="pt-[110px] px-5 relative z-10">
+        
+        <!-- Hero Text -->
+        <div class="mb-8 mt-2 animate-fade-up">
+            <h2 class="text-4xl font-black leading-[1.1] tracking-tight">Experience<br><span class="text-transparent bg-clip-text bg-gradient-to-r from-brand-500 to-blue-300">Pure Luxury.</span></h2>
+            <p class="text-white/50 text-sm mt-3 font-medium max-w-[280px]">Reserve your elite vehicle today and command the road.</p>
         </div>
 
-        <!-- Vehicles Feed -->
-        <div id="loading" class="space-y-6">
-            <!-- Skeleton Card -->
-            <div class="bg-white rounded-[24px] p-2 shadow-sm border border-slate-100 animate-pulse">
-                <div class="w-full h-56 bg-slate-200 rounded-[18px]"></div>
-                <div class="p-4 space-y-3">
-                    <div class="h-6 bg-slate-200 rounded w-1/2"></div>
-                    <div class="h-4 bg-slate-200 rounded w-3/4"></div>
+        <!-- Filter Categories -->
+        <div class="mb-8 flex gap-4 overflow-x-auto no-scrollbar scroll-smooth filter-bar pb-2">
+            <button class="shrink-0 flex flex-col items-center gap-2 group transition-all" data-filter="all">
+                <div class="w-14 h-14 rounded-[20px] bg-white flex items-center justify-center text-dark shadow-[0_0_20px_rgba(255,255,255,0.2)] transition-transform active:scale-95 group-data-[active=true]:bg-white group-data-[active=true]:text-dark group-data-[active=false]:bg-surface group-data-[active=false]:border group-data-[active=false]:border-white/10 group-data-[active=false]:text-white/50">
+                    <i class="fa-solid fa-layer-group text-xl"></i>
                 </div>
-            </div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-white">All</span>
+            </button>
+            <button class="shrink-0 flex flex-col items-center gap-2 group transition-all" data-filter="SUV">
+                <div class="w-14 h-14 rounded-[20px] bg-surface border border-white/10 flex items-center justify-center text-white/50 transition-transform active:scale-95 group-data-[active=true]:bg-white group-data-[active=true]:text-dark">
+                    <i class="fa-solid fa-truck-monster text-xl"></i>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-white/50 group-data-[active=true]:text-white">SUV</span>
+            </button>
+            <button class="shrink-0 flex flex-col items-center gap-2 group transition-all" data-filter="Sedan">
+                <div class="w-14 h-14 rounded-[20px] bg-surface border border-white/10 flex items-center justify-center text-white/50 transition-transform active:scale-95 group-data-[active=true]:bg-white group-data-[active=true]:text-dark">
+                    <i class="fa-solid fa-car-side text-xl"></i>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-white/50 group-data-[active=true]:text-white">Sedan</span>
+            </button>
+            <button class="shrink-0 flex flex-col items-center gap-2 group transition-all" data-filter="Electric">
+                <div class="w-14 h-14 rounded-[20px] bg-surface border border-white/10 flex items-center justify-center text-white/50 transition-transform active:scale-95 group-data-[active=true]:bg-brand-500 group-data-[active=true]:text-white group-data-[active=true]:border-brand-500 group-data-[active=true]:shadow-[0_0_20px_rgba(59,130,246,0.4)]">
+                    <i class="fa-solid fa-bolt text-xl"></i>
+                </div>
+                <span class="text-[10px] font-bold uppercase tracking-wider text-white/50 group-data-[active=true]:text-white">EV</span>
+            </button>
         </div>
 
-        <div id="vehicles-grid" class="flex flex-col gap-6 hidden">
+        <!-- Feed Loader -->
+        <div id="loading" class="flex justify-center py-20">
+            <div class="w-10 h-10 border-4 border-white/20 border-t-white rounded-full animate-spin"></div>
+        </div>
+
+        <!-- Vehicles Grid (Cinematic Cards) -->
+        <div id="vehicles-grid" class="flex flex-col gap-8 hidden">
             <!-- Injected by JS -->
         </div>
 
-        <div id="no-results" class="hidden text-center py-16">
-            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-100 mb-4 text-slate-400 text-2xl">
-                <i class="fa-solid fa-car-side"></i>
-            </div>
-            <h3 class="font-bold text-slate-800 text-lg">No vehicles found</h3>
-            <p class="text-sm text-slate-500 mt-1">Try selecting a different category.</p>
+        <div id="no-results" class="hidden text-center py-20">
+            <i class="fa-solid fa-car-tunnel text-4xl text-white/20 mb-4"></i>
+            <h3 class="font-bold text-white text-lg">No vehicles found</h3>
+            <p class="text-sm text-white/40 mt-1">Try another category</p>
         </div>
     </main>
 
-    <!-- Bottom Navigation Bar -->
-    <nav class="fixed bottom-0 inset-x-0 bg-white border-t border-slate-100 safe-pb z-40 pb-2 pt-3 px-6 flex justify-around shadow-[0_-10px_40px_rgba(0,0,0,0.03)]">
-        <a href="#" class="flex flex-col items-center gap-1 text-brand-600">
-            <i class="fa-solid fa-compass text-xl mb-1"></i>
-            <span class="text-[10px] font-bold">Explore</span>
+    <!-- Floating Pill Navigation -->
+    <nav class="app-nav glass-pill rounded-full px-6 py-4 flex gap-8 items-center shadow-[0_20px_40px_rgba(0,0,0,0.5)]">
+        <a href="#" class="flex flex-col items-center gap-1 text-white">
+            <i class="fa-solid fa-compass text-xl"></i>
         </a>
-        <a href="#" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-800 transition-colors">
-            <i class="fa-solid fa-ticket text-xl mb-1"></i>
-            <span class="text-[10px] font-bold">Bookings</span>
+        <div class="w-px h-6 bg-white/10"></div>
+        <a href="#" class="flex flex-col items-center gap-1 text-white/40 hover:text-white transition-colors">
+            <i class="fa-solid fa-ticket text-xl"></i>
         </a>
-        <a href="/admin.html" class="flex flex-col items-center gap-1 text-slate-400 hover:text-slate-800 transition-colors">
-            <i class="fa-solid fa-shield-halved text-xl mb-1"></i>
-            <span class="text-[10px] font-bold">Admin</span>
+        <div class="w-px h-6 bg-white/10"></div>
+        <a href="/admin.html" class="flex flex-col items-center gap-1 text-white/40 hover:text-white transition-colors">
+            <i class="fa-solid fa-shield-halved text-xl"></i>
         </a>
     </nav>
 
-    <!-- Full Screen Action Sheet (Booking Modal) -->
-    <div id="booking-overlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300"></div>
+    <!-- Elite Booking Bottom Sheet -->
+    <div id="booking-overlay" class="fixed inset-0 bg-black/60 backdrop-blur-md z-50 hidden opacity-0 transition-opacity duration-300"></div>
     
-    <div id="booking-sheet" class="fixed bottom-0 inset-x-0 z-50 bg-white rounded-t-[32px] shadow-2xl bottom-sheet closed flex flex-col max-h-[90vh]">
+    <div id="booking-sheet" class="fixed bottom-0 inset-x-0 z-50 glass-sheet rounded-t-[40px] shadow-[0_-20px_60px_rgba(0,0,0,0.4)] bottom-sheet closed flex flex-col max-h-[90vh]">
         <!-- Drag Handle -->
-        <div class="w-full h-8 flex items-center justify-center cursor-ns-resize shrink-0 pt-2" onclick="closeSheet()">
-            <div class="w-12 h-1.5 bg-slate-200 rounded-full"></div>
+        <div class="w-full h-8 flex items-center justify-center cursor-ns-resize shrink-0 pt-3" onclick="closeSheet()">
+            <div class="w-16 h-1 bg-white/20 rounded-full"></div>
         </div>
 
-        <div class="px-6 pb-6 overflow-y-auto safe-pb flex-1 no-scrollbar">
-            <!-- Header Info -->
-            <div class="flex gap-4 items-center mb-6">
-                <div class="w-24 h-24 shrink-0 rounded-2xl bg-slate-100 border border-slate-200 overflow-hidden relative shadow-inner">
-                    <img id="sheet-img" src="" class="w-full h-full object-cover">
-                </div>
-                <div>
-                    <div class="inline-block px-2 py-1 bg-brand-50 text-brand-600 text-[10px] font-extrabold uppercase tracking-wider rounded border border-brand-100 mb-1" id="sheet-type">SUV</div>
-                    <h2 id="sheet-title" class="text-xl font-extrabold text-slate-900 leading-tight">Car Name</h2>
-                    <p class="text-sm text-slate-500 font-medium mt-1">₹<span id="sheet-rate">0</span> / day</p>
+        <div class="px-6 pb-6 overflow-y-auto safe-pb flex-1 no-scrollbar pt-2">
+            <!-- Header Image Banner inside sheet -->
+            <div class="w-full h-48 rounded-[24px] overflow-hidden relative mb-6">
+                <img id="sheet-img" src="" class="w-full h-full object-cover">
+                <div class="absolute inset-0 cinematic-mask flex flex-col justify-end p-5">
+                    <div class="inline-block px-3 py-1 bg-white/20 backdrop-blur-md text-white text-[10px] font-bold uppercase tracking-widest rounded-full w-max mb-1" id="sheet-type">SUV</div>
+                    <h2 id="sheet-title" class="text-3xl font-black text-white leading-tight tracking-tight">Car Name</h2>
                 </div>
             </div>
 
             <form id="booking-form" class="space-y-5">
                 <!-- Name -->
                 <div>
-                    <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-2">Guest Name</label>
-                    <div class="relative relative flex items-center">
-                        <i class="fa-regular fa-user absolute left-4 text-slate-400"></i>
-                        <input type="text" id="cust-name" required placeholder="Enter full name" class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-base rounded-xl focus:ring-2 focus:ring-brand-500 focus:border-brand-500 block pl-11 p-4 font-medium transition-shadow placeholder:font-normal">
-                    </div>
+                    <label class="block text-[10px] font-bold text-white/50 uppercase tracking-[0.2em] mb-2 px-1">Guest Name</label>
+                    <input type="text" id="cust-name" required placeholder="Full Name" class="w-full rounded-[16px] p-4 text-base font-medium focus:ring-1 focus:ring-brand-500 outline-none placeholder:text-white/20 transition-all">
                 </div>
 
                 <!-- Dates Grid -->
-                <div class="grid grid-cols-2 gap-3">
+                <div class="grid grid-cols-2 gap-4">
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-2">Pick-up</label>
-                        <input type="date" id="start-date" required class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-2 focus:ring-brand-500 block p-3.5 font-semibold">
+                        <label class="block text-[10px] font-bold text-white/50 uppercase tracking-[0.2em] mb-2 px-1">Pick-up</label>
+                        <input type="date" id="start-date" required class="w-full rounded-[16px] p-4 text-sm font-medium focus:ring-1 focus:ring-brand-500 outline-none">
                     </div>
                     <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide mb-2">Drop-off</label>
-                        <input type="date" id="end-date" required class="w-full bg-slate-50 border border-slate-200 text-slate-900 text-sm rounded-xl focus:ring-2 focus:ring-brand-500 block p-3.5 font-semibold">
+                        <label class="block text-[10px] font-bold text-white/50 uppercase tracking-[0.2em] mb-2 px-1">Drop-off</label>
+                        <input type="date" id="end-date" required class="w-full rounded-[16px] p-4 text-sm font-medium focus:ring-1 focus:ring-brand-500 outline-none">
                     </div>
                 </div>
 
-                <p id="date-error" class="hidden text-red-500 text-xs font-bold bg-red-50 p-3 rounded-lg border border-red-100">
-                    <i class="fa-solid fa-circle-exclamation mr-1"></i> Drop-off must be after pick-up date.
+                <p id="date-error" class="hidden text-red-400 text-xs font-bold bg-red-950/30 p-3 rounded-[12px] border border-red-500/20 text-center">
+                    Check-out date must be after Check-in.
                 </p>
 
-                <!-- Receipt UI -->
-                <div class="bg-slate-50 border border-slate-200 rounded-2xl p-5 mt-2 shadow-inner">
-                    <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-3">Booking Summary</h4>
-                    <div class="flex justify-between items-center mb-2">
-                        <span class="text-slate-600 font-medium text-sm">Rate</span>
-                        <span class="text-slate-800 font-bold text-sm">₹<span id="calc-rate">0</span>/day</span>
-                    </div>
+                <!-- Cinematic Receipt UI -->
+                <div class="bg-black/40 border border-white/5 rounded-[24px] p-5 mt-4">
                     <div class="flex justify-between items-center mb-3">
-                        <span class="text-slate-600 font-medium text-sm">Duration</span>
-                        <span class="text-slate-800 font-bold text-sm" id="calc-days">0 Days</span>
+                        <span class="text-white/60 font-medium text-sm">Daily Rate</span>
+                        <span class="text-white font-bold text-sm">₹<span id="calc-rate">0</span></span>
                     </div>
-                    <div class="pt-3 border-t border-slate-200/80 flex justify-between items-end">
-                        <span class="text-slate-900 font-extrabold text-base">Estimated Total</span>
-                        <span class="text-brand-600 font-extrabold text-2xl">₹<span id="calc-total">0</span></span>
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-white/60 font-medium text-sm">Duration</span>
+                        <span class="text-white font-bold text-sm" id="calc-days">0 Days</span>
+                    </div>
+                    <div class="w-full h-px bg-white/10 mb-4"></div>
+                    <div class="flex justify-between items-end">
+                        <span class="text-white/80 font-bold text-sm uppercase tracking-wider">Total</span>
+                        <span class="text-white font-black text-3xl tracking-tight">₹<span id="calc-total">0</span></span>
                     </div>
                 </div>
 
-                <button type="submit" id="whatsapp-btn" disabled class="w-full bg-[#25D366] text-white font-bold text-lg p-4 rounded-2xl shadow-lg shadow-[#25D366]/30 disabled:opacity-40 disabled:scale-100 flex items-center justify-center gap-2 transition-all active:scale-95">
-                    <i class="fa-brands fa-whatsapp text-2xl"></i> Request via WhatsApp
+                <button type="submit" id="whatsapp-btn" disabled class="w-full bg-[#128C7E] text-white font-black tracking-wide text-lg py-5 rounded-[20px] shadow-[0_10px_30px_rgba(18,140,126,0.3)] disabled:opacity-30 disabled:scale-100 disabled:shadow-none flex items-center justify-center gap-2 transition-all active:scale-[0.98] mt-2">
+                    <i class="fa-brands fa-whatsapp text-2xl"></i> REQUEST RESERVATION
                 </button>
             </form>
         </div>
@@ -234,39 +211,38 @@
 
     <!-- UI Scripts -->
     <script>
-        const WHATSAPP_NUMBER = "919876543210"; // Placeholder for Client's Number
+        const WHATSAPP_NUMBER = "919876543210"; 
         let allVehicles = [];
         let currentVehicle = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             fetchVehicles();
+            
+            // Set initial active filter
+            document.querySelector('[data-filter="all"]').dataset.active = "true";
 
             const today = new Date().toISOString().split('T')[0];
             document.getElementById('start-date').min = today;
             document.getElementById('end-date').min = today;
 
-            // Real-time calculations
+            // Calculations
             ['start-date', 'end-date', 'cust-name'].forEach(id => {
                 document.getElementById(id).addEventListener('input', calculateTotal);
             });
 
-            // Filter logic
+            // Filters
             const filterBtns = document.querySelectorAll('.filter-bar button');
             filterBtns.forEach(btn => {
                 btn.addEventListener('click', (e) => {
-                    filterBtns.forEach(b => {
-                        b.classList.remove('bg-slate-900', 'text-white');
-                        b.classList.add('bg-white', 'text-slate-600');
-                    });
-                    e.target.classList.remove('bg-white', 'text-slate-600');
-                    e.target.classList.add('bg-slate-900', 'text-white');
+                    const target = e.currentTarget;
+                    filterBtns.forEach(b => b.dataset.active = "false");
+                    target.dataset.active = "true";
 
-                    const filter = e.target.dataset.filter;
+                    const filter = target.dataset.filter;
                     renderFeed(filter === 'all' ? allVehicles : allVehicles.filter(v => v.type === filter));
                 });
             });
 
-            // Close sheet on overlay tap
             document.getElementById('booking-overlay').addEventListener('click', closeSheet);
         });
 
@@ -298,39 +274,36 @@
             vehicles.forEach((v, i) => {
                 const isAvail = v.is_available === 1 || v.is_available === true;
                 
-                // Features
-                let featStr = '';
-                try {
-                    const feats = JSON.parse(v.features || '[]');
-                    featStr = feats.slice(0,3).join(' • ');
-                } catch(e) {}
-
                 grid.innerHTML += `
-                    <div class="bg-white rounded-[24px] p-2 shadow-[0_8px_30px_rgb(0,0,0,0.04)] border border-slate-100 animate-slide-up" style="animation-delay: ${i * 0.05}s">
-                        <div class="relative w-full h-64 rounded-[18px] overflow-hidden bg-slate-100 group">
-                            <img src="${v.image_url}" class="w-full h-full object-cover group-active:scale-105 transition-transform duration-500" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1542282088-fe8426682b8f?w=800'">
-                            ${!isAvail ? '<div class="absolute inset-0 bg-slate-900/40 backdrop-blur-sm flex items-center justify-center z-10"><span class="bg-white text-slate-900 text-xs font-black uppercase tracking-widest px-4 py-2 rounded-full shadow-xl">Rented</span></div>' : ''}
-                            <div class="absolute top-4 right-4 glass-panel px-3 py-1.5 rounded-full z-0 flex items-center gap-1 shadow-sm">
-                                <i class="fa-solid fa-star text-yellow-400 text-[10px]"></i>
-                                <span class="text-xs font-bold text-slate-800">New</span>
-                            </div>
+                    <div class="w-full relative rounded-[32px] overflow-hidden bg-surface shadow-[0_20px_40px_rgba(0,0,0,0.5)] border border-white/5 animate-fade-up" style="animation-delay: ${i * 0.1}s; height: 420px;">
+                        <!-- Full Background Image -->
+                        <img src="${v.image_url}" class="absolute inset-0 w-full h-full object-cover transition-transform duration-700 hover:scale-105" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1617469767053-d3b523a0b982?w=800'">
+                        
+                        <!-- Top Tags -->
+                        <div class="absolute top-5 inset-x-5 flex justify-between items-center z-10">
+                            <span class="glass-pill px-4 py-1.5 rounded-full text-[10px] font-bold text-white uppercase tracking-widest">${v.type}</span>
+                            ${!isAvail ? '<span class="bg-red-500/90 backdrop-blur text-white px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest shadow-lg">Rented</span>' : ''}
                         </div>
-                        <div class="p-4 pt-5 relative">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <h3 class="text-xl font-extrabold text-slate-900 tracking-tight leading-none mb-1">${v.name}</h3>
-                                    <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">${featStr}</p>
-                                </div>
-                                <div class="text-right">
-                                    <div class="text-xl font-black text-brand-600">₹${v.daily_rate}</div>
-                                    <div class="text-[10px] text-slate-400 font-bold uppercase tracking-widest">Per Day</div>
+
+                        <!-- Bottom Content Gradient -->
+                        <div class="absolute inset-0 cinematic-mask pointer-events-none"></div>
+
+                        <!-- Info & Action -->
+                        <div class="absolute bottom-0 inset-x-0 p-6 z-20 flex flex-col justify-end">
+                            <h3 class="text-3xl font-black text-white tracking-tight leading-none mb-2">${v.name}</h3>
+                            <div class="flex justify-between items-end mb-5">
+                                <p class="text-white/70 text-sm font-medium line-clamp-2 pr-4">${v.description || 'Premium vehicle tailored for absolute comfort.'}</p>
+                                <div class="text-right shrink-0 relative top-1">
+                                    <div class="text-xs font-bold text-brand-400 uppercase tracking-widest mb-1">Per Day</div>
+                                    <div class="text-3xl font-black text-white leading-none">₹${v.daily_rate}</div>
                                 </div>
                             </div>
+                            
                             <button onclick='openSheet(${JSON.stringify(v).replace(/'/g, "&#39;")})' 
-                                class="mt-5 w-full py-4 rounded-xl font-bold transition-all active:scale-95 flex items-center justify-center text-[15px]
-                                ${isAvail ? 'bg-slate-900 text-white shadow-xl shadow-slate-900/20' : 'bg-slate-100 text-slate-400'}" 
+                                class="w-full py-4 rounded-[16px] font-bold tracking-wide transition-all active:scale-[0.98]
+                                ${isAvail ? 'bg-white text-dark shadow-[0_0_30px_rgba(255,255,255,0.2)]' : 'bg-white/10 text-white/30 backdrop-blur-md'}" 
                                 ${!isAvail ? 'disabled' : ''}>
-                                ${isAvail ? 'Reserve Vehicle' : 'Currently Unavailable'}
+                                ${isAvail ? 'RESERVE NOW' : 'NOT AVAILABLE'}
                             </button>
                         </div>
                     </div>
@@ -346,11 +319,9 @@
             document.getElementById('sheet-rate').textContent = vehicle.daily_rate;
             document.getElementById('calc-rate').textContent = vehicle.daily_rate;
             
-            // Reset
             document.getElementById('booking-form').reset();
             calculateTotal();
 
-            // Animate In
             const overlay = document.getElementById('booking-overlay');
             const sheet = document.getElementById('booking-sheet');
             
@@ -402,40 +373,35 @@
         document.getElementById('booking-form').addEventListener('submit', async (e) => {
             e.preventDefault();
             const btn = document.getElementById('whatsapp-btn');
-            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Securing...';
+            btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> PROCESSING...';
             
             const payload = {
                 vehicle_id: currentVehicle.id,
                 customer_name: document.getElementById('cust-name').value,
-                customer_phone: "WhatsApp App", // Handled by WA
+                customer_phone: "WhatsApp App",
                 start_date: document.getElementById('start-date').value,
                 end_date: document.getElementById('end-date').value,
                 total_price: parseInt(document.getElementById('calc-total').textContent.replace(/,/g,''))
             };
 
             try {
-                const res = await fetch('/api/bookings', {
+                await fetch('/api/bookings', {
                     method: 'POST',
                     headers: {'Content-Type': 'application/json'},
                     body: JSON.stringify(payload)
                 });
 
-                // Generate WA Intent
-                const msg = `*Benaka Travels Reservation Request* 🚗\n\n*Vehicle:* ${currentVehicle.name}\n*Guest:* ${payload.customer_name}\n*Dates:* ${payload.start_date} to ${payload.end_date}\n*Estimated Total:* ₹${payload.total_price}\n\nPlease confirm my booking!`;
+                const msg = `*Elite Reservation Request* 🍾\n\n*Vehicle:* ${currentVehicle.name}\n*Guest:* ${payload.customer_name}\n*Dates:* ${payload.start_date} to ${payload.end_date}\n*Total Expected:* ₹${payload.total_price}\n\nPlease confirm!`;
                 
                 closeSheet();
                 window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`, '_blank');
-                
-                setTimeout(() => {
-                    btn.innerHTML = '<i class="fa-brands fa-whatsapp text-2xl"></i> Request via WhatsApp';
-                }, 1000);
+                btn.innerHTML = '<i class="fa-brands fa-whatsapp text-2xl"></i> REQUEST RESERVATION';
             } catch (err) {
-                alert("Connection failed. Please check internet.");
-                btn.innerHTML = '<i class="fa-brands fa-whatsapp text-2xl"></i> Request via WhatsApp';
+                alert("Network Error.");
+                btn.innerHTML = '<i class="fa-brands fa-whatsapp text-2xl"></i> REQUEST RESERVATION';
             }
         });
 
-        // PWA
         if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
     </script>
 </body>
