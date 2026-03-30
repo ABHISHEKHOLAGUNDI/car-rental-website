@@ -1,4 +1,4 @@
-const CACHE_NAME = 'benaka-v8';
+const CACHE_NAME = 'benaka-v9';
 const ASSETS_TO_CACHE = [
     '/',
     '/index.html',
@@ -24,6 +24,11 @@ self.addEventListener('fetch', (event) => {
     event.respondWith(
         fetch(event.request)
             .then((response) => {
+                // Only cache successful and non-opaque responses
+                if (!response || response.status !== 200 || response.type === 'opaque') {
+                    return response;
+                }
+                
                 // Clone the response and save it to the cache
                 const responseClone = response.clone();
                 caches.open(CACHE_NAME).then((cache) => {
